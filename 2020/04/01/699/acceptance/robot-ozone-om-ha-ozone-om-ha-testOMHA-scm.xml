@@ -1,0 +1,1026 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot rpa="false" generated="20200401 12:10:03.227" generator="Robot 3.1.2 (Python 2.7.5 on linux2)">
+<suite source="/opt/hadoop/smoketest/omha/testOMHA.robot" id="s1" name="ozone-om-ha-testOMHA">
+<test id="s1-t1" name="Stop Leader OM and Verify Failover">
+<kw name="Create volume and bucket">
+<kw name="Execute" library="commonlib">
+<arguments>
+<arg>ozone sh volume create o3://${OM_SERVICE_ID}/${VOLUME}</arg>
+</arguments>
+<kw name="Run And Return Rc And Output" library="OperatingSystem">
+<doc>Runs the given command in the system and returns the RC and output.</doc>
+<arguments>
+<arg>${command}</arg>
+</arguments>
+<assign>
+<var>${rc}</var>
+<var>${output}</var>
+</assign>
+<msg timestamp="20200401 12:10:03.425" level="INFO">Running command 'ozone sh volume create o3://omservice/volume1 2&gt;&amp;1'.</msg>
+<msg timestamp="20200401 12:10:10.424" level="INFO">${rc} = 255</msg>
+<msg timestamp="20200401 12:10:10.424" level="INFO">${output} = Couldn't create RpcClient protocol</msg>
+<status status="PASS" endtime="20200401 12:10:10.424" starttime="20200401 12:10:03.418"></status>
+</kw>
+<kw name="Log" library="BuiltIn">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>${output}</arg>
+</arguments>
+<msg timestamp="20200401 12:10:10.425" level="INFO">Couldn't create RpcClient protocol</msg>
+<status status="PASS" endtime="20200401 12:10:10.425" starttime="20200401 12:10:10.424"></status>
+</kw>
+<kw name="Should Be Equal As Integers" library="BuiltIn">
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<arguments>
+<arg>${rc}</arg>
+<arg>0</arg>
+</arguments>
+<msg timestamp="20200401 12:10:10.426" level="INFO">Argument types are:
+&lt;type 'int'&gt;
+&lt;type 'unicode'&gt;</msg>
+<msg timestamp="20200401 12:10:10.426" level="FAIL">255 != 0</msg>
+<status status="FAIL" endtime="20200401 12:10:10.426" starttime="20200401 12:10:10.425"></status>
+</kw>
+<status status="FAIL" endtime="20200401 12:10:10.431" starttime="20200401 12:10:03.418"></status>
+</kw>
+<status status="FAIL" endtime="20200401 12:10:10.431" starttime="20200401 12:10:03.417"></status>
+</kw>
+<timeout value="8 minutes"></timeout>
+<status status="FAIL" endtime="20200401 12:10:10.431" critical="yes" starttime="20200401 12:10:03.417">255 != 0</status>
+</test>
+<test id="s1-t2" name="Test Multiple Failovers">
+<kw type="for" name="${INDEX} IN RANGE [ 5 ]">
+<kw type="foritem" name="${INDEX} = 0">
+<kw name="Get OM Leader Node">
+<assign>
+<var>${leaderOM}</var>
+</assign>
+<kw name="Execute" library="commonlib">
+<arguments>
+<arg>ozone admin om getserviceroles --service-id=omservice</arg>
+</arguments>
+<assign>
+<var>${result}</var>
+</assign>
+<kw name="Run And Return Rc And Output" library="OperatingSystem">
+<doc>Runs the given command in the system and returns the RC and output.</doc>
+<arguments>
+<arg>${command}</arg>
+</arguments>
+<assign>
+<var>${rc}</var>
+<var>${output}</var>
+</assign>
+<msg timestamp="20200401 12:10:10.442" level="INFO">Running command 'ozone admin om getserviceroles --service-id=omservice 2&gt;&amp;1'.</msg>
+<msg timestamp="20200401 12:10:13.391" level="INFO">${rc} = 0</msg>
+<msg timestamp="20200401 12:10:13.391" level="INFO">${output} = om2 : FOLLOWER
+om3 : FOLLOWER
+om1 : LEADER</msg>
+<status status="PASS" endtime="20200401 12:10:13.391" starttime="20200401 12:10:10.435"></status>
+</kw>
+<kw name="Log" library="BuiltIn">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>${output}</arg>
+</arguments>
+<msg timestamp="20200401 12:10:13.393" level="INFO">om2 : FOLLOWER
+om3 : FOLLOWER
+om1 : LEADER</msg>
+<status status="PASS" endtime="20200401 12:10:13.393" starttime="20200401 12:10:13.392"></status>
+</kw>
+<kw name="Should Be Equal As Integers" library="BuiltIn">
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<arguments>
+<arg>${rc}</arg>
+<arg>0</arg>
+</arguments>
+<msg timestamp="20200401 12:10:13.393" level="INFO">Argument types are:
+&lt;type 'int'&gt;
+&lt;type 'unicode'&gt;</msg>
+<status status="PASS" endtime="20200401 12:10:13.393" starttime="20200401 12:10:13.393"></status>
+</kw>
+<msg timestamp="20200401 12:10:13.394" level="INFO">${result} = om2 : FOLLOWER
+om3 : FOLLOWER
+om1 : LEADER</msg>
+<status status="PASS" endtime="20200401 12:10:13.394" starttime="20200401 12:10:10.434"></status>
+</kw>
+<kw name="Log" library="BuiltIn">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>${result}</arg>
+</arguments>
+<msg timestamp="20200401 12:10:13.394" level="INFO">om2 : FOLLOWER
+om3 : FOLLOWER
+om1 : LEADER</msg>
+<status status="PASS" endtime="20200401 12:10:13.395" starttime="20200401 12:10:13.394"></status>
+</kw>
+<kw name="Should Contain" library="BuiltIn">
+<doc>Fails if ``container`` does not contain ``item`` one or more times.</doc>
+<arguments>
+<arg>${result}</arg>
+<arg>LEADER</arg>
+<arg>1</arg>
+</arguments>
+<status status="PASS" endtime="20200401 12:10:13.395" starttime="20200401 12:10:13.395"></status>
+</kw>
+<kw name="Should Contain" library="BuiltIn">
+<doc>Fails if ``container`` does not contain ``item`` one or more times.</doc>
+<arguments>
+<arg>${result}</arg>
+<arg>FOLLOWER</arg>
+<arg>2</arg>
+</arguments>
+<status status="PASS" endtime="20200401 12:10:13.396" starttime="20200401 12:10:13.395"></status>
+</kw>
+<kw name="Get Lines Containing String" library="String">
+<doc>Returns lines of the given ``string`` that contain the ``pattern``.</doc>
+<arguments>
+<arg>${result}</arg>
+<arg>LEADER</arg>
+</arguments>
+<assign>
+<var>${omLine}</var>
+</assign>
+<msg timestamp="20200401 12:10:13.397" level="INFO">1 out of 3 lines matched</msg>
+<msg timestamp="20200401 12:10:13.397" level="INFO">${omLine} = om1 : LEADER</msg>
+<status status="PASS" endtime="20200401 12:10:13.397" starttime="20200401 12:10:13.396"></status>
+</kw>
+<kw name="Split String" library="String">
+<doc>Splits the ``string`` using ``separator`` as a delimiter string.</doc>
+<arguments>
+<arg>${omLine}</arg>
+<arg>:</arg>
+</arguments>
+<assign>
+<var>${split1}</var>
+<var>${split2}</var>
+</assign>
+<msg timestamp="20200401 12:10:13.398" level="INFO">${split1} = om1 </msg>
+<msg timestamp="20200401 12:10:13.398" level="INFO">${split2} =  LEADER</msg>
+<status status="PASS" endtime="20200401 12:10:13.398" starttime="20200401 12:10:13.397"></status>
+</kw>
+<kw name="Strip String" library="String">
+<doc>Remove leading and/or trailing whitespaces from the given string.</doc>
+<arguments>
+<arg>${split1}</arg>
+</arguments>
+<assign>
+<var>${leaderOM}</var>
+</assign>
+<msg timestamp="20200401 12:10:13.399" level="INFO">${leaderOM} = om1</msg>
+<status status="PASS" endtime="20200401 12:10:13.399" starttime="20200401 12:10:13.398"></status>
+</kw>
+<kw name="Log" library="BuiltIn">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>Leader OM: ${leaderOM}</arg>
+</arguments>
+<msg timestamp="20200401 12:10:13.399" level="INFO">Leader OM: om1</msg>
+<status status="PASS" endtime="20200401 12:10:13.399" starttime="20200401 12:10:13.399"></status>
+</kw>
+<msg timestamp="20200401 12:10:13.400" level="INFO">${leaderOM} = om1</msg>
+<status status="PASS" endtime="20200401 12:10:13.400" starttime="20200401 12:10:10.434"></status>
+</kw>
+<kw name="Stop OM">
+<arguments>
+<arg>${leaderOM}</arg>
+</arguments>
+<assign>
+<var>${stopOMResult}</var>
+</assign>
+<kw name="Set Global Variable" library="BuiltIn">
+<doc>Makes a variable available globally in all tests and suites.</doc>
+<arguments>
+<arg>${HOST}</arg>
+<arg>${OM_HOST}</arg>
+</arguments>
+<msg timestamp="20200401 12:10:13.401" level="INFO">${HOST} = om1</msg>
+<status status="PASS" endtime="20200401 12:10:13.402" starttime="20200401 12:10:13.401"></status>
+</kw>
+<kw name="Open Connection And Log In">
+<kw name="Open Connection" library="SSHLibrary">
+<doc>Opens a new SSH connection to the given ``host`` and ``port``.</doc>
+<arguments>
+<arg>${HOST}</arg>
+</arguments>
+<status status="PASS" endtime="20200401 12:10:13.403" starttime="20200401 12:10:13.402"></status>
+</kw>
+<kw name="Login With Public Key" library="SSHLibrary">
+<doc>Logs into the SSH server using key-based authentication.</doc>
+<arguments>
+<arg>${USERNAME}</arg>
+<arg>${PUBLIC_KEY}</arg>
+</arguments>
+<msg timestamp="20200401 12:10:13.404" level="INFO">Logging into 'om1:22' as 'hadoop'.</msg>
+<msg timestamp="20200401 12:10:14.603" level="INFO">Read output: -bash-4.2$</msg>
+<status status="PASS" endtime="20200401 12:10:14.603" starttime="20200401 12:10:13.403"></status>
+</kw>
+<status status="PASS" endtime="20200401 12:10:14.603" starttime="20200401 12:10:13.402"></status>
+</kw>
+<kw name="Execute Command" library="SSHLibrary">
+<doc>Executes ``command`` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>/opt/stopOM.sh</arg>
+<arg>return_stdout=False</arg>
+<arg>return_rc=True</arg>
+</arguments>
+<assign>
+<var>${rc1}</var>
+</assign>
+<msg timestamp="20200401 12:10:14.604" level="INFO">Executing command '/opt/stopOM.sh'.</msg>
+<msg timestamp="20200401 12:10:15.708" level="INFO">Command exited with return code 0.</msg>
+<msg timestamp="20200401 12:10:15.708" level="INFO">${rc1} = 0</msg>
+<status status="PASS" endtime="20200401 12:10:15.708" starttime="20200401 12:10:14.604"></status>
+</kw>
+<kw name="Should Be Equal As Integers" library="BuiltIn">
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<arguments>
+<arg>${rc1}</arg>
+<arg>0</arg>
+</arguments>
+<msg timestamp="20200401 12:10:15.709" level="INFO">Argument types are:
+&lt;type 'int'&gt;
+&lt;type 'unicode'&gt;</msg>
+<status status="PASS" endtime="20200401 12:10:15.709" starttime="20200401 12:10:15.709"></status>
+</kw>
+<kw name="Execute Command" library="SSHLibrary">
+<doc>Executes ``command`` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>sudo ps aux | grep om</arg>
+<arg>return_rc=True</arg>
+</arguments>
+<assign>
+<var>${stopMsg}</var>
+<var>${rc2}</var>
+</assign>
+<msg timestamp="20200401 12:10:15.710" level="INFO">Executing command 'sudo ps aux | grep om'.</msg>
+<msg timestamp="20200401 12:10:15.796" level="INFO">Command exited with return code 0.</msg>
+<msg timestamp="20200401 12:10:15.796" level="INFO">${stopMsg} = hadoop      413  0.0  0.0   9564  2328 ?        Ss   12:10   0:00 bash -c sudo ps aux | grep om
+hadoop      415  0.0  0.0   9096   852 ?        S    12:10   0:00 grep om</msg>
+<msg timestamp="20200401 12:10:15.796" level="INFO">${rc2} = 0</msg>
+<status status="PASS" endtime="20200401 12:10:15.796" starttime="20200401 12:10:15.709"></status>
+</kw>
+<kw name="Should Be Equal As Integers" library="BuiltIn">
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<arguments>
+<arg>${rc2}</arg>
+<arg>0</arg>
+</arguments>
+<msg timestamp="20200401 12:10:15.797" level="INFO">Argument types are:
+&lt;type 'int'&gt;
+&lt;type 'unicode'&gt;</msg>
+<status status="PASS" endtime="20200401 12:10:15.797" starttime="20200401 12:10:15.797"></status>
+</kw>
+<kw name="Close Connection" library="SSHLibrary">
+<doc>Closes the current connection.</doc>
+<status status="PASS" endtime="20200401 12:10:15.862" starttime="20200401 12:10:15.797"></status>
+</kw>
+<kw name="Should Not Contain" library="BuiltIn">
+<doc>Fails if ``container`` contains ``item`` one or more times.</doc>
+<arguments>
+<arg>${stopMsg}</arg>
+<arg>OzoneManagerStarter</arg>
+</arguments>
+<status status="PASS" endtime="20200401 12:10:15.863" starttime="20200401 12:10:15.862"></status>
+</kw>
+<msg timestamp="20200401 12:10:15.863" level="INFO">${stopOMResult} = None</msg>
+<status status="PASS" endtime="20200401 12:10:15.863" starttime="20200401 12:10:13.400"></status>
+</kw>
+<kw name="Get OM Leader Node">
+<assign>
+<var>${newLeaderOM}</var>
+</assign>
+<kw name="Execute" library="commonlib">
+<arguments>
+<arg>ozone admin om getserviceroles --service-id=omservice</arg>
+</arguments>
+<assign>
+<var>${result}</var>
+</assign>
+<kw name="Run And Return Rc And Output" library="OperatingSystem">
+<doc>Runs the given command in the system and returns the RC and output.</doc>
+<arguments>
+<arg>${command}</arg>
+</arguments>
+<assign>
+<var>${rc}</var>
+<var>${output}</var>
+</assign>
+<msg timestamp="20200401 12:10:15.865" level="INFO">Running command 'ozone admin om getserviceroles --service-id=omservice 2&gt;&amp;1'.</msg>
+<msg timestamp="20200401 12:10:28.258" level="INFO">${rc} = 0</msg>
+<msg timestamp="20200401 12:10:28.258" level="INFO">${output} = Retrying connect to server: om1/172.21.0.2:9862. Already tried 0 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=10, sleepTime=1000 MILLISECONDS)
+Retrying connect to server: om...</msg>
+<status status="PASS" endtime="20200401 12:10:28.258" starttime="20200401 12:10:15.864"></status>
+</kw>
+<kw name="Log" library="BuiltIn">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>${output}</arg>
+</arguments>
+<msg timestamp="20200401 12:10:28.260" level="INFO">Retrying connect to server: om1/172.21.0.2:9862. Already tried 0 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=10, sleepTime=1000 MILLISECONDS)
+Retrying connect to server: om1/172.21.0.2:9862. Already tried 1 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=10, sleepTime=1000 MILLISECONDS)
+Retrying connect to server: om1/172.21.0.2:9862. Already tried 2 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=10, sleepTime=1000 MILLISECONDS)
+Retrying connect to server: om1/172.21.0.2:9862. Already tried 3 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=10, sleepTime=1000 MILLISECONDS)
+Retrying connect to server: om1/172.21.0.2:9862. Already tried 4 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=10, sleepTime=1000 MILLISECONDS)
+Retrying connect to server: om1/172.21.0.2:9862. Already tried 5 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=10, sleepTime=1000 MILLISECONDS)
+Retrying connect to server: om1/172.21.0.2:9862. Already tried 6 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=10, sleepTime=1000 MILLISECONDS)
+Retrying connect to server: om1/172.21.0.2:9862. Already tried 7 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=10, sleepTime=1000 MILLISECONDS)
+Retrying connect to server: om1/172.21.0.2:9862. Already tried 8 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=10, sleepTime=1000 MILLISECONDS)
+Retrying connect to server: om1/172.21.0.2:9862. Already tried 9 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=10, sleepTime=1000 MILLISECONDS)
+om1 : FOLLOWER
+om3 : FOLLOWER
+om2 : LEADER</msg>
+<status status="PASS" endtime="20200401 12:10:28.260" starttime="20200401 12:10:28.259"></status>
+</kw>
+<kw name="Should Be Equal As Integers" library="BuiltIn">
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<arguments>
+<arg>${rc}</arg>
+<arg>0</arg>
+</arguments>
+<msg timestamp="20200401 12:10:28.260" level="INFO">Argument types are:
+&lt;type 'int'&gt;
+&lt;type 'unicode'&gt;</msg>
+<status status="PASS" endtime="20200401 12:10:28.260" starttime="20200401 12:10:28.260"></status>
+</kw>
+<msg timestamp="20200401 12:10:28.261" level="INFO">${result} = Retrying connect to server: om1/172.21.0.2:9862. Already tried 0 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=10, sleepTime=1000 MILLISECONDS)
+Retrying connect to server: om...</msg>
+<status status="PASS" endtime="20200401 12:10:28.261" starttime="20200401 12:10:15.863"></status>
+</kw>
+<kw name="Log" library="BuiltIn">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>${result}</arg>
+</arguments>
+<msg timestamp="20200401 12:10:28.261" level="INFO">Retrying connect to server: om1/172.21.0.2:9862. Already tried 0 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=10, sleepTime=1000 MILLISECONDS)
+Retrying connect to server: om1/172.21.0.2:9862. Already tried 1 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=10, sleepTime=1000 MILLISECONDS)
+Retrying connect to server: om1/172.21.0.2:9862. Already tried 2 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=10, sleepTime=1000 MILLISECONDS)
+Retrying connect to server: om1/172.21.0.2:9862. Already tried 3 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=10, sleepTime=1000 MILLISECONDS)
+Retrying connect to server: om1/172.21.0.2:9862. Already tried 4 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=10, sleepTime=1000 MILLISECONDS)
+Retrying connect to server: om1/172.21.0.2:9862. Already tried 5 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=10, sleepTime=1000 MILLISECONDS)
+Retrying connect to server: om1/172.21.0.2:9862. Already tried 6 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=10, sleepTime=1000 MILLISECONDS)
+Retrying connect to server: om1/172.21.0.2:9862. Already tried 7 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=10, sleepTime=1000 MILLISECONDS)
+Retrying connect to server: om1/172.21.0.2:9862. Already tried 8 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=10, sleepTime=1000 MILLISECONDS)
+Retrying connect to server: om1/172.21.0.2:9862. Already tried 9 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=10, sleepTime=1000 MILLISECONDS)
+om1 : FOLLOWER
+om3 : FOLLOWER
+om2 : LEADER</msg>
+<status status="PASS" endtime="20200401 12:10:28.262" starttime="20200401 12:10:28.261"></status>
+</kw>
+<kw name="Should Contain" library="BuiltIn">
+<doc>Fails if ``container`` does not contain ``item`` one or more times.</doc>
+<arguments>
+<arg>${result}</arg>
+<arg>LEADER</arg>
+<arg>1</arg>
+</arguments>
+<status status="PASS" endtime="20200401 12:10:28.262" starttime="20200401 12:10:28.262"></status>
+</kw>
+<kw name="Should Contain" library="BuiltIn">
+<doc>Fails if ``container`` does not contain ``item`` one or more times.</doc>
+<arguments>
+<arg>${result}</arg>
+<arg>FOLLOWER</arg>
+<arg>2</arg>
+</arguments>
+<status status="PASS" endtime="20200401 12:10:28.263" starttime="20200401 12:10:28.262"></status>
+</kw>
+<kw name="Get Lines Containing String" library="String">
+<doc>Returns lines of the given ``string`` that contain the ``pattern``.</doc>
+<arguments>
+<arg>${result}</arg>
+<arg>LEADER</arg>
+</arguments>
+<assign>
+<var>${omLine}</var>
+</assign>
+<msg timestamp="20200401 12:10:28.263" level="INFO">1 out of 13 lines matched</msg>
+<msg timestamp="20200401 12:10:28.264" level="INFO">${omLine} = om2 : LEADER</msg>
+<status status="PASS" endtime="20200401 12:10:28.264" starttime="20200401 12:10:28.263"></status>
+</kw>
+<kw name="Split String" library="String">
+<doc>Splits the ``string`` using ``separator`` as a delimiter string.</doc>
+<arguments>
+<arg>${omLine}</arg>
+<arg>:</arg>
+</arguments>
+<assign>
+<var>${split1}</var>
+<var>${split2}</var>
+</assign>
+<msg timestamp="20200401 12:10:28.264" level="INFO">${split1} = om2 </msg>
+<msg timestamp="20200401 12:10:28.264" level="INFO">${split2} =  LEADER</msg>
+<status status="PASS" endtime="20200401 12:10:28.264" starttime="20200401 12:10:28.264"></status>
+</kw>
+<kw name="Strip String" library="String">
+<doc>Remove leading and/or trailing whitespaces from the given string.</doc>
+<arguments>
+<arg>${split1}</arg>
+</arguments>
+<assign>
+<var>${leaderOM}</var>
+</assign>
+<msg timestamp="20200401 12:10:28.265" level="INFO">${leaderOM} = om2</msg>
+<status status="PASS" endtime="20200401 12:10:28.265" starttime="20200401 12:10:28.265"></status>
+</kw>
+<kw name="Log" library="BuiltIn">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>Leader OM: ${leaderOM}</arg>
+</arguments>
+<msg timestamp="20200401 12:10:28.266" level="INFO">Leader OM: om2</msg>
+<status status="PASS" endtime="20200401 12:10:28.266" starttime="20200401 12:10:28.265"></status>
+</kw>
+<msg timestamp="20200401 12:10:28.266" level="INFO">${newLeaderOM} = om2</msg>
+<status status="PASS" endtime="20200401 12:10:28.266" starttime="20200401 12:10:15.863"></status>
+</kw>
+<kw name="Should Not Be Equal" library="BuiltIn">
+<doc>Fails if the given objects are equal.</doc>
+<arguments>
+<arg>${leaderOM}</arg>
+<arg>${newLeaderOM}</arg>
+<arg>OMs did not failover</arg>
+</arguments>
+<status status="PASS" endtime="20200401 12:10:28.267" starttime="20200401 12:10:28.266"></status>
+</kw>
+<kw name="Write Test File">
+<kw name="Evaluate" library="BuiltIn">
+<doc>Evaluates the given expression in Python and returns the results.</doc>
+<arguments>
+<arg>${WRITE_FILE_COUNT}+1</arg>
+</arguments>
+<assign>
+<var>${writeFileCount}</var>
+</assign>
+<msg timestamp="20200401 12:10:28.268" level="INFO">${writeFileCount} = 1</msg>
+<status status="PASS" endtime="20200401 12:10:28.268" starttime="20200401 12:10:28.267"></status>
+</kw>
+<kw name="Set Global Variable" library="BuiltIn">
+<doc>Makes a variable available globally in all tests and suites.</doc>
+<arguments>
+<arg>${WRITE_FILE_COUNT}</arg>
+<arg>${writeFileCount}</arg>
+</arguments>
+<msg timestamp="20200401 12:10:28.268" level="INFO">${WRITE_FILE_COUNT} = 1</msg>
+<status status="PASS" endtime="20200401 12:10:28.269" starttime="20200401 12:10:28.268"></status>
+</kw>
+<kw name="Set Variable" library="BuiltIn">
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<arguments>
+<arg>omha-${WRITE_FILE_COUNT}.txt</arg>
+</arguments>
+<assign>
+<var>${fileName}</var>
+</assign>
+<msg timestamp="20200401 12:10:28.269" level="INFO">${fileName} = omha-1.txt</msg>
+<status status="PASS" endtime="20200401 12:10:28.269" starttime="20200401 12:10:28.269"></status>
+</kw>
+<kw name="Set Variable" library="BuiltIn">
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<arguments>
+<arg>${TEMPDIR}/${fileName}</arg>
+</arguments>
+<assign>
+<var>${testFilePath}</var>
+</assign>
+<msg timestamp="20200401 12:10:28.270" level="INFO">${testFilePath} = /tmp/omha-1.txt</msg>
+<status status="PASS" endtime="20200401 12:10:28.270" starttime="20200401 12:10:28.269"></status>
+</kw>
+<kw name="Copy File" library="OperatingSystem">
+<doc>Copies the source file into the destination.</doc>
+<arguments>
+<arg>${TEST_FILE}</arg>
+<arg>${testFilePath}</arg>
+</arguments>
+<msg timestamp="20200401 12:10:28.272" html="yes" level="INFO">Copied file from '&lt;a href="file:///opt/hadoop/NOTICE.txt"&gt;/opt/hadoop/NOTICE.txt&lt;/a&gt;' to '&lt;a href="file:///tmp/omha-1.txt"&gt;/tmp/omha-1.txt&lt;/a&gt;'.</msg>
+<status status="PASS" endtime="20200401 12:10:28.272" starttime="20200401 12:10:28.270"></status>
+</kw>
+<kw name="Execute" library="commonlib">
+<arguments>
+<arg>ozone fs -copyFromLocal ${testFilePath} o3fs://${BUCKET}.${VOLUME}.${OM_SERVICE_ID}/</arg>
+</arguments>
+<kw name="Run And Return Rc And Output" library="OperatingSystem">
+<doc>Runs the given command in the system and returns the RC and output.</doc>
+<arguments>
+<arg>${command}</arg>
+</arguments>
+<assign>
+<var>${rc}</var>
+<var>${output}</var>
+</assign>
+<msg timestamp="20200401 12:10:28.274" level="INFO">Running command 'ozone fs -copyFromLocal /tmp/omha-1.txt o3fs://bucket1.volume1.omservice/ 2&gt;&amp;1'.</msg>
+<msg timestamp="20200401 12:10:40.821" level="INFO">${rc} = 1</msg>
+<msg timestamp="20200401 12:10:40.821" level="INFO">${output} = 2020-04-01 12:10:31 INFO  Client:948 - Retrying connect to server: om1/172.21.0.2:9862. Already tried 0 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=10, sleepTime=1000 MILLI...</msg>
+<status status="PASS" endtime="20200401 12:10:40.821" starttime="20200401 12:10:28.273"></status>
+</kw>
+<kw name="Log" library="BuiltIn">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>${output}</arg>
+</arguments>
+<msg timestamp="20200401 12:10:40.827" level="INFO">2020-04-01 12:10:31 INFO  Client:948 - Retrying connect to server: om1/172.21.0.2:9862. Already tried 0 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=10, sleepTime=1000 MILLISECONDS)
+2020-04-01 12:10:32 INFO  Client:948 - Retrying connect to server: om1/172.21.0.2:9862. Already tried 1 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=10, sleepTime=1000 MILLISECONDS)
+2020-04-01 12:10:33 INFO  Client:948 - Retrying connect to server: om1/172.21.0.2:9862. Already tried 2 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=10, sleepTime=1000 MILLISECONDS)
+2020-04-01 12:10:34 INFO  Client:948 - Retrying connect to server: om1/172.21.0.2:9862. Already tried 3 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=10, sleepTime=1000 MILLISECONDS)
+2020-04-01 12:10:35 INFO  Client:948 - Retrying connect to server: om1/172.21.0.2:9862. Already tried 4 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=10, sleepTime=1000 MILLISECONDS)
+2020-04-01 12:10:36 INFO  Client:948 - Retrying connect to server: om1/172.21.0.2:9862. Already tried 5 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=10, sleepTime=1000 MILLISECONDS)
+2020-04-01 12:10:37 INFO  Client:948 - Retrying connect to server: om1/172.21.0.2:9862. Already tried 6 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=10, sleepTime=1000 MILLISECONDS)
+2020-04-01 12:10:38 INFO  Client:948 - Retrying connect to server: om1/172.21.0.2:9862. Already tried 7 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=10, sleepTime=1000 MILLISECONDS)
+2020-04-01 12:10:39 INFO  Client:948 - Retrying connect to server: om1/172.21.0.2:9862. Already tried 8 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=10, sleepTime=1000 MILLISECONDS)
+2020-04-01 12:10:40 INFO  Client:948 - Retrying connect to server: om1/172.21.0.2:9862. Already tried 9 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=10, sleepTime=1000 MILLISECONDS)
+copyFromLocal: Volume volume1 is not found</msg>
+<status status="PASS" endtime="20200401 12:10:40.827" starttime="20200401 12:10:40.821"></status>
+</kw>
+<kw name="Should Be Equal As Integers" library="BuiltIn">
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<arguments>
+<arg>${rc}</arg>
+<arg>0</arg>
+</arguments>
+<msg timestamp="20200401 12:10:40.827" level="INFO">Argument types are:
+&lt;type 'int'&gt;
+&lt;type 'unicode'&gt;</msg>
+<msg timestamp="20200401 12:10:40.828" level="FAIL">1 != 0</msg>
+<status status="FAIL" endtime="20200401 12:10:40.828" starttime="20200401 12:10:40.827"></status>
+</kw>
+<status status="FAIL" endtime="20200401 12:10:40.828" starttime="20200401 12:10:28.272"></status>
+</kw>
+<status status="FAIL" endtime="20200401 12:10:40.828" starttime="20200401 12:10:28.267"></status>
+</kw>
+<status status="FAIL" endtime="20200401 12:10:40.828" starttime="20200401 12:10:10.434"></status>
+</kw>
+<status status="FAIL" endtime="20200401 12:10:40.828" starttime="20200401 12:10:10.434"></status>
+</kw>
+<timeout value="8 minutes"></timeout>
+<status status="FAIL" endtime="20200401 12:10:40.829" critical="yes" starttime="20200401 12:10:10.433">1 != 0</status>
+</test>
+<test id="s1-t3" name="Restart OM and Verify Ratis Logs">
+<kw name="Set Test Variable" library="BuiltIn">
+<doc>Makes a variable available everywhere within the scope of the current test.</doc>
+<arguments>
+<arg>${OM_HOST}</arg>
+<arg>om2</arg>
+</arguments>
+<msg timestamp="20200401 12:10:40.831" level="INFO">${OM_HOST} = om2</msg>
+<status status="PASS" endtime="20200401 12:10:40.831" starttime="20200401 12:10:40.830"></status>
+</kw>
+<kw name="Set Test Variable" library="BuiltIn">
+<doc>Makes a variable available everywhere within the scope of the current test.</doc>
+<arguments>
+<arg>${keyBase}</arg>
+<arg>testOMRestart_</arg>
+</arguments>
+<msg timestamp="20200401 12:10:40.833" level="INFO">${keyBase} = testOMRestart_</msg>
+<status status="PASS" endtime="20200401 12:10:40.833" starttime="20200401 12:10:40.831"></status>
+</kw>
+<kw name="Stop OM">
+<arguments>
+<arg>${OM_HOST}</arg>
+</arguments>
+<kw name="Set Global Variable" library="BuiltIn">
+<doc>Makes a variable available globally in all tests and suites.</doc>
+<arguments>
+<arg>${HOST}</arg>
+<arg>${OM_HOST}</arg>
+</arguments>
+<msg timestamp="20200401 12:10:40.834" level="INFO">${HOST} = om2</msg>
+<status status="PASS" endtime="20200401 12:10:40.834" starttime="20200401 12:10:40.833"></status>
+</kw>
+<kw name="Open Connection And Log In">
+<kw name="Open Connection" library="SSHLibrary">
+<doc>Opens a new SSH connection to the given ``host`` and ``port``.</doc>
+<arguments>
+<arg>${HOST}</arg>
+</arguments>
+<status status="PASS" endtime="20200401 12:10:40.835" starttime="20200401 12:10:40.834"></status>
+</kw>
+<kw name="Login With Public Key" library="SSHLibrary">
+<doc>Logs into the SSH server using key-based authentication.</doc>
+<arguments>
+<arg>${USERNAME}</arg>
+<arg>${PUBLIC_KEY}</arg>
+</arguments>
+<msg timestamp="20200401 12:10:40.835" level="INFO">Logging into 'om2:22' as 'hadoop'.</msg>
+<msg timestamp="20200401 12:10:42.037" level="INFO">Read output: -bash-4.2$</msg>
+<status status="PASS" endtime="20200401 12:10:42.037" starttime="20200401 12:10:40.835"></status>
+</kw>
+<status status="PASS" endtime="20200401 12:10:42.037" starttime="20200401 12:10:40.834"></status>
+</kw>
+<kw name="Execute Command" library="SSHLibrary">
+<doc>Executes ``command`` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>/opt/stopOM.sh</arg>
+<arg>return_stdout=False</arg>
+<arg>return_rc=True</arg>
+</arguments>
+<assign>
+<var>${rc1}</var>
+</assign>
+<msg timestamp="20200401 12:10:42.038" level="INFO">Executing command '/opt/stopOM.sh'.</msg>
+<msg timestamp="20200401 12:10:43.126" level="INFO">Command exited with return code 0.</msg>
+<msg timestamp="20200401 12:10:43.126" level="INFO">${rc1} = 0</msg>
+<status status="PASS" endtime="20200401 12:10:43.126" starttime="20200401 12:10:42.038"></status>
+</kw>
+<kw name="Should Be Equal As Integers" library="BuiltIn">
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<arguments>
+<arg>${rc1}</arg>
+<arg>0</arg>
+</arguments>
+<msg timestamp="20200401 12:10:43.127" level="INFO">Argument types are:
+&lt;type 'int'&gt;
+&lt;type 'unicode'&gt;</msg>
+<status status="PASS" endtime="20200401 12:10:43.127" starttime="20200401 12:10:43.126"></status>
+</kw>
+<kw name="Execute Command" library="SSHLibrary">
+<doc>Executes ``command`` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>sudo ps aux | grep om</arg>
+<arg>return_rc=True</arg>
+</arguments>
+<assign>
+<var>${stopMsg}</var>
+<var>${rc2}</var>
+</assign>
+<msg timestamp="20200401 12:10:43.127" level="INFO">Executing command 'sudo ps aux | grep om'.</msg>
+<msg timestamp="20200401 12:10:43.213" level="INFO">Command exited with return code 0.</msg>
+<msg timestamp="20200401 12:10:43.214" level="INFO">${stopMsg} = hadoop      401  0.0  0.0   9564  2312 ?        Ss   12:10   0:00 bash -c sudo ps aux | grep om
+hadoop      403  0.0  0.0   9096   828 ?        S    12:10   0:00 grep om</msg>
+<msg timestamp="20200401 12:10:43.214" level="INFO">${rc2} = 0</msg>
+<status status="PASS" endtime="20200401 12:10:43.214" starttime="20200401 12:10:43.127"></status>
+</kw>
+<kw name="Should Be Equal As Integers" library="BuiltIn">
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<arguments>
+<arg>${rc2}</arg>
+<arg>0</arg>
+</arguments>
+<msg timestamp="20200401 12:10:43.214" level="INFO">Argument types are:
+&lt;type 'int'&gt;
+&lt;type 'unicode'&gt;</msg>
+<status status="PASS" endtime="20200401 12:10:43.214" starttime="20200401 12:10:43.214"></status>
+</kw>
+<kw name="Close Connection" library="SSHLibrary">
+<doc>Closes the current connection.</doc>
+<status status="PASS" endtime="20200401 12:10:43.279" starttime="20200401 12:10:43.215"></status>
+</kw>
+<kw name="Should Not Contain" library="BuiltIn">
+<doc>Fails if ``container`` contains ``item`` one or more times.</doc>
+<arguments>
+<arg>${stopMsg}</arg>
+<arg>OzoneManagerStarter</arg>
+</arguments>
+<status status="PASS" endtime="20200401 12:10:43.280" starttime="20200401 12:10:43.279"></status>
+</kw>
+<status status="PASS" endtime="20200401 12:10:43.280" starttime="20200401 12:10:40.833"></status>
+</kw>
+<kw name="Get Ratis Logs">
+<arguments>
+<arg>${OM_HOST}</arg>
+</arguments>
+<assign>
+<var>${numLogsBefore}</var>
+<var>@{logsBefore}</var>
+</assign>
+<kw name="Set Global Variable" library="BuiltIn">
+<doc>Makes a variable available globally in all tests and suites.</doc>
+<arguments>
+<arg>${HOST}</arg>
+<arg>${OM_HOST}</arg>
+</arguments>
+<msg timestamp="20200401 12:10:43.282" level="INFO">${HOST} = om2</msg>
+<status status="PASS" endtime="20200401 12:10:43.282" starttime="20200401 12:10:43.281"></status>
+</kw>
+<kw name="Open Connection And Log In">
+<kw name="Open Connection" library="SSHLibrary">
+<doc>Opens a new SSH connection to the given ``host`` and ``port``.</doc>
+<arguments>
+<arg>${HOST}</arg>
+</arguments>
+<status status="PASS" endtime="20200401 12:10:43.283" starttime="20200401 12:10:43.282"></status>
+</kw>
+<kw name="Login With Public Key" library="SSHLibrary">
+<doc>Logs into the SSH server using key-based authentication.</doc>
+<arguments>
+<arg>${USERNAME}</arg>
+<arg>${PUBLIC_KEY}</arg>
+</arguments>
+<msg timestamp="20200401 12:10:43.283" level="INFO">Logging into 'om2:22' as 'hadoop'.</msg>
+<msg timestamp="20200401 12:10:44.480" level="INFO">Read output: Last login: Wed Apr  1 12:10:41 2020 from ozone-om-ha_scm_1.ozone-om-ha_default
+-bash-4.2$</msg>
+<status status="PASS" endtime="20200401 12:10:44.481" starttime="20200401 12:10:43.283"></status>
+</kw>
+<status status="PASS" endtime="20200401 12:10:44.481" starttime="20200401 12:10:43.282"></status>
+</kw>
+<kw name="Execute Command" library="SSHLibrary">
+<doc>Executes ``command`` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>ls ${RATIS_DIR} | grep -v 'snapshot'</arg>
+<arg>return_rc=True</arg>
+</arguments>
+<assign>
+<var>${groupId}</var>
+<var>${rc}</var>
+</assign>
+<msg timestamp="20200401 12:10:44.482" level="INFO">Executing command 'ls /data/metadata/ratis | grep -v 'snapshot''.</msg>
+<msg timestamp="20200401 12:10:44.496" level="INFO">Command exited with return code 0.</msg>
+<msg timestamp="20200401 12:10:44.496" level="INFO">${groupId} = 5cb24680-b9e7-3c90-a862-d66704efc61c</msg>
+<msg timestamp="20200401 12:10:44.496" level="INFO">${rc} = 0</msg>
+<status status="PASS" endtime="20200401 12:10:44.496" starttime="20200401 12:10:44.481"></status>
+</kw>
+<kw name="Should Be Equal As Integers" library="BuiltIn">
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<arguments>
+<arg>${rc}</arg>
+<arg>0</arg>
+</arguments>
+<msg timestamp="20200401 12:10:44.496" level="INFO">Argument types are:
+&lt;type 'int'&gt;
+&lt;type 'unicode'&gt;</msg>
+<status status="PASS" endtime="20200401 12:10:44.496" starttime="20200401 12:10:44.496"></status>
+</kw>
+<kw name="Log" library="BuiltIn">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>Ratis GroupId: ${groupId}</arg>
+</arguments>
+<msg timestamp="20200401 12:10:44.497" level="INFO">Ratis GroupId: 5cb24680-b9e7-3c90-a862-d66704efc61c</msg>
+<status status="PASS" endtime="20200401 12:10:44.497" starttime="20200401 12:10:44.497"></status>
+</kw>
+<kw name="Catenate" library="BuiltIn">
+<doc>Catenates the given items together and returns the resulted string.</doc>
+<arguments>
+<arg>SEPARATOR=</arg>
+<arg>${RATIS_DIR}</arg>
+<arg>/</arg>
+<arg>${groupId}</arg>
+<arg>/current/</arg>
+</arguments>
+<assign>
+<var>${currDir}</var>
+</assign>
+<msg timestamp="20200401 12:10:44.498" level="INFO">${currDir} = /data/metadata/ratis/5cb24680-b9e7-3c90-a862-d66704efc61c/current/</msg>
+<status status="PASS" endtime="20200401 12:10:44.498" starttime="20200401 12:10:44.497"></status>
+</kw>
+<kw name="List Files In Directory" library="SSHLibrary">
+<doc>A wrapper for `List Directory` that returns only files.</doc>
+<arguments>
+<arg>${currDir}</arg>
+<arg>log_*</arg>
+</arguments>
+<assign>
+<var>@{logs}</var>
+</assign>
+<msg timestamp="20200401 12:10:44.570" level="INFO">[chan 2] Opened sftp connection (server version 3)</msg>
+<msg timestamp="20200401 12:10:44.578" level="INFO">2 files:
+log_0-0
+log_inprogress_1</msg>
+<msg timestamp="20200401 12:10:44.578" level="INFO">@{logs} = [ log_0-0 | log_inprogress_1 ]</msg>
+<status status="PASS" endtime="20200401 12:10:44.578" starttime="20200401 12:10:44.498"></status>
+</kw>
+<kw name="Close Connection" library="SSHLibrary">
+<doc>Closes the current connection.</doc>
+<status status="PASS" endtime="20200401 12:10:44.643" starttime="20200401 12:10:44.578"></status>
+</kw>
+<kw name="Get Length" library="BuiltIn">
+<doc>Returns and logs the length of the given item as an integer.</doc>
+<arguments>
+<arg>${logs}</arg>
+</arguments>
+<assign>
+<var>${numLogs}</var>
+</assign>
+<msg timestamp="20200401 12:10:44.644" level="INFO">Length is 2</msg>
+<msg timestamp="20200401 12:10:44.644" level="INFO">${numLogs} = 2</msg>
+<status status="PASS" endtime="20200401 12:10:44.644" starttime="20200401 12:10:44.644"></status>
+</kw>
+<msg timestamp="20200401 12:10:44.644" level="INFO">${numLogsBefore} = 2</msg>
+<msg timestamp="20200401 12:10:44.645" level="INFO">@{logsBefore} = [ [u'log_0-0', u'log_inprogress_1'] ]</msg>
+<status status="PASS" endtime="20200401 12:10:44.645" starttime="20200401 12:10:43.280"></status>
+</kw>
+<kw name="Get OM Leader Node">
+<assign>
+<var>${leaderOM}</var>
+</assign>
+<kw name="Execute" library="commonlib">
+<arguments>
+<arg>ozone admin om getserviceroles --service-id=omservice</arg>
+</arguments>
+<assign>
+<var>${result}</var>
+</assign>
+<kw name="Run And Return Rc And Output" library="OperatingSystem">
+<doc>Runs the given command in the system and returns the RC and output.</doc>
+<arguments>
+<arg>${command}</arg>
+</arguments>
+<assign>
+<var>${rc}</var>
+<var>${output}</var>
+</assign>
+<msg timestamp="20200401 12:10:44.647" level="INFO">Running command 'ozone admin om getserviceroles --service-id=omservice 2&gt;&amp;1'.</msg>
+<msg timestamp="20200401 12:11:46.300" level="INFO">${rc} = 255</msg>
+<msg timestamp="20200401 12:11:46.300" level="INFO">${output} = Retrying connect to server: om1/172.21.0.2:9862. Already tried 0 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=10, sleepTime=1000 MILLISECONDS)
+Retrying connect to server: om...</msg>
+<status status="PASS" endtime="20200401 12:11:46.300" starttime="20200401 12:10:44.646"></status>
+</kw>
+<kw name="Log" library="BuiltIn">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>${output}</arg>
+</arguments>
+<msg timestamp="20200401 12:11:46.301" level="INFO">Retrying connect to server: om1/172.21.0.2:9862. Already tried 0 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=10, sleepTime=1000 MILLISECONDS)
+Retrying connect to server: om1/172.21.0.2:9862. Already tried 1 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=10, sleepTime=1000 MILLISECONDS)
+Retrying connect to server: om1/172.21.0.2:9862. Already tried 2 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=10, sleepTime=1000 MILLISECONDS)
+Retrying connect to server: om1/172.21.0.2:9862. Already tried 3 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=10, sleepTime=1000 MILLISECONDS)
+Retrying connect to server: om1/172.21.0.2:9862. Already tried 4 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=10, sleepTime=1000 MILLISECONDS)
+Retrying connect to server: om1/172.21.0.2:9862. Already tried 5 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=10, sleepTime=1000 MILLISECONDS)
+Retrying connect to server: om1/172.21.0.2:9862. Already tried 6 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=10, sleepTime=1000 MILLISECONDS)
+Retrying connect to server: om1/172.21.0.2:9862. Already tried 7 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=10, sleepTime=1000 MILLISECONDS)
+Retrying connect to server: om1/172.21.0.2:9862. Already tried 8 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=10, sleepTime=1000 MILLISECONDS)
+Retrying connect to server: om1/172.21.0.2:9862. Already tried 9 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=10, sleepTime=1000 MILLISECONDS)
+Retrying connect to server: om2/172.21.0.4:9862. Already tried 0 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=10, sleepTime=1000 MILLISECONDS)
+Retrying connect to server: om2/172.21.0.4:9862. Already tried 1 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=10, sleepTime=1000 MILLISECONDS)
+Retrying connect to server: om2/172.21.0.4:9862. Already tried 2 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=10, sleepTime=1000 MILLISECONDS)
+Retrying connect to server: om2/172.21.0.4:9862. Already tried 3 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=10, sleepTime=1000 MILLISECONDS)
+Retrying connect to server: om2/172.21.0.4:9862. Already tried 4 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=10, sleepTime=1000 MILLISECONDS)
+Retrying connect to server: om2/172.21.0.4:9862. Already tried 5 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=10, sleepTime=1000 MILLISECONDS)
+Retrying connect to server: om2/172.21.0.4:9862. Already tried 6 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=10, sleepTime=1000 MILLISECONDS)
+Retrying connect to server: om2/172.21.0.4:9862. Already tried 7 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=10, sleepTime=1000 MILLISECONDS)
+Retrying connect to server: om2/172.21.0.4:9862. Already tried 8 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=10, sleepTime=1000 MILLISECONDS)
+Retrying connect to server: om2/172.21.0.4:9862. Already tried 9 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=10, sleepTime=1000 MILLISECONDS)
+com.google.protobuf.ServiceException: java.net.ConnectException: Call From 5952000a3e7a/172.21.0.8 to om2:9862 failed on connection exception: java.net.ConnectException: Connection refused; For more details see:  http://wiki.apache.org/hadoop/ConnectionRefused, while invoking $Proxy18.submitRequest over nodeId=om2,nodeAddress=om2:9862 after 1 failover attempts. Trying to failover immediately.
+com.google.protobuf.ServiceException: org.apache.hadoop.ipc.RemoteException(org.apache.hadoop.ozone.om.exceptions.OMNotLeaderException): OM:om3 is not the leader. Could not determine the leader node.
+	at org.apache.hadoop.ozone.protocolPB.OzoneManagerProtocolServerSideTranslatorPB.createNotLeaderException(OzoneManagerProtocolServerSideTranslatorPB.java:186)
+	at org.apache.hadoop.ozone.protocolPB.OzoneManagerProtocolServerSideTranslatorPB.submitReadRequestToOM(OzoneManagerProtocolServerSideTranslatorPB.java:172)
+	at org.apache.hadoop.ozone.protocolPB.OzoneManagerProtocolServerSideTranslatorPB.processRequest(OzoneManagerProtocolServerSideTranslatorPB.java:108)
+	at org.apache.hadoop.hdds.server.OzoneProtocolMessageDispatcher.processRequest(OzoneProtocolMessageDispatcher.java:72)
+	at org.apache.hadoop.ozone.protocolPB.OzoneManagerProtocolServerSideTranslatorPB.submitRequest(OzoneManagerProtocolServerSideTranslatorPB.java:98)
+	at org.apache.hadoop.ozone.protocol.proto.OzoneManagerProtocolProtos$OzoneManagerService$2.callBlockingMethod(OzoneManagerProtocolProtos.java)
+	at org.apache.hadoop.ipc.ProtobufRpcEngine$Server$ProtoBufRpcInvoker.call(ProtobufRpcEngine.java:524)
+	at org.apache.hadoop.ipc.RPC$Server.call(RPC.java:1025)
+	at org.apache.hadoop.ipc.Server$RpcCall.run(Server.java:876)
+	at org.apache.hadoop.ipc.Server$RpcCall.run(Server.java:822)
+	at java.base/java.security.AccessController.doPrivileged(Native Method)
+	at java.base/javax.security.auth.Subject.doAs(Subject.java:423)
+	at org.apache.hadoop.security.UserGroupInformation.doAs(UserGroupInformation.java:1730)
+	at org.apache.hadoop.ipc.Server$Handler.run(Server.java:2682)
+, while invoking $Proxy18.submitRequest over nodeId=om3,nodeAddress=om3:9862 after 2 failover attempts. Trying to failover immediately.
+Retrying connect to server: om1/172.21.0.2:9862. Already tried 0 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=10, sleepTime=1000 MILLISECONDS)
+Retrying connect to server: om1/172.21.0.2:9862. Already tried 1 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=10, sleepTime=1000 MILLISECONDS)
+Retrying connect to server: om1/172.21.0.2:9862. Already tried 2 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=10, sleepTime=1000 MILLISECONDS)
+Retrying connect to server: om1/172.21.0.2:9862. Already tried 3 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=10, sleepTime=1000 MILLISECONDS)
+Retrying connect to server: om1/172.21.0.2:9862. Already tried 4 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=10, sleepTime=1000 MILLISECONDS)
+Retrying connect to server: om1/172.21.0.2:9862. Already tried 5 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=10, sleepTime=1000 MILLISECONDS)
+Retrying connect to server: om1/172.21.0.2:9862. Already tried 6 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=10, sleepTime=1000 MILLISECONDS)
+Retrying connect to server: om1/172.21.0.2:9862. Already tried 7 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=10, sleepTime=1000 MILLISECONDS)
+Retrying connect to server: om1/172.21.0.2:9862. Already tried 8 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=10, sleepTime=1000 MILLISECONDS)
+Retrying connect to server: om1/172.21.0.2:9862. Already tried 9 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=10, sleepTime=1000 MILLISECONDS)
+com.google.protobuf.ServiceException: java.net.ConnectException: Call From 5952000a3e7a/172.21.0.8 to om1:9862 failed on connection exception: java.net.ConnectException: Connection refused; For more details see:  http://wiki.apache.org/hadoop/ConnectionRefused, while invoking $Proxy18.submitRequest over nodeId=om1,nodeAddress=om1:9862 after 3 failover attempts. Trying to failover immediately.
+Retrying connect to server: om2/172.21.0.4:9862. Already tried 0 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=10, sleepTime=1000 MILLISECONDS)
+Retrying connect to server: om2/172.21.0.4:9862. Already tried 1 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=10, sleepTime=1000 MILLISECONDS)
+Retrying connect to server: om2/172.21.0.4:9862. Already tried 2 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=10, sleepTime=1000 MILLISECONDS)
+Retrying connect to server: om2/172.21.0.4:9862. Already tried 3 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=10, sleepTime=1000 MILLISECONDS)
+Retrying connect to server: om2/172.21.0.4:9862. Already tried 4 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=10, sleepTime=1000 MILLISECONDS)
+Retrying connect to server: om2/172.21.0.4:9862. Already tried 5 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=10, sleepTime=1000 MILLISECONDS)
+Retrying connect to server: om2/172.21.0.4:9862. Already tried 6 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=10, sleepTime=1000 MILLISECONDS)
+Retrying connect to server: om2/172.21.0.4:9862. Already tried 7 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=10, sleepTime=1000 MILLISECONDS)
+Retrying connect to server: om2/172.21.0.4:9862. Already tried 8 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=10, sleepTime=1000 MILLISECONDS)
+Retrying connect to server: om2/172.21.0.4:9862. Already tried 9 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=10, sleepTime=1000 MILLISECONDS)
+com.google.protobuf.ServiceException: java.net.ConnectException: Call From 5952000a3e7a/172.21.0.8 to om2:9862 failed on connection exception: java.net.ConnectException: Connection refused; For more details see:  http://wiki.apache.org/hadoop/ConnectionRefused, while invoking $Proxy18.submitRequest over nodeId=om2,nodeAddress=om2:9862 after 4 failover attempts. Trying to failover immediately.
+com.google.protobuf.ServiceException: org.apache.hadoop.ipc.RemoteException(org.apache.hadoop.ozone.om.exceptions.OMNotLeaderException): OM:om3 is not the leader. Could not determine the leader node.
+	at org.apache.hadoop.ozone.protocolPB.OzoneManagerProtocolServerSideTranslatorPB.createNotLeaderException(OzoneManagerProtocolServerSideTranslatorPB.java:186)
+	at org.apache.hadoop.ozone.protocolPB.OzoneManagerProtocolServerSideTranslatorPB.submitReadRequestToOM(OzoneManagerProtocolServerSideTranslatorPB.java:172)
+	at org.apache.hadoop.ozone.protocolPB.OzoneManagerProtocolServerSideTranslatorPB.processRequest(OzoneManagerProtocolServerSideTranslatorPB.java:108)
+	at org.apache.hadoop.hdds.server.OzoneProtocolMessageDispatcher.processRequest(OzoneProtocolMessageDispatcher.java:72)
+	at org.apache.hadoop.ozone.protocolPB.OzoneManagerProtocolServerSideTranslatorPB.submitRequest(OzoneManagerProtocolServerSideTranslatorPB.java:98)
+	at org.apache.hadoop.ozone.protocol.proto.OzoneManagerProtocolProtos$OzoneManagerService$2.callBlockingMethod(OzoneManagerProtocolProtos.java)
+	at org.apache.hadoop.ipc.ProtobufRpcEngine$Server$ProtoBufRpcInvoker.call(ProtobufRpcEngine.java:524)
+	at org.apache.hadoop.ipc.RPC$Server.call(RPC.java:1025)
+	at org.apache.hadoop.ipc.Server$RpcCall.run(Server.java:876)
+	at org.apache.hadoop.ipc.Server$RpcCall.run(Server.java:822)
+	at java.base/java.security.AccessController.doPrivileged(Native Method)
+	at java.base/javax.security.auth.Subject.doAs(Subject.java:423)
+	at org.apache.hadoop.security.UserGroupInformation.doAs(UserGroupInformation.java:1730)
+	at org.apache.hadoop.ipc.Server$Handler.run(Server.java:2682)
+, while invoking $Proxy18.submitRequest over nodeId=om3,nodeAddress=om3:9862 after 5 failover attempts. Trying to failover immediately.
+Retrying connect to server: om1/172.21.0.2:9862. Already tried 0 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=10, sleepTime=1000 MILLISECONDS)
+Retrying connect to server: om1/172.21.0.2:9862. Already tried 1 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=10, sleepTime=1000 MILLISECONDS)
+Retrying connect to server: om1/172.21.0.2:9862. Already tried 2 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=10, sleepTime=1000 MILLISECONDS)
+Retrying connect to server: om1/172.21.0.2:9862. Already tried 3 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=10, sleepTime=1000 MILLISECONDS)
+Retrying connect to server: om1/172.21.0.2:9862. Already tried 4 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=10, sleepTime=1000 MILLISECONDS)
+Retrying connect to server: om1/172.21.0.2:9862. Already tried 5 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=10, sleepTime=1000 MILLISECONDS)
+Retrying connect to server: om1/172.21.0.2:9862. Already tried 6 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=10, sleepTime=1000 MILLISECONDS)
+Retrying connect to server: om1/172.21.0.2:9862. Already tried 7 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=10, sleepTime=1000 MILLISECONDS)
+Retrying connect to server: om1/172.21.0.2:9862. Already tried 8 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=10, sleepTime=1000 MILLISECONDS)
+Retrying connect to server: om1/172.21.0.2:9862. Already tried 9 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=10, sleepTime=1000 MILLISECONDS)
+com.google.protobuf.ServiceException: java.net.ConnectException: Call From 5952000a3e7a/172.21.0.8 to om1:9862 failed on connection exception: java.net.ConnectException: Connection refused; For more details see:  http://wiki.apache.org/hadoop/ConnectionRefused, while invoking $Proxy18.submitRequest over nodeId=om1,nodeAddress=om1:9862 after 6 failover attempts. Trying to failover immediately.
+Retrying connect to server: om2/172.21.0.4:9862. Already tried 0 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=10, sleepTime=1000 MILLISECONDS)
+Retrying connect to server: om2/172.21.0.4:9862. Already tried 1 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=10, sleepTime=1000 MILLISECONDS)
+Retrying connect to server: om2/172.21.0.4:9862. Already tried 2 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=10, sleepTime=1000 MILLISECONDS)
+Retrying connect to server: om2/172.21.0.4:9862. Already tried 3 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=10, sleepTime=1000 MILLISECONDS)
+Retrying connect to server: om2/172.21.0.4:9862. Already tried 4 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=10, sleepTime=1000 MILLISECONDS)
+Retrying connect to server: om2/172.21.0.4:9862. Already tried 5 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=10, sleepTime=1000 MILLISECONDS)
+Retrying connect to server: om2/172.21.0.4:9862. Already tried 6 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=10, sleepTime=1000 MILLISECONDS)
+Retrying connect to server: om2/172.21.0.4:9862. Already tried 7 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=10, sleepTime=1000 MILLISECONDS)
+Retrying connect to server: om2/172.21.0.4:9862. Already tried 8 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=10, sleepTime=1000 MILLISECONDS)
+Retrying connect to server: om2/172.21.0.4:9862. Already tried 9 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=10, sleepTime=1000 MILLISECONDS)
+Failed to connect to OMs: [nodeId=om1,nodeAddress=om1:9862, nodeId=om3,nodeAddress=om3:9862, nodeId=om2,nodeAddress=om2:9862]. Attempted 6 failovers.
+Couldn't create RpcClient protocol exception: 
+java.net.ConnectException: Call From 5952000a3e7a/172.21.0.8 to om2:9862 failed on connection exception: java.net.ConnectException: Connection refused; For more details see:  http://wiki.apache.org/hadoop/ConnectionRefused
+	at java.base/jdk.internal.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
+	at java.base/jdk.internal.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:62)
+	at java.base/jdk.internal.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45)
+	at java.base/java.lang.reflect.Constructor.newInstance(Constructor.java:490)
+	at org.apache.hadoop.net.NetUtils.wrapWithMessage(NetUtils.java:831)
+	at org.apache.hadoop.net.NetUtils.wrapException(NetUtils.java:755)
+	at org.apache.hadoop.ipc.Client.getRpcResponse(Client.java:1515)
+	at org.apache.hadoop.ipc.Client.call(Client.java:1457)
+	at org.apache.hadoop.ipc.Client.call(Client.java:1367)
+	at org.apache.hadoop.ipc.ProtobufRpcEngine$Invoker.invoke(ProtobufRpcEngine.java:228)
+	at org.apache.hadoop.ipc.ProtobufRpcEngine$Invoker.invoke(ProtobufRpcEngine.java:116)
+	at com.sun.proxy.$Proxy18.submitRequest(Unknown Source)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:566)
+	at org.apache.hadoop.io.retry.RetryInvocationHandler.invokeMethod(RetryInvocationHandler.java:422)
+	at org.apache.hadoop.io.retry.RetryInvocationHandler$Call.invokeMethod(RetryInvocationHandler.java:165)
+	at org.apache.hadoop.io.retry.RetryInvocationHandler$Call.invoke(RetryInvocationHandler.java:157)
+	at org.apache.hadoop.io.retry.RetryInvocationHandler$Call.invokeOnce(RetryInvocationHandler.java:95)
+	at org.apache.hadoop.io.retry.RetryInvocationHandler.invoke(RetryInvocationHandler.java:359)
+	at com.sun.proxy.$Proxy18.submitRequest(Unknown Source)
+	at org.apache.hadoop.ozone.om.protocolPB.OzoneManagerProtocolClientSideTranslatorPB.submitRequest(OzoneManagerProtocolClientSideTranslatorPB.java:407)
+	at org.apache.hadoop.ozone.om.protocolPB.OzoneManagerProtocolClientSideTranslatorPB.getServiceInfo(OzoneManagerProtocolClientSideTranslatorPB.java:1296)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:566)
+	at org.apache.hadoop.hdds.tracing.TraceAllMethod.invoke(TraceAllMethod.java:71)
+	at com.sun.proxy.$Proxy19.getServiceInfo(Unknown Source)
+	at org.apache.hadoop.ozone.client.rpc.RpcClient.&lt;init&gt;(RpcClient.java:158)
+	at org.apache.hadoop.ozone.client.OzoneClientFactory.getClientProtocol(OzoneClientFactory.java:192)
+	at org.apache.hadoop.ozone.client.OzoneClientFactory.getRpcClient(OzoneClientFactory.java:107)
+	at org.apache.hadoop.ozone.admin.om.OMAdmin.createClient(OMAdmin.java:66)
+	at org.apache.hadoop.ozone.admin.om.GetServiceRolesSubcommand.call(GetServiceRolesSubcommand.java:51)
+	at org.apache.hadoop.ozone.admin.om.GetServiceRolesSubcommand.call(GetServiceRolesSubcommand.java:33)
+	at picocli.CommandLine.execute(CommandLine.java:1173)
+	at picocli.CommandLine.access$800(CommandLine.java:141)
+	at picocli.CommandLine$RunLast.handle(CommandLine.java:1367)
+	at picocli.CommandLine$RunLast.handle(CommandLine.java:1335)
+	at picocli.CommandLine$AbstractParseResultHandler.handleParseResult(CommandLine.java:1243)
+	at picocli.CommandLine.parseWithHandlers(CommandLine.java:1526)
+	at picocli.CommandLine.parseWithHandler(CommandLine.java:1465)
+	at org.apache.hadoop.hdds.cli.GenericCli.execute(GenericCli.java:75)
+	at org.apache.hadoop.hdds.cli.GenericCli.run(GenericCli.java:66)
+	at org.apache.hadoop.ozone.admin.OzoneAdmin.main(OzoneAdmin.java:94)
+Caused by: java.net.ConnectException: Connection refused
+	at java.base/sun.nio.ch.SocketChannelImpl.checkConnect(Native Method)
+	at java.base/sun.nio.ch.SocketChannelImpl.finishConnect(SocketChannelImpl.java:779)
+	at org.apache.hadoop.net.SocketIOWithTimeout.connect(SocketIOWithTimeout.java:206)
+	at org.apache.hadoop.net.NetUtils.connect(NetUtils.java:531)
+	at org.apache.hadoop.ipc.Client$Connection.setupConnection(Client.java:690)
+	at org.apache.hadoop.ipc.Client$Connection.setupIOstreams(Client.java:794)
+	at org.apache.hadoop.ipc.Client$Connection.access$3700(Client.java:411)
+	at org.apache.hadoop.ipc.Client.getConnection(Client.java:1572)
+	at org.apache.hadoop.ipc.Client.call(Client.java:1403)
+	... 38 more
+Connection refused</msg>
+<status status="PASS" endtime="20200401 12:11:46.302" starttime="20200401 12:11:46.301"></status>
+</kw>
+<kw name="Should Be Equal As Integers" library="BuiltIn">
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<arguments>
+<arg>${rc}</arg>
+<arg>0</arg>
+</arguments>
+<msg timestamp="20200401 12:11:46.302" level="INFO">Argument types are:
+&lt;type 'int'&gt;
+&lt;type 'unicode'&gt;</msg>
+<msg timestamp="20200401 12:11:46.303" level="FAIL">255 != 0</msg>
+<status status="FAIL" endtime="20200401 12:11:46.303" starttime="20200401 12:11:46.302"></status>
+</kw>
+<status status="FAIL" endtime="20200401 12:11:46.303" starttime="20200401 12:10:44.645"></status>
+</kw>
+<status status="FAIL" endtime="20200401 12:11:46.303" starttime="20200401 12:10:44.645"></status>
+</kw>
+<timeout value="8 minutes"></timeout>
+<status status="FAIL" endtime="20200401 12:11:46.303" critical="yes" starttime="20200401 12:10:40.829">255 != 0</status>
+</test>
+<doc>Smoketest ozone cluster startup</doc>
+<status status="FAIL" endtime="20200401 12:11:46.305" starttime="20200401 12:10:03.227"></status>
+</suite>
+<statistics>
+<total>
+<stat fail="3" pass="0">Critical Tests</stat>
+<stat fail="3" pass="0">All Tests</stat>
+</total>
+<tag>
+</tag>
+<suite>
+<stat fail="3" id="s1" name="ozone-om-ha-testOMHA" pass="0">ozone-om-ha-testOMHA</stat>
+</suite>
+</statistics>
+<errors>
+</errors>
+</robot>
