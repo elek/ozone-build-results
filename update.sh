@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
+set -e
 ./ogh archive `pwd`
 git add .
-git commit -m "periodic update"
+git commit --author "Github Actions <ci@github.com>" -m "periodic update"
 git push origin
