@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-set -e
 ./ogh archive `pwd`
 git add .
 git config user.email "ci@github.com"
