@@ -1,13 +1,15 @@
-#!/usr/bin/bash
+#!/usr/bin/env bash
 
 #Simple grepper shell script to print out matches + the first problematic commit
 
-grep -r "$@"
+set -eu
+
+grep -r "$@" *
 
 #First build with the problem
-BUILD=$(grep -r "$@" | awk -F '/' '{print $4}' | sort -n  | head -n 1)
+BUILD=$(grep -r "$@" * | awk -F '/' '{print $4}' | sort -n  | head -n 1)
 
-FAILED_BUILD_DIR=$(find -name $BUILD -type d)
+FAILED_BUILD_DIR=$(find * -name $BUILD -type d)
 FIRST_FAILURE_COMMIT=$(jq -r '.jobs[0].head_sha' $FAILED_BUILD_DIR/job.json)
 echo "First failed commit: $FIRST_FAILURE_COMMIT"
 OZONE_DIR=${OZONE_DIR:-$PWD/../ozone}
