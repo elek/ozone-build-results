@@ -47,29 +47,36 @@
               <td><a href="{{$run.Link}}">#{{$run.ID}}</a></td>
               <td>{{$run.Date}}</td>
               <td>
-                <h6>{{$run.CommitString}}</h6>
+                <h6>{{$run.CommitString | max 40}}</h6>
                 {{ range $key, $value := $run.TestResults}}
 
                 {{ if ne $key "coverage"}}
                 {{ if ne $value.Conclusion "success"}}
-
+            
+                {{ if not $value.FailingTests}}
+                <p>
+                  <a
+                    href="https://github.com/elek/ozone-build-results/tree/master/{{$run.Dir}}/{{$value.Artifact}}">{{$value.Name}}</a>
+                </p>
+                {{ else }}
                 {{ range $ix, $test := $value.FailingTests}}
-
                 {{if not $test.Failures}}
                 <p>
-                  <a href="https://github.com/elek/ozone-build-results/tree/master/{{$run.Dir}}/{{$value.Artifact}}">{{$value.Name}}</a>
-                  <b>{{$test.Name}} (timeout?)</b>
+                  <a
+                    href="https://github.com/elek/ozone-build-results/tree/master/{{$run.Dir}}/{{$value.Artifact}}">{{$value.Name}}</a>
+                  <b>{{$test.Name | shortPackage}} (timeout?)</b>
                 </p>
                 {{else}}
-                {{ range $test.Failures}}
+                {{ range $test.Failures }}
                 <p>
-                  <a href="https://github.com/elek/ozone-build-results/tree/master/{{$run.Dir}}/{{$value.Artifact}}">{{$value.Name}}</a>
-                  <b>{{$test.Name}}.{{.Method}}</b>
+                  <a
+                    href="https://github.com/elek/ozone-build-results/tree/master/{{$run.Dir}}/{{$value.Artifact}}">{{$value.Name}}</a>
+                  <b>{{$test.Name | shortPackage}}}.{{.Method}}</b>
                 </p>
                 {{end}}
                 {{end}}
                 {{end}}
-
+                {{end}}
                 {{end}}
                 {{end}}
                 {{end}}
