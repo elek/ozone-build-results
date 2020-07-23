@@ -4,10 +4,15 @@
 
 set -eu
 
-grep -r "$@" *
+cmd='grep -r'
+if which rg >& /dev/null; then
+  cmd='rg'
+fi
+
+${cmd} "$@" *
 
 #First build with the problem
-BUILD=$(grep -r "$@" * | awk -F '/' '{print $4}' | sort -n  | head -n 1)
+BUILD=$(${cmd} -l "$@" * | awk -F '/' '{print $4}' | sort -n | head -n 1)
 
 FAILED_BUILD_DIR=$(find * -name $BUILD -type d)
 FIRST_FAILURE_COMMIT=$(jq -r '.jobs[0].head_sha' $FAILED_BUILD_DIR/job.json)
