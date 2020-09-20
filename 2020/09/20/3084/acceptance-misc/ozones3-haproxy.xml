@@ -1,0 +1,360 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot rpa="false" generated="20200920 13:23:09.662" generator="Rebot 3.2.2 (Python 2.7.17 on linux2)">
+<suite source="/opt/hadoop/smoketest/basic/basic.robot" id="s1" name="ozones3-haproxy">
+<test id="s1-t1" name="Check webui static resources">
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${SECURITY_ENABLED}' == 'true'</arg>
+<arg>Kinit HTTP user</arg>
+</arguments>
+<status status="PASS" endtime="20200920 13:21:44.191" starttime="20200920 13:21:44.190"></status>
+</kw>
+<kw name="Execute" library="os">
+<arguments>
+<arg>curl --negotiate -u : -s -I http://scm:9876/static/bootstrap-3.4.1/js/bootstrap.min.js</arg>
+</arguments>
+<assign>
+<var>${result}</var>
+</assign>
+<kw name="Run Keyword And Return" library="BuiltIn">
+<doc>Runs the specified keyword and returns from the enclosing user keyword.</doc>
+<arguments>
+<arg>Execute and checkrc</arg>
+<arg>${command}</arg>
+<arg>0</arg>
+</arguments>
+<kw name="Execute and checkrc" library="os">
+<arguments>
+<arg>${command}</arg>
+<arg>0</arg>
+</arguments>
+<kw name="Run And Return Rc And Output" library="OperatingSystem">
+<doc>Runs the given command in the system and returns the RC and output.</doc>
+<arguments>
+<arg>${command}</arg>
+</arguments>
+<assign>
+<var>${rc}</var>
+<var>${output}</var>
+</assign>
+<msg timestamp="20200920 13:21:44.196" level="INFO">Running command 'curl --negotiate -u : -s -I http://scm:9876/static/bootstrap-3.4.1/js/bootstrap.min.js 2&gt;&amp;1'.</msg>
+<msg timestamp="20200920 13:21:44.280" level="INFO">${rc} = 0</msg>
+<msg timestamp="20200920 13:21:44.280" level="INFO">${output} = HTTP/1.1 200 OK
+Date: Sun, 20 Sep 2020 13:21:44 GMT
+X-Content-Type-Options: nosniff
+X-FRAME-OPTIONS: SAMEORIGIN
+X-XSS-Protection: 1; mode=block
+Last-Modified: Sun, 20 Sep 2020 12:37:46 GMT
+Content-Typ...</msg>
+<status status="PASS" endtime="20200920 13:21:44.280" starttime="20200920 13:21:44.192"></status>
+</kw>
+<kw name="Log" library="BuiltIn">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>${output}</arg>
+</arguments>
+<msg timestamp="20200920 13:21:44.281" level="INFO">HTTP/1.1 200 OK
+Date: Sun, 20 Sep 2020 13:21:44 GMT
+X-Content-Type-Options: nosniff
+X-FRAME-OPTIONS: SAMEORIGIN
+X-XSS-Protection: 1; mode=block
+Last-Modified: Sun, 20 Sep 2020 12:37:46 GMT
+Content-Type: application/javascript
+Accept-Ranges: bytes
+Content-Length: 39680
+</msg>
+<status status="PASS" endtime="20200920 13:21:44.281" starttime="20200920 13:21:44.280"></status>
+</kw>
+<kw name="Should Be Equal As Integers" library="BuiltIn">
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<arguments>
+<arg>${rc}</arg>
+<arg>${expected_error_code}</arg>
+</arguments>
+<msg timestamp="20200920 13:21:44.282" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;type 'unicode'&gt;</msg>
+<status status="PASS" endtime="20200920 13:21:44.282" starttime="20200920 13:21:44.282"></status>
+</kw>
+<status status="PASS" endtime="20200920 13:21:44.282" starttime="20200920 13:21:44.192"></status>
+</kw>
+<msg timestamp="20200920 13:21:44.283" level="INFO">Returning from the enclosing user keyword.</msg>
+<status status="PASS" endtime="20200920 13:21:44.283" starttime="20200920 13:21:44.191"></status>
+</kw>
+<msg timestamp="20200920 13:21:44.283" level="INFO">${result} = HTTP/1.1 200 OK
+Date: Sun, 20 Sep 2020 13:21:44 GMT
+X-Content-Type-Options: nosniff
+X-FRAME-OPTIONS: SAMEORIGIN
+X-XSS-Protection: 1; mode=block
+Last-Modified: Sun, 20 Sep 2020 12:37:46 GMT
+Content-Typ...</msg>
+<status status="PASS" endtime="20200920 13:21:44.283" starttime="20200920 13:21:44.191"></status>
+</kw>
+<kw name="Should Contain" library="BuiltIn">
+<doc>Fails if ``container`` does not contain ``item`` one or more times.</doc>
+<arguments>
+<arg>${result}</arg>
+<arg>200</arg>
+</arguments>
+<status status="PASS" endtime="20200920 13:21:44.284" starttime="20200920 13:21:44.283"></status>
+</kw>
+<timeout value="5 minutes"></timeout>
+<status status="PASS" endtime="20200920 13:21:44.284" critical="yes" starttime="20200920 13:21:44.189"></status>
+</test>
+<test id="s1-t2" name="Start freon testing">
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${SECURITY_ENABLED}' == 'true'</arg>
+<arg>Kinit test user</arg>
+<arg>testuser</arg>
+<arg>testuser.keytab</arg>
+</arguments>
+<status status="PASS" endtime="20200920 13:21:44.286" starttime="20200920 13:21:44.285"></status>
+</kw>
+<kw name="Execute" library="os">
+<arguments>
+<arg>ozone freon randomkeys --numOfVolumes 5 --numOfBuckets 5 --numOfKeys 5 --numOfThreads 1 --replicationType RATIS --factor THREE --validateWrites</arg>
+</arguments>
+<assign>
+<var>${result}</var>
+</assign>
+<kw name="Run Keyword And Return" library="BuiltIn">
+<doc>Runs the specified keyword and returns from the enclosing user keyword.</doc>
+<arguments>
+<arg>Execute and checkrc</arg>
+<arg>${command}</arg>
+<arg>0</arg>
+</arguments>
+<kw name="Execute and checkrc" library="os">
+<arguments>
+<arg>${command}</arg>
+<arg>0</arg>
+</arguments>
+<kw name="Run And Return Rc And Output" library="OperatingSystem">
+<doc>Runs the given command in the system and returns the RC and output.</doc>
+<arguments>
+<arg>${command}</arg>
+</arguments>
+<assign>
+<var>${rc}</var>
+<var>${output}</var>
+</assign>
+<msg timestamp="20200920 13:21:44.290" level="INFO">Running command 'ozone freon randomkeys --numOfVolumes 5 --numOfBuckets 5 --numOfKeys 5 --numOfThreads 1 --replicationType RATIS --factor THREE --validateWrites 2&gt;&amp;1'.</msg>
+<msg timestamp="20200920 13:23:02.230" level="INFO">${rc} = 0</msg>
+<msg timestamp="20200920 13:23:02.230" level="INFO">${output} = 2020-09-20 13:21:45,431 [main] INFO impl.MetricsConfig: Loaded properties from hadoop-metrics2.properties
+2020-09-20 13:21:45,635 [main] INFO impl.MetricsSystemImpl: Scheduled Metric snapshot period a...</msg>
+<status status="PASS" endtime="20200920 13:23:02.230" starttime="20200920 13:21:44.287"></status>
+</kw>
+<kw name="Log" library="BuiltIn">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>${output}</arg>
+</arguments>
+<msg timestamp="20200920 13:23:02.231" level="INFO">2020-09-20 13:21:45,431 [main] INFO impl.MetricsConfig: Loaded properties from hadoop-metrics2.properties
+2020-09-20 13:21:45,635 [main] INFO impl.MetricsSystemImpl: Scheduled Metric snapshot period at 10 second(s).
+2020-09-20 13:21:45,635 [main] INFO impl.MetricsSystemImpl: ozone-freon metrics system started
+2020-09-20 13:21:46,748 [main] INFO freon.RandomKeyGenerator: Number of Threads: 1
+2020-09-20 13:21:46,749 [main] INFO freon.RandomKeyGenerator: Number of Volumes: 5.
+2020-09-20 13:21:46,749 [main] INFO freon.RandomKeyGenerator: Number of Buckets per Volume: 5.
+2020-09-20 13:21:46,749 [main] INFO freon.RandomKeyGenerator: Number of Keys per Bucket: 5.
+2020-09-20 13:21:46,749 [main] INFO freon.RandomKeyGenerator: Key size: 10240 bytes
+2020-09-20 13:21:46,749 [main] INFO freon.RandomKeyGenerator: Buffer size: 4096 bytes
+2020-09-20 13:21:46,749 [main] INFO freon.RandomKeyGenerator: validateWrites : true
+2020-09-20 13:21:46,754 [main] INFO freon.RandomKeyGenerator: Data validation is enabled.
+2020-09-20 13:21:46,755 [main] INFO freon.RandomKeyGenerator: Starting progress bar Thread.
+2020-09-20 13:21:46,763 [Thread-5] INFO freon.ProgressBar: Progress: 0.00 % (0 out of 125)
+2020-09-20 13:21:46,788 [pool-2-thread-1] INFO rpc.RpcClient: Creating Volume: vol-0-17860, with hadoop as owner.
+2020-09-20 13:21:46,911 [pool-2-thread-1] INFO rpc.RpcClient: Creating Volume: vol-1-70728, with hadoop as owner.
+2020-09-20 13:21:46,920 [pool-2-thread-1] INFO rpc.RpcClient: Creating Volume: vol-2-97846, with hadoop as owner.
+2020-09-20 13:21:46,928 [pool-2-thread-1] INFO rpc.RpcClient: Creating Volume: vol-3-79802, with hadoop as owner.
+2020-09-20 13:21:46,935 [pool-2-thread-1] INFO rpc.RpcClient: Creating Volume: vol-4-29550, with hadoop as owner.
+2020-09-20 13:21:46,944 [pool-2-thread-1] INFO rpc.RpcClient: Creating Bucket: vol-0-17860/bucket-0-27297, with Versioning false and Storage Type set to DISK and Encryption set to false 
+2020-09-20 13:21:46,968 [pool-2-thread-1] INFO rpc.RpcClient: Creating Bucket: vol-1-70728/bucket-0-32717, with Versioning false and Storage Type set to DISK and Encryption set to false 
+2020-09-20 13:21:46,974 [pool-2-thread-1] INFO rpc.RpcClient: Creating Bucket: vol-2-97846/bucket-0-09961, with Versioning false and Storage Type set to DISK and Encryption set to false 
+2020-09-20 13:21:46,983 [pool-2-thread-1] INFO rpc.RpcClient: Creating Bucket: vol-3-79802/bucket-0-54904, with Versioning false and Storage Type set to DISK and Encryption set to false 
+2020-09-20 13:21:46,992 [pool-2-thread-1] INFO rpc.RpcClient: Creating Bucket: vol-4-29550/bucket-0-22422, with Versioning false and Storage Type set to DISK and Encryption set to false 
+2020-09-20 13:21:46,996 [pool-2-thread-1] INFO rpc.RpcClient: Creating Bucket: vol-0-17860/bucket-1-10664, with Versioning false and Storage Type set to DISK and Encryption set to false 
+2020-09-20 13:21:47,001 [pool-2-thread-1] INFO rpc.RpcClient: Creating Bucket: vol-1-70728/bucket-1-61653, with Versioning false and Storage Type set to DISK and Encryption set to false 
+2020-09-20 13:21:47,006 [pool-2-thread-1] INFO rpc.RpcClient: Creating Bucket: vol-2-97846/bucket-1-89092, with Versioning false and Storage Type set to DISK and Encryption set to false 
+2020-09-20 13:21:47,015 [pool-2-thread-1] INFO rpc.RpcClient: Creating Bucket: vol-3-79802/bucket-1-71513, with Versioning false and Storage Type set to DISK and Encryption set to false 
+2020-09-20 13:21:47,022 [pool-2-thread-1] INFO rpc.RpcClient: Creating Bucket: vol-4-29550/bucket-1-42511, with Versioning false and Storage Type set to DISK and Encryption set to false 
+2020-09-20 13:21:47,027 [pool-2-thread-1] INFO rpc.RpcClient: Creating Bucket: vol-0-17860/bucket-2-03270, with Versioning false and Storage Type set to DISK and Encryption set to false 
+2020-09-20 13:21:47,031 [pool-2-thread-1] INFO rpc.RpcClient: Creating Bucket: vol-1-70728/bucket-2-48399, with Versioning false and Storage Type set to DISK and Encryption set to false 
+2020-09-20 13:21:47,035 [pool-2-thread-1] INFO rpc.RpcClient: Creating Bucket: vol-2-97846/bucket-2-24955, with Versioning false and Storage Type set to DISK and Encryption set to false 
+2020-09-20 13:21:47,048 [pool-2-thread-1] INFO rpc.RpcClient: Creating Bucket: vol-3-79802/bucket-2-83372, with Versioning false and Storage Type set to DISK and Encryption set to false 
+2020-09-20 13:21:47,059 [pool-2-thread-1] INFO rpc.RpcClient: Creating Bucket: vol-4-29550/bucket-2-67654, with Versioning false and Storage Type set to DISK and Encryption set to false 
+2020-09-20 13:21:47,069 [pool-2-thread-1] INFO rpc.RpcClient: Creating Bucket: vol-0-17860/bucket-3-74193, with Versioning false and Storage Type set to DISK and Encryption set to false 
+2020-09-20 13:21:47,077 [pool-2-thread-1] INFO rpc.RpcClient: Creating Bucket: vol-1-70728/bucket-3-65683, with Versioning false and Storage Type set to DISK and Encryption set to false 
+2020-09-20 13:21:47,083 [pool-2-thread-1] INFO rpc.RpcClient: Creating Bucket: vol-2-97846/bucket-3-16126, with Versioning false and Storage Type set to DISK and Encryption set to false 
+2020-09-20 13:21:47,089 [pool-2-thread-1] INFO rpc.RpcClient: Creating Bucket: vol-3-79802/bucket-3-65307, with Versioning false and Storage Type set to DISK and Encryption set to false 
+2020-09-20 13:21:47,094 [pool-2-thread-1] INFO rpc.RpcClient: Creating Bucket: vol-4-29550/bucket-3-44479, with Versioning false and Storage Type set to DISK and Encryption set to false 
+2020-09-20 13:21:47,099 [pool-2-thread-1] INFO rpc.RpcClient: Creating Bucket: vol-0-17860/bucket-4-70153, with Versioning false and Storage Type set to DISK and Encryption set to false 
+2020-09-20 13:21:47,102 [pool-2-thread-1] INFO rpc.RpcClient: Creating Bucket: vol-1-70728/bucket-4-48943, with Versioning false and Storage Type set to DISK and Encryption set to false 
+2020-09-20 13:21:47,106 [pool-2-thread-1] INFO rpc.RpcClient: Creating Bucket: vol-2-97846/bucket-4-32486, with Versioning false and Storage Type set to DISK and Encryption set to false 
+2020-09-20 13:21:47,109 [pool-2-thread-1] INFO rpc.RpcClient: Creating Bucket: vol-3-79802/bucket-4-61857, with Versioning false and Storage Type set to DISK and Encryption set to false 
+2020-09-20 13:21:47,112 [pool-2-thread-1] INFO rpc.RpcClient: Creating Bucket: vol-4-29550/bucket-4-47144, with Versioning false and Storage Type set to DISK and Encryption set to false 
+2020-09-20 13:21:47,769 [Thread-5] INFO freon.ProgressBar: Progress: 0.00 % (0 out of 125)
+2020-09-20 13:21:47,786 [pool-2-thread-1] WARN impl.MetricsSystemImpl: ozone-freon metrics system already initialized!
+2020-09-20 13:21:48,094 [pool-2-thread-1] INFO metrics.MetricRegistries: Loaded MetricRegistries class org.apache.ratis.metrics.impl.MetricRegistriesImpl
+2020-09-20 13:21:48,094 [pool-2-thread-1] INFO metrics.RatisMetrics: Creating Metrics Registry : ratis.client_message_metrics.client-DF0D3A16F324-&gt;8366fa43-d218-45f2-ace9-64da6e7cfe82
+2020-09-20 13:21:48,095 [pool-2-thread-1] WARN impl.MetricRegistriesImpl: First MetricRegistry has been created without registering reporters. You may need to call MetricRegistries.global().addReportRegistration(...) before.
+2020-09-20 13:21:48,769 [Thread-5] INFO freon.ProgressBar: Progress: 0.80 % (1 out of 125)
+2020-09-20 13:21:49,770 [Thread-5] INFO freon.ProgressBar: Progress: 0.80 % (1 out of 125)
+2020-09-20 13:21:50,771 [Thread-5] INFO freon.ProgressBar: Progress: 4.00 % (5 out of 125)
+2020-09-20 13:21:51,771 [Thread-5] INFO freon.ProgressBar: Progress: 11.20 % (14 out of 125)
+2020-09-20 13:21:52,772 [Thread-5] INFO freon.ProgressBar: Progress: 16.00 % (20 out of 125)
+2020-09-20 13:21:53,772 [Thread-5] INFO freon.ProgressBar: Progress: 16.00 % (20 out of 125)
+2020-09-20 13:21:54,773 [Thread-5] INFO freon.ProgressBar: Progress: 16.00 % (20 out of 125)
+2020-09-20 13:21:55,773 [Thread-5] INFO freon.ProgressBar: Progress: 17.60 % (22 out of 125)
+2020-09-20 13:21:56,774 [Thread-5] INFO freon.ProgressBar: Progress: 17.60 % (22 out of 125)
+2020-09-20 13:21:57,775 [Thread-5] INFO freon.ProgressBar: Progress: 19.20 % (24 out of 125)
+2020-09-20 13:21:58,775 [Thread-5] INFO freon.ProgressBar: Progress: 20.00 % (25 out of 125)
+2020-09-20 13:21:59,776 [Thread-5] INFO freon.ProgressBar: Progress: 20.00 % (25 out of 125)
+2020-09-20 13:22:00,776 [Thread-5] INFO freon.ProgressBar: Progress: 23.20 % (29 out of 125)
+2020-09-20 13:22:01,777 [Thread-5] INFO freon.ProgressBar: Progress: 23.20 % (29 out of 125)
+2020-09-20 13:22:02,778 [Thread-5] INFO freon.ProgressBar: Progress: 23.20 % (29 out of 125)
+2020-09-20 13:22:03,778 [Thread-5] INFO freon.ProgressBar: Progress: 24.80 % (31 out of 125)
+2020-09-20 13:22:04,779 [Thread-5] INFO freon.ProgressBar: Progress: 24.80 % (31 out of 125)
+2020-09-20 13:22:05,779 [Thread-5] INFO freon.ProgressBar: Progress: 24.80 % (31 out of 125)
+2020-09-20 13:22:06,780 [Thread-5] INFO freon.ProgressBar: Progress: 28.80 % (36 out of 125)
+2020-09-20 13:22:07,780 [Thread-5] INFO freon.ProgressBar: Progress: 28.80 % (36 out of 125)
+2020-09-20 13:22:08,781 [Thread-5] INFO freon.ProgressBar: Progress: 30.40 % (38 out of 125)
+2020-09-20 13:22:09,781 [Thread-5] INFO freon.ProgressBar: Progress: 30.40 % (38 out of 125)
+2020-09-20 13:22:10,782 [Thread-5] INFO freon.ProgressBar: Progress: 30.40 % (38 out of 125)
+2020-09-20 13:22:11,782 [Thread-5] INFO freon.ProgressBar: Progress: 35.20 % (44 out of 125)
+2020-09-20 13:22:12,783 [Thread-5] INFO freon.ProgressBar: Progress: 35.20 % (44 out of 125)
+2020-09-20 13:22:13,783 [Thread-5] INFO freon.ProgressBar: Progress: 35.20 % (44 out of 125)
+2020-09-20 13:22:14,785 [Thread-5] INFO freon.ProgressBar: Progress: 41.60 % (52 out of 125)
+2020-09-20 13:22:15,785 [Thread-5] INFO freon.ProgressBar: Progress: 46.40 % (58 out of 125)
+2020-09-20 13:22:16,786 [Thread-5] INFO freon.ProgressBar: Progress: 46.40 % (58 out of 125)
+2020-09-20 13:22:17,787 [Thread-5] INFO freon.ProgressBar: Progress: 47.20 % (59 out of 125)
+2020-09-20 13:22:18,787 [Thread-5] INFO freon.ProgressBar: Progress: 56.00 % (70 out of 125)
+2020-09-20 13:22:19,788 [Thread-5] INFO freon.ProgressBar: Progress: 56.00 % (70 out of 125)
+2020-09-20 13:22:20,788 [Thread-5] INFO freon.ProgressBar: Progress: 56.00 % (70 out of 125)
+2020-09-20 13:22:21,789 [Thread-5] INFO freon.ProgressBar: Progress: 64.00 % (80 out of 125)
+2020-09-20 13:22:22,789 [Thread-5] INFO freon.ProgressBar: Progress: 64.00 % (80 out of 125)
+2020-09-20 13:22:23,790 [Thread-5] INFO freon.ProgressBar: Progress: 64.00 % (80 out of 125)
+2020-09-20 13:22:24,790 [Thread-5] INFO freon.ProgressBar: Progress: 64.80 % (81 out of 125)
+2020-09-20 13:22:25,791 [Thread-5] INFO freon.ProgressBar: Progress: 64.80 % (81 out of 125)
+2020-09-20 13:22:26,791 [Thread-5] INFO freon.ProgressBar: Progress: 65.60 % (82 out of 125)
+2020-09-20 13:22:27,792 [Thread-5] INFO freon.ProgressBar: Progress: 72.80 % (91 out of 125)
+2020-09-20 13:22:28,792 [Thread-5] INFO freon.ProgressBar: Progress: 72.80 % (91 out of 125)
+2020-09-20 13:22:29,793 [Thread-5] INFO freon.ProgressBar: Progress: 72.80 % (91 out of 125)
+2020-09-20 13:22:30,793 [Thread-5] INFO freon.ProgressBar: Progress: 75.20 % (94 out of 125)
+2020-09-20 13:22:31,794 [Thread-5] INFO freon.ProgressBar: Progress: 75.20 % (94 out of 125)
+2020-09-20 13:22:32,794 [Thread-5] INFO freon.ProgressBar: Progress: 76.00 % (95 out of 125)
+2020-09-20 13:22:33,795 [Thread-5] INFO freon.ProgressBar: Progress: 76.00 % (95 out of 125)
+2020-09-20 13:22:34,795 [Thread-5] INFO freon.ProgressBar: Progress: 76.00 % (95 out of 125)
+2020-09-20 13:22:35,796 [Thread-5] INFO freon.ProgressBar: Progress: 76.80 % (96 out of 125)
+2020-09-20 13:22:36,796 [Thread-5] INFO freon.ProgressBar: Progress: 76.80 % (96 out of 125)
+2020-09-20 13:22:37,797 [Thread-5] INFO freon.ProgressBar: Progress: 78.40 % (98 out of 125)
+2020-09-20 13:22:38,798 [Thread-5] INFO freon.ProgressBar: Progress: 78.40 % (98 out of 125)
+2020-09-20 13:22:39,798 [Thread-5] INFO freon.ProgressBar: Progress: 78.40 % (98 out of 125)
+2020-09-20 13:22:40,799 [Thread-5] INFO freon.ProgressBar: Progress: 81.60 % (102 out of 125)
+2020-09-20 13:22:41,799 [Thread-5] INFO freon.ProgressBar: Progress: 81.60 % (102 out of 125)
+2020-09-20 13:22:42,800 [Thread-5] INFO freon.ProgressBar: Progress: 81.60 % (102 out of 125)
+2020-09-20 13:22:43,800 [Thread-5] INFO freon.ProgressBar: Progress: 84.00 % (105 out of 125)
+2020-09-20 13:22:44,801 [Thread-5] INFO freon.ProgressBar: Progress: 84.00 % (105 out of 125)
+2020-09-20 13:22:45,801 [Thread-5] INFO freon.ProgressBar: Progress: 84.80 % (106 out of 125)
+2020-09-20 13:22:46,802 [Thread-5] INFO freon.ProgressBar: Progress: 84.80 % (106 out of 125)
+2020-09-20 13:22:47,802 [Thread-5] INFO freon.ProgressBar: Progress: 84.80 % (106 out of 125)
+2020-09-20 13:22:48,803 [Thread-5] INFO freon.ProgressBar: Progress: 88.00 % (110 out of 125)
+2020-09-20 13:22:49,803 [Thread-5] INFO freon.ProgressBar: Progress: 88.00 % (110 out of 125)
+2020-09-20 13:22:50,804 [Thread-5] INFO freon.ProgressBar: Progress: 88.00 % (110 out of 125)
+2020-09-20 13:22:51,804 [Thread-5] INFO freon.ProgressBar: Progress: 90.40 % (113 out of 125)
+2020-09-20 13:22:52,804 [Thread-5] INFO freon.ProgressBar: Progress: 90.40 % (113 out of 125)
+2020-09-20 13:22:53,805 [Thread-5] INFO freon.ProgressBar: Progress: 91.20 % (114 out of 125)
+2020-09-20 13:22:54,805 [Thread-5] INFO freon.ProgressBar: Progress: 91.20 % (114 out of 125)
+2020-09-20 13:22:55,806 [Thread-5] INFO freon.ProgressBar: Progress: 91.20 % (114 out of 125)
+2020-09-20 13:22:56,806 [Thread-5] INFO freon.ProgressBar: Progress: 100.00 % (125 out of 125)
+
+***************************************************
+Status: Success
+Git Base Revision: b3cbbb467e22ea829b3808f4b7b01d07e0bf3842
+Number of Volumes created: 5
+Number of Buckets created: 25
+Number of Keys added: 125
+Ratis replication factor: THREE
+Ratis replication type: RATIS
+Average Time spent in volume creation: 00:00:00,148
+Average Time spent in bucket creation: 00:00:00,110
+Average Time spent in key creation: 00:00:01,827
+Average Time spent in key write: 00:00:00,775
+Total bytes written: 1280000
+Total number of writes validated: 125
+Writes validated: 100.0 %
+Successful validation: 125
+Unsuccessful validation: 0
+Total Execution time: 00:01:16,052
+***************************************************</msg>
+<status status="PASS" endtime="20200920 13:23:02.232" starttime="20200920 13:23:02.230"></status>
+</kw>
+<kw name="Should Be Equal As Integers" library="BuiltIn">
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<arguments>
+<arg>${rc}</arg>
+<arg>${expected_error_code}</arg>
+</arguments>
+<msg timestamp="20200920 13:23:02.232" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;type 'unicode'&gt;</msg>
+<status status="PASS" endtime="20200920 13:23:02.232" starttime="20200920 13:23:02.232"></status>
+</kw>
+<status status="PASS" endtime="20200920 13:23:02.233" starttime="20200920 13:21:44.287"></status>
+</kw>
+<msg timestamp="20200920 13:23:02.233" level="INFO">Returning from the enclosing user keyword.</msg>
+<status status="PASS" endtime="20200920 13:23:02.233" starttime="20200920 13:21:44.286"></status>
+</kw>
+<msg timestamp="20200920 13:23:02.233" level="INFO">${result} = 2020-09-20 13:21:45,431 [main] INFO impl.MetricsConfig: Loaded properties from hadoop-metrics2.properties
+2020-09-20 13:21:45,635 [main] INFO impl.MetricsSystemImpl: Scheduled Metric snapshot period a...</msg>
+<status status="PASS" endtime="20200920 13:23:02.233" starttime="20200920 13:21:44.286"></status>
+</kw>
+<kw name="Wait Until Keyword Succeeds" library="BuiltIn">
+<doc>Runs the specified keyword and retries if it fails.</doc>
+<arguments>
+<arg>3min</arg>
+<arg>10sec</arg>
+<arg>Should contain</arg>
+<arg>${result}</arg>
+<arg>Number of Keys added: 125</arg>
+</arguments>
+<kw name="Should Contain" library="BuiltIn">
+<doc>Fails if ``container`` does not contain ``item`` one or more times.</doc>
+<arguments>
+<arg>${result}</arg>
+<arg>Number of Keys added: 125</arg>
+</arguments>
+<status status="PASS" endtime="20200920 13:23:02.234" starttime="20200920 13:23:02.234"></status>
+</kw>
+<status status="PASS" endtime="20200920 13:23:02.234" starttime="20200920 13:23:02.233"></status>
+</kw>
+<kw name="Should Contain" library="BuiltIn">
+<doc>Fails if ``container`` does not contain ``item`` one or more times.</doc>
+<arguments>
+<arg>${result}</arg>
+<arg>Status: Success</arg>
+</arguments>
+<status status="PASS" endtime="20200920 13:23:02.235" starttime="20200920 13:23:02.234"></status>
+</kw>
+<timeout value="5 minutes"></timeout>
+<status status="PASS" endtime="20200920 13:23:02.235" critical="yes" starttime="20200920 13:21:44.285"></status>
+</test>
+<doc>Smoketest ozone cluster startup</doc>
+<status status="PASS" endtime="20200920 13:23:02.236" starttime="20200920 13:21:44.130"></status>
+</suite>
+<statistics>
+<total>
+<stat fail="0" pass="2">Critical Tests</stat>
+<stat fail="0" pass="2">All Tests</stat>
+</total>
+<tag>
+</tag>
+<suite>
+<stat fail="0" id="s1" name="ozones3-haproxy" pass="2">ozones3-haproxy</stat>
+</suite>
+</statistics>
+<errors>
+</errors>
+</robot>
