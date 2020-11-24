@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot rpa="false" generated="20201124 15:25:12.136" generator="Rebot 3.2.2 (Python 2.7.17 on linux2)">
+<suite source="/opt/hadoop/smoketest/basic/basic.robot" id="s1" name="ozone-topology">
+<test id="s1-t1" name="Check webui static resources">
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${SECURITY_ENABLED}' == 'true'</arg>
+<arg>Kinit HTTP user</arg>
+</arguments>
+<status status="PASS" endtime="20201124 15:20:02.524" starttime="20201124 15:20:02.524"></status>
+</kw>
+<kw name="Execute" library="os">
+<arguments>
+<arg>curl --negotiate -u : -s -I http://scm:9876/static/bootstrap-3.4.1/js/bootstrap.min.js</arg>
+</arguments>
+<assign>
+<var>${result}</var>
+</assign>
+<kw name="Run Keyword And Return" library="BuiltIn">
+<doc>Runs the specified keyword and returns from the enclosing user keyword.</doc>
+<arguments>
+<arg>Execute and checkrc</arg>
+<arg>${command}</arg>
+<arg>0</arg>
+</arguments>
+<kw name="Execute and checkrc" library="os">
+<arguments>
+<arg>${command}</arg>
+<arg>0</arg>
+</arguments>
+<kw name="Run And Return Rc And Output" library="OperatingSystem">
+<doc>Runs the given command in the system and returns the RC and output.</doc>
+<arguments>
+<arg>${command}</arg>
+</arguments>
+<assign>
+<var>${rc}</var>
+<var>${output}</var>
+</assign>
+<msg timestamp="20201124 15:20:02.530" level="INFO">Running command 'curl --negotiate -u : -s -I http://scm:9876/static/bootstrap-3.4.1/js/bootstrap.min.js 2&gt;&amp;1'.</msg>
+<msg timestamp="20201124 15:20:02.616" level="INFO">${rc} = 0</msg>
+<msg timestamp="20201124 15:20:02.616" level="INFO">${output} = HTTP/1.1 200 OK
+Date: Tue, 24 Nov 2020 15:20:02 GMT
+X-Content-Type-Options: nosniff
+X-FRAME-OPTIONS: SAMEORIGIN
+X-XSS-Protection: 1; mode=block
+Last-Modified: Tue, 24 Nov 2020 14:44:28 GMT
+Content-Typ...</msg>
+<status status="PASS" endtime="20201124 15:20:02.617" starttime="20201124 15:20:02.526"></status>
+</kw>
+<kw name="Log" library="BuiltIn">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>${output}</arg>
+</arguments>
+<msg timestamp="20201124 15:20:02.618" level="INFO">HTTP/1.1 200 OK
+Date: Tue, 24 Nov 2020 15:20:02 GMT
+X-Content-Type-Options: nosniff
+X-FRAME-OPTIONS: SAMEORIGIN
+X-XSS-Protection: 1; mode=block
+Last-Modified: Tue, 24 Nov 2020 14:44:28 GMT
+Content-Type: application/javascript
+Accept-Ranges: bytes
+Content-Length: 39680
+</msg>
+<status status="PASS" endtime="20201124 15:20:02.618" starttime="20201124 15:20:02.617"></status>
+</kw>
+<kw name="Should Be Equal As Integers" library="BuiltIn">
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<arguments>
+<arg>${rc}</arg>
+<arg>${expected_error_code}</arg>
+</arguments>
+<msg timestamp="20201124 15:20:02.618" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;type 'unicode'&gt;</msg>
+<status status="PASS" endtime="20201124 15:20:02.618" starttime="20201124 15:20:02.618"></status>
+</kw>
+<status status="PASS" endtime="20201124 15:20:02.620" starttime="20201124 15:20:02.525"></status>
+</kw>
+<msg timestamp="20201124 15:20:02.621" level="INFO">Returning from the enclosing user keyword.</msg>
+<status status="PASS" endtime="20201124 15:20:02.621" starttime="20201124 15:20:02.525"></status>
+</kw>
+<msg timestamp="20201124 15:20:02.621" level="INFO">${result} = HTTP/1.1 200 OK
+Date: Tue, 24 Nov 2020 15:20:02 GMT
+X-Content-Type-Options: nosniff
+X-FRAME-OPTIONS: SAMEORIGIN
+X-XSS-Protection: 1; mode=block
+Last-Modified: Tue, 24 Nov 2020 14:44:28 GMT
+Content-Typ...</msg>
+<status status="PASS" endtime="20201124 15:20:02.621" starttime="20201124 15:20:02.524"></status>
+</kw>
+<kw name="Should Contain" library="BuiltIn">
+<doc>Fails if ``container`` does not contain ``item`` one or more times.</doc>
+<arguments>
+<arg>${result}</arg>
+<arg>200</arg>
+</arguments>
+<status status="PASS" endtime="20201124 15:20:02.622" starttime="20201124 15:20:02.622"></status>
+</kw>
+<timeout value="5 minutes"></timeout>
+<status status="PASS" endtime="20201124 15:20:02.622" critical="yes" starttime="20201124 15:20:02.523"></status>
+</test>
+<test id="s1-t2" name="Start freon testing">
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${SECURITY_ENABLED}' == 'true'</arg>
+<arg>Kinit test user</arg>
+<arg>testuser</arg>
+<arg>testuser.keytab</arg>
+</arguments>
+<status status="PASS" endtime="20201124 15:20:02.626" starttime="20201124 15:20:02.625"></status>
+</kw>
+<kw name="Execute" library="os">
+<arguments>
+<arg>ozone freon randomkeys --num-of-volumes 5 --num-of-buckets 5 --num-of-keys 5 --num-of-threads 1 --replication-type RATIS --factor THREE --validate-writes</arg>
+</arguments>
+<assign>
+<var>${result}</var>
+</assign>
+<kw name="Run Keyword And Return" library="BuiltIn">
+<doc>Runs the specified keyword and returns from the enclosing user keyword.</doc>
+<arguments>
+<arg>Execute and checkrc</arg>
+<arg>${command}</arg>
+<arg>0</arg>
+</arguments>
+<kw name="Execute and checkrc" library="os">
+<arguments>
+<arg>${command}</arg>
+<arg>0</arg>
+</arguments>
+<kw name="Run And Return Rc And Output" library="OperatingSystem">
+<doc>Runs the given command in the system and returns the RC and output.</doc>
+<arguments>
+<arg>${command}</arg>
+</arguments>
+<assign>
+<var>${rc}</var>
+<var>${output}</var>
+</assign>
+<msg timestamp="20201124 15:20:02.629" level="INFO">Running command 'ozone freon randomkeys --num-of-volumes 5 --num-of-buckets 5 --num-of-keys 5 --num-of-threads 1 --replication-type RATIS --factor THREE --validate-writes 2&gt;&amp;1'.</msg>
+<msg timestamp="20201124 15:25:02.625" level="FAIL">Test timeout 5 minutes exceeded.</msg>
+<status status="FAIL" endtime="20201124 15:25:02.625" starttime="20201124 15:20:02.627"></status>
+</kw>
+<status status="FAIL" endtime="20201124 15:25:02.626" starttime="20201124 15:20:02.627"></status>
+</kw>
+<msg timestamp="20201124 15:25:02.626" level="INFO">Returning from the enclosing user keyword.</msg>
+<status status="FAIL" endtime="20201124 15:25:02.626" starttime="20201124 15:20:02.626"></status>
+</kw>
+<status status="FAIL" endtime="20201124 15:25:02.626" starttime="20201124 15:20:02.626"></status>
+</kw>
+<timeout value="5 minutes"></timeout>
+<status status="FAIL" endtime="20201124 15:25:02.626" critical="yes" starttime="20201124 15:20:02.624">Test timeout 5 minutes exceeded.</status>
+</test>
+<doc>Smoketest ozone cluster startup</doc>
+<status status="FAIL" endtime="20201124 15:25:02.628" starttime="20201124 15:20:02.473"></status>
+</suite>
+<statistics>
+<total>
+<stat fail="1" pass="1">Critical Tests</stat>
+<stat fail="1" pass="1">All Tests</stat>
+</total>
+<tag>
+</tag>
+<suite>
+<stat fail="1" id="s1" name="ozone-topology" pass="1">ozone-topology</stat>
+</suite>
+</statistics>
+<errors>
+</errors>
+</robot>
