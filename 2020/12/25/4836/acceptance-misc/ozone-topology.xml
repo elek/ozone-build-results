@@ -1,0 +1,951 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot rpa="false" generated="20201225 14:02:20.426" generator="Rebot 3.2.2 (Python 2.7.17 on linux2)">
+<suite id="s1" name="ozone-topology">
+<suite source="/opt/hadoop/smoketest/basic/basic.robot" id="s1-s1" name="Basic">
+<test id="s1-s1-t1" name="Check webui static resources">
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${SECURITY_ENABLED}' == 'true'</arg>
+<arg>Kinit HTTP user</arg>
+</arguments>
+<status status="PASS" endtime="20201225 13:58:45.645" starttime="20201225 13:58:45.645"></status>
+</kw>
+<kw name="Execute" library="os">
+<arguments>
+<arg>curl --negotiate -u : -s -I http://scm:9876/static/bootstrap-3.4.1/js/bootstrap.min.js</arg>
+</arguments>
+<assign>
+<var>${result}</var>
+</assign>
+<kw name="Run Keyword And Return" library="BuiltIn">
+<doc>Runs the specified keyword and returns from the enclosing user keyword.</doc>
+<arguments>
+<arg>Execute and checkrc</arg>
+<arg>${command}</arg>
+<arg>0</arg>
+</arguments>
+<kw name="Execute and checkrc" library="os">
+<arguments>
+<arg>${command}</arg>
+<arg>0</arg>
+</arguments>
+<kw name="Run And Return Rc And Output" library="OperatingSystem">
+<doc>Runs the given command in the system and returns the RC and output.</doc>
+<arguments>
+<arg>${command}</arg>
+</arguments>
+<assign>
+<var>${rc}</var>
+<var>${output}</var>
+</assign>
+<msg timestamp="20201225 13:58:45.650" level="INFO">Running command 'curl --negotiate -u : -s -I http://scm:9876/static/bootstrap-3.4.1/js/bootstrap.min.js 2&gt;&amp;1'.</msg>
+<msg timestamp="20201225 13:58:45.734" level="INFO">${rc} = 0</msg>
+<msg timestamp="20201225 13:58:45.734" level="INFO">${output} = HTTP/1.1 200 OK
+Date: Fri, 25 Dec 2020 13:58:45 GMT
+X-Content-Type-Options: nosniff
+X-FRAME-OPTIONS: SAMEORIGIN
+X-XSS-Protection: 1; mode=block
+Last-Modified: Fri, 25 Dec 2020 13:02:18 GMT
+Content-Typ...</msg>
+<status status="PASS" endtime="20201225 13:58:45.734" starttime="20201225 13:58:45.647"></status>
+</kw>
+<kw name="Log" library="BuiltIn">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>${output}</arg>
+</arguments>
+<msg timestamp="20201225 13:58:45.735" level="INFO">HTTP/1.1 200 OK
+Date: Fri, 25 Dec 2020 13:58:45 GMT
+X-Content-Type-Options: nosniff
+X-FRAME-OPTIONS: SAMEORIGIN
+X-XSS-Protection: 1; mode=block
+Last-Modified: Fri, 25 Dec 2020 13:02:18 GMT
+Content-Type: application/javascript
+Accept-Ranges: bytes
+Content-Length: 39680
+</msg>
+<status status="PASS" endtime="20201225 13:58:45.735" starttime="20201225 13:58:45.734"></status>
+</kw>
+<kw name="Should Be Equal As Integers" library="BuiltIn">
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<arguments>
+<arg>${rc}</arg>
+<arg>${expected_error_code}</arg>
+</arguments>
+<msg timestamp="20201225 13:58:45.736" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;type 'unicode'&gt;</msg>
+<status status="PASS" endtime="20201225 13:58:45.736" starttime="20201225 13:58:45.735"></status>
+</kw>
+<status status="PASS" endtime="20201225 13:58:45.736" starttime="20201225 13:58:45.646"></status>
+</kw>
+<msg timestamp="20201225 13:58:45.736" level="INFO">Returning from the enclosing user keyword.</msg>
+<status status="PASS" endtime="20201225 13:58:45.737" starttime="20201225 13:58:45.646"></status>
+</kw>
+<msg timestamp="20201225 13:58:45.737" level="INFO">${result} = HTTP/1.1 200 OK
+Date: Fri, 25 Dec 2020 13:58:45 GMT
+X-Content-Type-Options: nosniff
+X-FRAME-OPTIONS: SAMEORIGIN
+X-XSS-Protection: 1; mode=block
+Last-Modified: Fri, 25 Dec 2020 13:02:18 GMT
+Content-Typ...</msg>
+<status status="PASS" endtime="20201225 13:58:45.737" starttime="20201225 13:58:45.646"></status>
+</kw>
+<kw name="Should Contain" library="BuiltIn">
+<doc>Fails if ``container`` does not contain ``item`` one or more times.</doc>
+<arguments>
+<arg>${result}</arg>
+<arg>200</arg>
+</arguments>
+<status status="PASS" endtime="20201225 13:58:45.737" starttime="20201225 13:58:45.737"></status>
+</kw>
+<timeout value="5 minutes"></timeout>
+<status status="PASS" endtime="20201225 13:58:45.738" critical="yes" starttime="20201225 13:58:45.644"></status>
+</test>
+<test id="s1-s1-t2" name="Start freon testing">
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${SECURITY_ENABLED}' == 'true'</arg>
+<arg>Kinit test user</arg>
+<arg>testuser</arg>
+<arg>testuser.keytab</arg>
+</arguments>
+<status status="PASS" endtime="20201225 13:58:45.739" starttime="20201225 13:58:45.739"></status>
+</kw>
+<kw name="Execute" library="os">
+<arguments>
+<arg>ozone freon randomkeys --num-of-volumes 5 --num-of-buckets 5 --num-of-keys 5 --num-of-threads 1 --replication-type RATIS --factor THREE --validate-writes</arg>
+</arguments>
+<assign>
+<var>${result}</var>
+</assign>
+<kw name="Run Keyword And Return" library="BuiltIn">
+<doc>Runs the specified keyword and returns from the enclosing user keyword.</doc>
+<arguments>
+<arg>Execute and checkrc</arg>
+<arg>${command}</arg>
+<arg>0</arg>
+</arguments>
+<kw name="Execute and checkrc" library="os">
+<arguments>
+<arg>${command}</arg>
+<arg>0</arg>
+</arguments>
+<kw name="Run And Return Rc And Output" library="OperatingSystem">
+<doc>Runs the given command in the system and returns the RC and output.</doc>
+<arguments>
+<arg>${command}</arg>
+</arguments>
+<assign>
+<var>${rc}</var>
+<var>${output}</var>
+</assign>
+<msg timestamp="20201225 13:58:45.745" level="INFO">Running command 'ozone freon randomkeys --num-of-volumes 5 --num-of-buckets 5 --num-of-keys 5 --num-of-threads 1 --replication-type RATIS --factor THREE --validate-writes 2&gt;&amp;1'.</msg>
+<msg timestamp="20201225 14:00:13.901" level="INFO">${rc} = 0</msg>
+<msg timestamp="20201225 14:00:13.901" level="INFO">${output} = 2020-12-25 13:58:47,394 [main] INFO impl.MetricsConfig: Loaded properties from hadoop-metrics2.properties
+2020-12-25 13:58:47,607 [main] INFO impl.MetricsSystemImpl: Scheduled Metric snapshot period a...</msg>
+<status status="PASS" endtime="20201225 14:00:13.901" starttime="20201225 13:58:45.741"></status>
+</kw>
+<kw name="Log" library="BuiltIn">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>${output}</arg>
+</arguments>
+<msg timestamp="20201225 14:00:13.903" level="INFO">2020-12-25 13:58:47,394 [main] INFO impl.MetricsConfig: Loaded properties from hadoop-metrics2.properties
+2020-12-25 13:58:47,607 [main] INFO impl.MetricsSystemImpl: Scheduled Metric snapshot period at 10 second(s).
+2020-12-25 13:58:47,607 [main] INFO impl.MetricsSystemImpl: ozone-freon metrics system started
+2020-12-25 13:58:49,408 [main] INFO freon.RandomKeyGenerator: Number of Threads: 1
+2020-12-25 13:58:49,409 [main] INFO freon.RandomKeyGenerator: Number of Volumes: 5.
+2020-12-25 13:58:49,409 [main] INFO freon.RandomKeyGenerator: Number of Buckets per Volume: 5.
+2020-12-25 13:58:49,409 [main] INFO freon.RandomKeyGenerator: Number of Keys per Bucket: 5.
+2020-12-25 13:58:49,409 [main] INFO freon.RandomKeyGenerator: Key size: 10240 bytes
+2020-12-25 13:58:49,409 [main] INFO freon.RandomKeyGenerator: Buffer size: 4096 bytes
+2020-12-25 13:58:49,409 [main] INFO freon.RandomKeyGenerator: validateWrites : true
+2020-12-25 13:58:49,414 [main] INFO freon.RandomKeyGenerator: Data validation is enabled.
+2020-12-25 13:58:49,419 [main] INFO freon.RandomKeyGenerator: Starting progress bar Thread.
+2020-12-25 13:58:49,426 [Thread-7] INFO freon.ProgressBar: Progress: 0.00 % (0 out of 125)
+2020-12-25 13:58:49,458 [pool-2-thread-1] INFO rpc.RpcClient: Creating Volume: vol-0-09874, with hadoop as owner.
+2020-12-25 13:58:49,820 [pool-2-thread-1] INFO rpc.RpcClient: Creating Volume: vol-1-48145, with hadoop as owner.
+2020-12-25 13:58:49,832 [pool-2-thread-1] INFO rpc.RpcClient: Creating Volume: vol-2-98464, with hadoop as owner.
+2020-12-25 13:58:49,845 [pool-2-thread-1] INFO rpc.RpcClient: Creating Volume: vol-3-06757, with hadoop as owner.
+2020-12-25 13:58:49,854 [pool-2-thread-1] INFO rpc.RpcClient: Creating Volume: vol-4-41129, with hadoop as owner.
+2020-12-25 13:58:49,872 [pool-2-thread-1] INFO rpc.RpcClient: Creating Bucket: vol-0-09874/bucket-0-91148, with Versioning false and Storage Type set to DISK and Encryption set to false 
+2020-12-25 13:58:49,954 [pool-2-thread-1] INFO rpc.RpcClient: Creating Bucket: vol-1-48145/bucket-0-34163, with Versioning false and Storage Type set to DISK and Encryption set to false 
+2020-12-25 13:58:49,966 [pool-2-thread-1] INFO rpc.RpcClient: Creating Bucket: vol-2-98464/bucket-0-93253, with Versioning false and Storage Type set to DISK and Encryption set to false 
+2020-12-25 13:58:49,979 [pool-2-thread-1] INFO rpc.RpcClient: Creating Bucket: vol-3-06757/bucket-0-21728, with Versioning false and Storage Type set to DISK and Encryption set to false 
+2020-12-25 13:58:49,996 [pool-2-thread-1] INFO rpc.RpcClient: Creating Bucket: vol-4-41129/bucket-0-24797, with Versioning false and Storage Type set to DISK and Encryption set to false 
+2020-12-25 13:58:50,004 [pool-2-thread-1] INFO rpc.RpcClient: Creating Bucket: vol-0-09874/bucket-1-67223, with Versioning false and Storage Type set to DISK and Encryption set to false 
+2020-12-25 13:58:50,012 [pool-2-thread-1] INFO rpc.RpcClient: Creating Bucket: vol-1-48145/bucket-1-42409, with Versioning false and Storage Type set to DISK and Encryption set to false 
+2020-12-25 13:58:50,020 [pool-2-thread-1] INFO rpc.RpcClient: Creating Bucket: vol-2-98464/bucket-1-77856, with Versioning false and Storage Type set to DISK and Encryption set to false 
+2020-12-25 13:58:50,028 [pool-2-thread-1] INFO rpc.RpcClient: Creating Bucket: vol-3-06757/bucket-1-85881, with Versioning false and Storage Type set to DISK and Encryption set to false 
+2020-12-25 13:58:50,037 [pool-2-thread-1] INFO rpc.RpcClient: Creating Bucket: vol-4-41129/bucket-1-76901, with Versioning false and Storage Type set to DISK and Encryption set to false 
+2020-12-25 13:58:50,047 [pool-2-thread-1] INFO rpc.RpcClient: Creating Bucket: vol-0-09874/bucket-2-49405, with Versioning false and Storage Type set to DISK and Encryption set to false 
+2020-12-25 13:58:50,052 [pool-2-thread-1] INFO rpc.RpcClient: Creating Bucket: vol-1-48145/bucket-2-45140, with Versioning false and Storage Type set to DISK and Encryption set to false 
+2020-12-25 13:58:50,057 [pool-2-thread-1] INFO rpc.RpcClient: Creating Bucket: vol-2-98464/bucket-2-85232, with Versioning false and Storage Type set to DISK and Encryption set to false 
+2020-12-25 13:58:50,067 [pool-2-thread-1] INFO rpc.RpcClient: Creating Bucket: vol-3-06757/bucket-2-73080, with Versioning false and Storage Type set to DISK and Encryption set to false 
+2020-12-25 13:58:50,084 [pool-2-thread-1] INFO rpc.RpcClient: Creating Bucket: vol-4-41129/bucket-2-95917, with Versioning false and Storage Type set to DISK and Encryption set to false 
+2020-12-25 13:58:50,099 [pool-2-thread-1] INFO rpc.RpcClient: Creating Bucket: vol-0-09874/bucket-3-41374, with Versioning false and Storage Type set to DISK and Encryption set to false 
+2020-12-25 13:58:50,112 [pool-2-thread-1] INFO rpc.RpcClient: Creating Bucket: vol-1-48145/bucket-3-05743, with Versioning false and Storage Type set to DISK and Encryption set to false 
+2020-12-25 13:58:50,118 [pool-2-thread-1] INFO rpc.RpcClient: Creating Bucket: vol-2-98464/bucket-3-18423, with Versioning false and Storage Type set to DISK and Encryption set to false 
+2020-12-25 13:58:50,132 [pool-2-thread-1] INFO rpc.RpcClient: Creating Bucket: vol-3-06757/bucket-3-62359, with Versioning false and Storage Type set to DISK and Encryption set to false 
+2020-12-25 13:58:50,139 [pool-2-thread-1] INFO rpc.RpcClient: Creating Bucket: vol-4-41129/bucket-3-79562, with Versioning false and Storage Type set to DISK and Encryption set to false 
+2020-12-25 13:58:50,144 [pool-2-thread-1] INFO rpc.RpcClient: Creating Bucket: vol-0-09874/bucket-4-96677, with Versioning false and Storage Type set to DISK and Encryption set to false 
+2020-12-25 13:58:50,161 [pool-2-thread-1] INFO rpc.RpcClient: Creating Bucket: vol-1-48145/bucket-4-00892, with Versioning false and Storage Type set to DISK and Encryption set to false 
+2020-12-25 13:58:50,169 [pool-2-thread-1] INFO rpc.RpcClient: Creating Bucket: vol-2-98464/bucket-4-78968, with Versioning false and Storage Type set to DISK and Encryption set to false 
+2020-12-25 13:58:50,177 [pool-2-thread-1] INFO rpc.RpcClient: Creating Bucket: vol-3-06757/bucket-4-65402, with Versioning false and Storage Type set to DISK and Encryption set to false 
+2020-12-25 13:58:50,183 [pool-2-thread-1] INFO rpc.RpcClient: Creating Bucket: vol-4-41129/bucket-4-42404, with Versioning false and Storage Type set to DISK and Encryption set to false 
+2020-12-25 13:58:50,428 [Thread-7] INFO freon.ProgressBar: Progress: 0.00 % (0 out of 125)
+2020-12-25 13:58:51,428 [Thread-7] INFO freon.ProgressBar: Progress: 0.00 % (0 out of 125)
+2020-12-25 13:58:51,459 [pool-2-thread-1] WARN impl.MetricsSystemImpl: ozone-freon metrics system already initialized!
+2020-12-25 13:58:51,744 [pool-2-thread-1] INFO metrics.MetricRegistries: Loaded MetricRegistries class org.apache.ratis.metrics.impl.MetricRegistriesImpl
+2020-12-25 13:58:51,745 [pool-2-thread-1] INFO metrics.RatisMetrics: Creating Metrics Registry : ratis.client_message_metrics.client-728102928778-&gt;5b7d22cf-9a21-4158-82a8-d3fdc0372ae3
+2020-12-25 13:58:51,746 [pool-2-thread-1] WARN impl.MetricRegistriesImpl: First MetricRegistry has been created without registering reporters. You may need to call MetricRegistries.global().addReporterRegistration(...) before.
+2020-12-25 13:58:52,429 [Thread-7] INFO freon.ProgressBar: Progress: 0.80 % (1 out of 125)
+2020-12-25 13:58:53,429 [Thread-7] INFO freon.ProgressBar: Progress: 0.80 % (1 out of 125)
+2020-12-25 13:58:54,248 [pool-2-thread-1] INFO metrics.RatisMetrics: Creating Metrics Registry : ratis.client_message_metrics.client-65B94396AFA9-&gt;a940489d-7fcb-491d-8b7b-224158d1f771
+2020-12-25 13:58:54,248 [pool-2-thread-1] WARN impl.MetricRegistriesImpl: First MetricRegistry has been created without registering reporters. You may need to call MetricRegistries.global().addReporterRegistration(...) before.
+2020-12-25 13:58:54,430 [Thread-7] INFO freon.ProgressBar: Progress: 1.60 % (2 out of 125)
+2020-12-25 13:58:55,433 [Thread-7] INFO freon.ProgressBar: Progress: 1.60 % (2 out of 125)
+2020-12-25 13:58:56,434 [Thread-7] INFO freon.ProgressBar: Progress: 1.60 % (2 out of 125)
+2020-12-25 13:58:57,434 [Thread-7] INFO freon.ProgressBar: Progress: 7.20 % (9 out of 125)
+2020-12-25 13:58:58,435 [Thread-7] INFO freon.ProgressBar: Progress: 7.20 % (9 out of 125)
+2020-12-25 13:58:59,435 [Thread-7] INFO freon.ProgressBar: Progress: 7.20 % (9 out of 125)
+2020-12-25 13:59:00,436 [Thread-7] INFO freon.ProgressBar: Progress: 9.60 % (12 out of 125)
+2020-12-25 13:59:01,437 [Thread-7] INFO freon.ProgressBar: Progress: 9.60 % (12 out of 125)
+2020-12-25 13:59:02,437 [Thread-7] INFO freon.ProgressBar: Progress: 9.60 % (12 out of 125)
+2020-12-25 13:59:03,462 [Thread-7] INFO freon.ProgressBar: Progress: 16.00 % (20 out of 125)
+2020-12-25 13:59:04,463 [Thread-7] INFO freon.ProgressBar: Progress: 20.00 % (25 out of 125)
+2020-12-25 13:59:05,463 [Thread-7] INFO freon.ProgressBar: Progress: 20.00 % (25 out of 125)
+2020-12-25 13:59:06,464 [Thread-7] INFO freon.ProgressBar: Progress: 20.00 % (25 out of 125)
+2020-12-25 13:59:07,464 [Thread-7] INFO freon.ProgressBar: Progress: 21.60 % (27 out of 125)
+2020-12-25 13:59:08,465 [Thread-7] INFO freon.ProgressBar: Progress: 21.60 % (27 out of 125)
+2020-12-25 13:59:09,471 [Thread-7] INFO freon.ProgressBar: Progress: 24.80 % (31 out of 125)
+2020-12-25 13:59:10,471 [Thread-7] INFO freon.ProgressBar: Progress: 30.40 % (38 out of 125)
+2020-12-25 13:59:11,472 [Thread-7] INFO freon.ProgressBar: Progress: 30.40 % (38 out of 125)
+2020-12-25 13:59:12,472 [Thread-7] INFO freon.ProgressBar: Progress: 30.40 % (38 out of 125)
+2020-12-25 13:59:13,473 [Thread-7] INFO freon.ProgressBar: Progress: 35.20 % (44 out of 125)
+2020-12-25 13:59:14,473 [Thread-7] INFO freon.ProgressBar: Progress: 35.20 % (44 out of 125)
+2020-12-25 13:59:15,474 [Thread-7] INFO freon.ProgressBar: Progress: 35.20 % (44 out of 125)
+2020-12-25 13:59:16,474 [Thread-7] INFO freon.ProgressBar: Progress: 44.00 % (55 out of 125)
+2020-12-25 13:59:17,474 [Thread-7] INFO freon.ProgressBar: Progress: 44.00 % (55 out of 125)
+2020-12-25 13:59:18,475 [Thread-7] INFO freon.ProgressBar: Progress: 44.00 % (55 out of 125)
+2020-12-25 13:59:19,476 [Thread-7] INFO freon.ProgressBar: Progress: 46.40 % (58 out of 125)
+2020-12-25 13:59:20,476 [Thread-7] INFO freon.ProgressBar: Progress: 46.40 % (58 out of 125)
+2020-12-25 13:59:21,477 [Thread-7] INFO freon.ProgressBar: Progress: 46.40 % (58 out of 125)
+2020-12-25 13:59:22,478 [Thread-7] INFO freon.ProgressBar: Progress: 48.80 % (61 out of 125)
+2020-12-25 13:59:23,478 [Thread-7] INFO freon.ProgressBar: Progress: 48.80 % (61 out of 125)
+2020-12-25 13:59:24,479 [Thread-7] INFO freon.ProgressBar: Progress: 49.60 % (62 out of 125)
+2020-12-25 13:59:25,479 [Thread-7] INFO freon.ProgressBar: Progress: 49.60 % (62 out of 125)
+2020-12-25 13:59:26,480 [Thread-7] INFO freon.ProgressBar: Progress: 49.60 % (62 out of 125)
+2020-12-25 13:59:27,480 [Thread-7] INFO freon.ProgressBar: Progress: 51.20 % (64 out of 125)
+2020-12-25 13:59:28,481 [Thread-7] INFO freon.ProgressBar: Progress: 51.20 % (64 out of 125)
+2020-12-25 13:59:29,481 [Thread-7] INFO freon.ProgressBar: Progress: 51.20 % (64 out of 125)
+2020-12-25 13:59:30,482 [Thread-7] INFO freon.ProgressBar: Progress: 54.40 % (68 out of 125)
+2020-12-25 13:59:31,482 [Thread-7] INFO freon.ProgressBar: Progress: 54.40 % (68 out of 125)
+2020-12-25 13:59:32,483 [Thread-7] INFO freon.ProgressBar: Progress: 56.00 % (70 out of 125)
+2020-12-25 13:59:33,483 [Thread-7] INFO freon.ProgressBar: Progress: 56.00 % (70 out of 125)
+2020-12-25 13:59:34,484 [Thread-7] INFO freon.ProgressBar: Progress: 56.00 % (70 out of 125)
+2020-12-25 13:59:35,484 [Thread-7] INFO freon.ProgressBar: Progress: 58.40 % (73 out of 125)
+2020-12-25 13:59:36,485 [Thread-7] INFO freon.ProgressBar: Progress: 58.40 % (73 out of 125)
+2020-12-25 13:59:37,485 [Thread-7] INFO freon.ProgressBar: Progress: 58.40 % (73 out of 125)
+2020-12-25 13:59:38,486 [Thread-7] INFO freon.ProgressBar: Progress: 64.80 % (81 out of 125)
+2020-12-25 13:59:39,486 [Thread-7] INFO freon.ProgressBar: Progress: 64.80 % (81 out of 125)
+2020-12-25 13:59:40,487 [Thread-7] INFO freon.ProgressBar: Progress: 64.80 % (81 out of 125)
+2020-12-25 13:59:41,488 [Thread-7] INFO freon.ProgressBar: Progress: 69.60 % (87 out of 125)
+2020-12-25 13:59:42,488 [Thread-7] INFO freon.ProgressBar: Progress: 69.60 % (87 out of 125)
+2020-12-25 13:59:43,488 [Thread-7] INFO freon.ProgressBar: Progress: 69.60 % (87 out of 125)
+2020-12-25 13:59:44,489 [Thread-7] INFO freon.ProgressBar: Progress: 71.20 % (89 out of 125)
+2020-12-25 13:59:45,490 [Thread-7] INFO freon.ProgressBar: Progress: 71.20 % (89 out of 125)
+2020-12-25 13:59:46,490 [Thread-7] INFO freon.ProgressBar: Progress: 72.80 % (91 out of 125)
+2020-12-25 13:59:47,491 [Thread-7] INFO freon.ProgressBar: Progress: 72.80 % (91 out of 125)
+2020-12-25 13:59:48,491 [Thread-7] INFO freon.ProgressBar: Progress: 72.80 % (91 out of 125)
+2020-12-25 13:59:49,492 [Thread-7] INFO freon.ProgressBar: Progress: 74.40 % (93 out of 125)
+2020-12-25 13:59:50,492 [Thread-7] INFO freon.ProgressBar: Progress: 74.40 % (93 out of 125)
+2020-12-25 13:59:51,494 [Thread-7] INFO freon.ProgressBar: Progress: 75.20 % (94 out of 125)
+2020-12-25 13:59:52,494 [Thread-7] INFO freon.ProgressBar: Progress: 76.80 % (96 out of 125)
+2020-12-25 13:59:53,495 [Thread-7] INFO freon.ProgressBar: Progress: 76.80 % (96 out of 125)
+2020-12-25 13:59:54,495 [Thread-7] INFO freon.ProgressBar: Progress: 77.60 % (97 out of 125)
+2020-12-25 13:59:55,496 [Thread-7] INFO freon.ProgressBar: Progress: 77.60 % (97 out of 125)
+2020-12-25 13:59:56,496 [Thread-7] INFO freon.ProgressBar: Progress: 77.60 % (97 out of 125)
+2020-12-25 13:59:57,497 [Thread-7] INFO freon.ProgressBar: Progress: 81.60 % (102 out of 125)
+2020-12-25 13:59:58,497 [Thread-7] INFO freon.ProgressBar: Progress: 81.60 % (102 out of 125)
+2020-12-25 13:59:59,498 [Thread-7] INFO freon.ProgressBar: Progress: 81.60 % (102 out of 125)
+2020-12-25 14:00:00,498 [Thread-7] INFO freon.ProgressBar: Progress: 94.40 % (118 out of 125)
+2020-12-25 14:00:01,498 [Thread-7] INFO freon.ProgressBar: Progress: 95.20 % (119 out of 125)
+2020-12-25 14:00:02,499 [Thread-7] INFO freon.ProgressBar: Progress: 95.20 % (119 out of 125)
+2020-12-25 14:00:03,499 [Thread-7] INFO freon.ProgressBar: Progress: 96.80 % (121 out of 125)
+2020-12-25 14:00:04,500 [Thread-7] INFO freon.ProgressBar: Progress: 96.80 % (121 out of 125)
+2020-12-25 14:00:05,500 [Thread-7] INFO freon.ProgressBar: Progress: 96.80 % (121 out of 125)
+2020-12-25 14:00:06,501 [Thread-7] INFO freon.ProgressBar: Progress: 97.60 % (122 out of 125)
+2020-12-25 14:00:07,501 [Thread-7] INFO freon.ProgressBar: Progress: 97.60 % (122 out of 125)
+2020-12-25 14:00:08,502 [Thread-7] INFO freon.ProgressBar: Progress: 100.00 % (125 out of 125)
+
+***************************************************
+Status: Success
+Git Base Revision: b3cbbb467e22ea829b3808f4b7b01d07e0bf3842
+Number of Volumes created: 5
+Number of Buckets created: 25
+Number of Keys added: 125
+Ratis replication factor: THREE
+Ratis replication type: RATIS
+Average Time spent in volume creation: 00:00:00,402
+Average Time spent in bucket creation: 00:00:00,204
+Average Time spent in key creation: 00:00:02,343
+Average Time spent in key write: 00:00:00,952
+Total bytes written: 1280000
+Total number of writes validated: 125
+Writes validated: 100.0 %
+Successful validation: 125
+Unsuccessful validation: 0
+Total Execution time: 00:01:25,771
+***************************************************</msg>
+<status status="PASS" endtime="20201225 14:00:13.903" starttime="20201225 14:00:13.902"></status>
+</kw>
+<kw name="Should Be Equal As Integers" library="BuiltIn">
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<arguments>
+<arg>${rc}</arg>
+<arg>${expected_error_code}</arg>
+</arguments>
+<msg timestamp="20201225 14:00:13.904" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;type 'unicode'&gt;</msg>
+<status status="PASS" endtime="20201225 14:00:13.904" starttime="20201225 14:00:13.903"></status>
+</kw>
+<status status="PASS" endtime="20201225 14:00:13.904" starttime="20201225 13:58:45.740"></status>
+</kw>
+<msg timestamp="20201225 14:00:13.904" level="INFO">Returning from the enclosing user keyword.</msg>
+<status status="PASS" endtime="20201225 14:00:13.904" starttime="20201225 13:58:45.740"></status>
+</kw>
+<msg timestamp="20201225 14:00:13.905" level="INFO">${result} = 2020-12-25 13:58:47,394 [main] INFO impl.MetricsConfig: Loaded properties from hadoop-metrics2.properties
+2020-12-25 13:58:47,607 [main] INFO impl.MetricsSystemImpl: Scheduled Metric snapshot period a...</msg>
+<status status="PASS" endtime="20201225 14:00:13.905" starttime="20201225 13:58:45.740"></status>
+</kw>
+<kw name="Wait Until Keyword Succeeds" library="BuiltIn">
+<doc>Runs the specified keyword and retries if it fails.</doc>
+<arguments>
+<arg>3min</arg>
+<arg>10sec</arg>
+<arg>Should contain</arg>
+<arg>${result}</arg>
+<arg>Number of Keys added: 125</arg>
+</arguments>
+<kw name="Should Contain" library="BuiltIn">
+<doc>Fails if ``container`` does not contain ``item`` one or more times.</doc>
+<arguments>
+<arg>${result}</arg>
+<arg>Number of Keys added: 125</arg>
+</arguments>
+<status status="PASS" endtime="20201225 14:00:13.906" starttime="20201225 14:00:13.905"></status>
+</kw>
+<status status="PASS" endtime="20201225 14:00:13.906" starttime="20201225 14:00:13.905"></status>
+</kw>
+<kw name="Should Contain" library="BuiltIn">
+<doc>Fails if ``container`` does not contain ``item`` one or more times.</doc>
+<arguments>
+<arg>${result}</arg>
+<arg>Status: Success</arg>
+</arguments>
+<status status="PASS" endtime="20201225 14:00:13.906" starttime="20201225 14:00:13.906"></status>
+</kw>
+<timeout value="5 minutes"></timeout>
+<status status="PASS" endtime="20201225 14:00:13.906" critical="yes" starttime="20201225 13:58:45.738"></status>
+</test>
+<doc>Smoketest ozone cluster startup</doc>
+<status status="PASS" endtime="20201225 14:00:13.907" starttime="20201225 13:58:45.601"></status>
+</suite>
+<suite source="/opt/hadoop/smoketest/topology/cli.robot" id="s1-s2" name="Cli">
+<test id="s1-s2-t1" name="Run printTopology">
+<kw name="Execute" library="os">
+<arguments>
+<arg>ozone admin printTopology</arg>
+</arguments>
+<assign>
+<var>${output}</var>
+</assign>
+<kw name="Run Keyword And Return" library="BuiltIn">
+<doc>Runs the specified keyword and returns from the enclosing user keyword.</doc>
+<arguments>
+<arg>Execute and checkrc</arg>
+<arg>${command}</arg>
+<arg>0</arg>
+</arguments>
+<kw name="Execute and checkrc" library="os">
+<arguments>
+<arg>${command}</arg>
+<arg>0</arg>
+</arguments>
+<kw name="Run And Return Rc And Output" library="OperatingSystem">
+<doc>Runs the given command in the system and returns the RC and output.</doc>
+<arguments>
+<arg>${command}</arg>
+</arguments>
+<assign>
+<var>${rc}</var>
+<var>${output}</var>
+</assign>
+<msg timestamp="20201225 14:00:18.183" level="INFO">Running command 'ozone admin printTopology 2&gt;&amp;1'.</msg>
+<msg timestamp="20201225 14:00:20.816" level="INFO">${rc} = 0</msg>
+<msg timestamp="20201225 14:00:20.816" level="INFO">${output} = State = HEALTHY
+ 10.5.0.6(ozone-topology_datanode_3_1.ozone-topology_net):RATIS=9858,STANDALONE=9859    IN_SERVICE    /rack1
+ 10.5.0.4(ozone-topology_datanode_1_1.ozone-topology_net):RATIS=9858,STANDA...</msg>
+<status status="PASS" endtime="20201225 14:00:20.816" starttime="20201225 14:00:18.180"></status>
+</kw>
+<kw name="Log" library="BuiltIn">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>${output}</arg>
+</arguments>
+<msg timestamp="20201225 14:00:20.817" level="INFO">State = HEALTHY
+ 10.5.0.6(ozone-topology_datanode_3_1.ozone-topology_net):RATIS=9858,STANDALONE=9859    IN_SERVICE    /rack1
+ 10.5.0.4(ozone-topology_datanode_1_1.ozone-topology_net):RATIS=9858,STANDALONE=9859    IN_SERVICE    /rack1
+ 10.5.0.9(ozone-topology_datanode_6_1.ozone-topology_net):RATIS=9858,STANDALONE=9859    IN_SERVICE    /rack2
+ 10.5.0.8(ozone-topology_datanode_5_1.ozone-topology_net):RATIS=9858,STANDALONE=9859    IN_SERVICE    /rack2
+ 10.5.0.7(ozone-topology_datanode_4_1.ozone-topology_net):RATIS=9858,STANDALONE=9859    IN_SERVICE    /rack2
+ 10.5.0.5(ozone-topology_datanode_2_1.ozone-topology_net):RATIS=9858,STANDALONE=9859    IN_SERVICE    /rack1</msg>
+<status status="PASS" endtime="20201225 14:00:20.817" starttime="20201225 14:00:20.817"></status>
+</kw>
+<kw name="Should Be Equal As Integers" library="BuiltIn">
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<arguments>
+<arg>${rc}</arg>
+<arg>${expected_error_code}</arg>
+</arguments>
+<msg timestamp="20201225 14:00:20.818" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;type 'unicode'&gt;</msg>
+<status status="PASS" endtime="20201225 14:00:20.818" starttime="20201225 14:00:20.817"></status>
+</kw>
+<status status="PASS" endtime="20201225 14:00:20.818" starttime="20201225 14:00:18.179"></status>
+</kw>
+<msg timestamp="20201225 14:00:20.818" level="INFO">Returning from the enclosing user keyword.</msg>
+<status status="PASS" endtime="20201225 14:00:20.818" starttime="20201225 14:00:18.179"></status>
+</kw>
+<msg timestamp="20201225 14:00:20.819" level="INFO">${output} = State = HEALTHY
+ 10.5.0.6(ozone-topology_datanode_3_1.ozone-topology_net):RATIS=9858,STANDALONE=9859    IN_SERVICE    /rack1
+ 10.5.0.4(ozone-topology_datanode_1_1.ozone-topology_net):RATIS=9858,STANDA...</msg>
+<status status="PASS" endtime="20201225 14:00:20.819" starttime="20201225 14:00:18.178"></status>
+</kw>
+<kw name="Should Contain" library="BuiltIn">
+<doc>Fails if ``container`` does not contain ``item`` one or more times.</doc>
+<arguments>
+<arg>${output}</arg>
+<arg>10.5.0.7(ozone-topology_datanode_4_1.ozone-topology_net)</arg>
+<arg>IN_SERVICE</arg>
+<arg>/rack2</arg>
+</arguments>
+<status status="PASS" endtime="20201225 14:00:20.819" starttime="20201225 14:00:20.819"></status>
+</kw>
+<timeout value="5 minutes"></timeout>
+<status status="PASS" endtime="20201225 14:00:20.819" critical="yes" starttime="20201225 14:00:18.178"></status>
+</test>
+<test id="s1-s2-t2" name="Run printTopology -o">
+<kw name="Execute" library="os">
+<arguments>
+<arg>ozone admin printTopology -o</arg>
+</arguments>
+<assign>
+<var>${output}</var>
+</assign>
+<kw name="Run Keyword And Return" library="BuiltIn">
+<doc>Runs the specified keyword and returns from the enclosing user keyword.</doc>
+<arguments>
+<arg>Execute and checkrc</arg>
+<arg>${command}</arg>
+<arg>0</arg>
+</arguments>
+<kw name="Execute and checkrc" library="os">
+<arguments>
+<arg>${command}</arg>
+<arg>0</arg>
+</arguments>
+<kw name="Run And Return Rc And Output" library="OperatingSystem">
+<doc>Runs the given command in the system and returns the RC and output.</doc>
+<arguments>
+<arg>${command}</arg>
+</arguments>
+<assign>
+<var>${rc}</var>
+<var>${output}</var>
+</assign>
+<msg timestamp="20201225 14:00:20.824" level="INFO">Running command 'ozone admin printTopology -o 2&gt;&amp;1'.</msg>
+<msg timestamp="20201225 14:00:23.165" level="INFO">${rc} = 0</msg>
+<msg timestamp="20201225 14:00:23.165" level="INFO">${output} = State = HEALTHY
+Location: /rack1
+ 10.5.0.6(ozone-topology_datanode_3_1.ozone-topology_net) IN_SERVICE
+ 10.5.0.4(ozone-topology_datanode_1_1.ozone-topology_net) IN_SERVICE
+ 10.5.0.5(ozone-topology_data...</msg>
+<status status="PASS" endtime="20201225 14:00:23.165" starttime="20201225 14:00:20.822"></status>
+</kw>
+<kw name="Log" library="BuiltIn">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>${output}</arg>
+</arguments>
+<msg timestamp="20201225 14:00:23.166" level="INFO">State = HEALTHY
+Location: /rack1
+ 10.5.0.6(ozone-topology_datanode_3_1.ozone-topology_net) IN_SERVICE
+ 10.5.0.4(ozone-topology_datanode_1_1.ozone-topology_net) IN_SERVICE
+ 10.5.0.5(ozone-topology_datanode_2_1.ozone-topology_net) IN_SERVICE
+Location: /rack2
+ 10.5.0.9(ozone-topology_datanode_6_1.ozone-topology_net) IN_SERVICE
+ 10.5.0.8(ozone-topology_datanode_5_1.ozone-topology_net) IN_SERVICE
+ 10.5.0.7(ozone-topology_datanode_4_1.ozone-topology_net) IN_SERVICE</msg>
+<status status="PASS" endtime="20201225 14:00:23.166" starttime="20201225 14:00:23.165"></status>
+</kw>
+<kw name="Should Be Equal As Integers" library="BuiltIn">
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<arguments>
+<arg>${rc}</arg>
+<arg>${expected_error_code}</arg>
+</arguments>
+<msg timestamp="20201225 14:00:23.167" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;type 'unicode'&gt;</msg>
+<status status="PASS" endtime="20201225 14:00:23.167" starttime="20201225 14:00:23.166"></status>
+</kw>
+<status status="PASS" endtime="20201225 14:00:23.167" starttime="20201225 14:00:20.822"></status>
+</kw>
+<msg timestamp="20201225 14:00:23.167" level="INFO">Returning from the enclosing user keyword.</msg>
+<status status="PASS" endtime="20201225 14:00:23.167" starttime="20201225 14:00:20.821"></status>
+</kw>
+<msg timestamp="20201225 14:00:23.167" level="INFO">${output} = State = HEALTHY
+Location: /rack1
+ 10.5.0.6(ozone-topology_datanode_3_1.ozone-topology_net) IN_SERVICE
+ 10.5.0.4(ozone-topology_datanode_1_1.ozone-topology_net) IN_SERVICE
+ 10.5.0.5(ozone-topology_data...</msg>
+<status status="PASS" endtime="20201225 14:00:23.167" starttime="20201225 14:00:20.821"></status>
+</kw>
+<kw name="Should Contain" library="BuiltIn">
+<doc>Fails if ``container`` does not contain ``item`` one or more times.</doc>
+<arguments>
+<arg>${output}</arg>
+<arg>Location: /rack2</arg>
+</arguments>
+<status status="PASS" endtime="20201225 14:00:23.168" starttime="20201225 14:00:23.168"></status>
+</kw>
+<kw name="Should Contain" library="BuiltIn">
+<doc>Fails if ``container`` does not contain ``item`` one or more times.</doc>
+<arguments>
+<arg>${output}</arg>
+<arg>10.5.0.7(ozone-topology_datanode_4_1.ozone-topology_net) IN_SERVICE</arg>
+</arguments>
+<status status="PASS" endtime="20201225 14:00:23.168" starttime="20201225 14:00:23.168"></status>
+</kw>
+<timeout value="5 minutes"></timeout>
+<status status="PASS" endtime="20201225 14:00:23.169" critical="yes" starttime="20201225 14:00:20.820"></status>
+</test>
+<doc>Smoketest ozone cluster startup</doc>
+<status status="PASS" endtime="20201225 14:00:23.170" starttime="20201225 14:00:18.134"></status>
+</suite>
+<suite source="/opt/hadoop/smoketest/topology/loaddata.robot" id="s1-s3" name="Loaddata">
+<test id="s1-s3-t1" name="Create a volume, bucket and key">
+<kw name="Execute" library="os">
+<arguments>
+<arg>ozone sh volume create topvol1</arg>
+</arguments>
+<assign>
+<var>${output}</var>
+</assign>
+<kw name="Run Keyword And Return" library="BuiltIn">
+<doc>Runs the specified keyword and returns from the enclosing user keyword.</doc>
+<arguments>
+<arg>Execute and checkrc</arg>
+<arg>${command}</arg>
+<arg>0</arg>
+</arguments>
+<kw name="Execute and checkrc" library="os">
+<arguments>
+<arg>${command}</arg>
+<arg>0</arg>
+</arguments>
+<kw name="Run And Return Rc And Output" library="OperatingSystem">
+<doc>Runs the given command in the system and returns the RC and output.</doc>
+<arguments>
+<arg>${command}</arg>
+</arguments>
+<assign>
+<var>${rc}</var>
+<var>${output}</var>
+</assign>
+<msg timestamp="20201225 14:00:27.551" level="INFO">Running command 'ozone sh volume create topvol1 2&gt;&amp;1'.</msg>
+<msg timestamp="20201225 14:00:30.344" level="INFO">${rc} = 0</msg>
+<msg timestamp="20201225 14:00:30.344" level="INFO">${output} = </msg>
+<status status="PASS" endtime="20201225 14:00:30.345" starttime="20201225 14:00:27.547"></status>
+</kw>
+<kw name="Log" library="BuiltIn">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>${output}</arg>
+</arguments>
+<msg timestamp="20201225 14:00:30.346" level="INFO"></msg>
+<status status="PASS" endtime="20201225 14:00:30.346" starttime="20201225 14:00:30.345"></status>
+</kw>
+<kw name="Should Be Equal As Integers" library="BuiltIn">
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<arguments>
+<arg>${rc}</arg>
+<arg>${expected_error_code}</arg>
+</arguments>
+<msg timestamp="20201225 14:00:30.346" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;type 'unicode'&gt;</msg>
+<status status="PASS" endtime="20201225 14:00:30.346" starttime="20201225 14:00:30.346"></status>
+</kw>
+<status status="PASS" endtime="20201225 14:00:30.347" starttime="20201225 14:00:27.546"></status>
+</kw>
+<msg timestamp="20201225 14:00:30.347" level="INFO">Returning from the enclosing user keyword.</msg>
+<status status="PASS" endtime="20201225 14:00:30.347" starttime="20201225 14:00:27.546"></status>
+</kw>
+<msg timestamp="20201225 14:00:30.347" level="INFO">${output} = </msg>
+<status status="PASS" endtime="20201225 14:00:30.347" starttime="20201225 14:00:27.546"></status>
+</kw>
+<kw name="Should Not Contain" library="BuiltIn">
+<doc>Fails if ``container`` contains ``item`` one or more times.</doc>
+<arguments>
+<arg>${output}</arg>
+<arg>Failed</arg>
+</arguments>
+<status status="PASS" endtime="20201225 14:00:30.348" starttime="20201225 14:00:30.347"></status>
+</kw>
+<kw name="Execute" library="os">
+<arguments>
+<arg>ozone sh bucket create /topvol1/bucket1</arg>
+</arguments>
+<assign>
+<var>${output}</var>
+</assign>
+<kw name="Run Keyword And Return" library="BuiltIn">
+<doc>Runs the specified keyword and returns from the enclosing user keyword.</doc>
+<arguments>
+<arg>Execute and checkrc</arg>
+<arg>${command}</arg>
+<arg>0</arg>
+</arguments>
+<kw name="Execute and checkrc" library="os">
+<arguments>
+<arg>${command}</arg>
+<arg>0</arg>
+</arguments>
+<kw name="Run And Return Rc And Output" library="OperatingSystem">
+<doc>Runs the given command in the system and returns the RC and output.</doc>
+<arguments>
+<arg>${command}</arg>
+</arguments>
+<assign>
+<var>${rc}</var>
+<var>${output}</var>
+</assign>
+<msg timestamp="20201225 14:00:30.351" level="INFO">Running command 'ozone sh bucket create /topvol1/bucket1 2&gt;&amp;1'.</msg>
+<msg timestamp="20201225 14:00:32.973" level="INFO">${rc} = 0</msg>
+<msg timestamp="20201225 14:00:32.973" level="INFO">${output} = </msg>
+<status status="PASS" endtime="20201225 14:00:32.973" starttime="20201225 14:00:30.349"></status>
+</kw>
+<kw name="Log" library="BuiltIn">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>${output}</arg>
+</arguments>
+<msg timestamp="20201225 14:00:32.974" level="INFO"></msg>
+<status status="PASS" endtime="20201225 14:00:32.975" starttime="20201225 14:00:32.974"></status>
+</kw>
+<kw name="Should Be Equal As Integers" library="BuiltIn">
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<arguments>
+<arg>${rc}</arg>
+<arg>${expected_error_code}</arg>
+</arguments>
+<msg timestamp="20201225 14:00:32.975" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;type 'unicode'&gt;</msg>
+<status status="PASS" endtime="20201225 14:00:32.975" starttime="20201225 14:00:32.975"></status>
+</kw>
+<status status="PASS" endtime="20201225 14:00:32.976" starttime="20201225 14:00:30.348"></status>
+</kw>
+<msg timestamp="20201225 14:00:32.976" level="INFO">Returning from the enclosing user keyword.</msg>
+<status status="PASS" endtime="20201225 14:00:32.976" starttime="20201225 14:00:30.348"></status>
+</kw>
+<msg timestamp="20201225 14:00:32.976" level="INFO">${output} = </msg>
+<status status="PASS" endtime="20201225 14:00:32.976" starttime="20201225 14:00:30.348"></status>
+</kw>
+<kw name="Should Not Contain" library="BuiltIn">
+<doc>Fails if ``container`` contains ``item`` one or more times.</doc>
+<arguments>
+<arg>${output}</arg>
+<arg>Failed</arg>
+</arguments>
+<status status="PASS" endtime="20201225 14:00:32.977" starttime="20201225 14:00:32.976"></status>
+</kw>
+<kw name="Execute" library="os">
+<arguments>
+<arg>ozone sh key put /topvol1/bucket1/key1 /opt/hadoop/NOTICE.txt</arg>
+</arguments>
+<assign>
+<var>${output}</var>
+</assign>
+<kw name="Run Keyword And Return" library="BuiltIn">
+<doc>Runs the specified keyword and returns from the enclosing user keyword.</doc>
+<arguments>
+<arg>Execute and checkrc</arg>
+<arg>${command}</arg>
+<arg>0</arg>
+</arguments>
+<kw name="Execute and checkrc" library="os">
+<arguments>
+<arg>${command}</arg>
+<arg>0</arg>
+</arguments>
+<kw name="Run And Return Rc And Output" library="OperatingSystem">
+<doc>Runs the given command in the system and returns the RC and output.</doc>
+<arguments>
+<arg>${command}</arg>
+</arguments>
+<assign>
+<var>${rc}</var>
+<var>${output}</var>
+</assign>
+<msg timestamp="20201225 14:00:32.980" level="INFO">Running command 'ozone sh key put /topvol1/bucket1/key1 /opt/hadoop/NOTICE.txt 2&gt;&amp;1'.</msg>
+<msg timestamp="20201225 14:00:37.996" level="INFO">${rc} = 0</msg>
+<msg timestamp="20201225 14:00:37.996" level="INFO">${output} = </msg>
+<status status="PASS" endtime="20201225 14:00:37.996" starttime="20201225 14:00:32.978"></status>
+</kw>
+<kw name="Log" library="BuiltIn">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>${output}</arg>
+</arguments>
+<msg timestamp="20201225 14:00:37.997" level="INFO"></msg>
+<status status="PASS" endtime="20201225 14:00:37.997" starttime="20201225 14:00:37.996"></status>
+</kw>
+<kw name="Should Be Equal As Integers" library="BuiltIn">
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<arguments>
+<arg>${rc}</arg>
+<arg>${expected_error_code}</arg>
+</arguments>
+<msg timestamp="20201225 14:00:37.998" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;type 'unicode'&gt;</msg>
+<status status="PASS" endtime="20201225 14:00:37.998" starttime="20201225 14:00:37.997"></status>
+</kw>
+<status status="PASS" endtime="20201225 14:00:37.998" starttime="20201225 14:00:32.978"></status>
+</kw>
+<msg timestamp="20201225 14:00:37.998" level="INFO">Returning from the enclosing user keyword.</msg>
+<status status="PASS" endtime="20201225 14:00:37.999" starttime="20201225 14:00:32.977"></status>
+</kw>
+<msg timestamp="20201225 14:00:37.999" level="INFO">${output} = </msg>
+<status status="PASS" endtime="20201225 14:00:37.999" starttime="20201225 14:00:32.977"></status>
+</kw>
+<kw name="Should Not Contain" library="BuiltIn">
+<doc>Fails if ``container`` contains ``item`` one or more times.</doc>
+<arguments>
+<arg>${output}</arg>
+<arg>Failed</arg>
+</arguments>
+<status status="PASS" endtime="20201225 14:00:37.999" starttime="20201225 14:00:37.999"></status>
+</kw>
+<timeout value="5 minutes"></timeout>
+<status status="PASS" endtime="20201225 14:00:37.999" critical="yes" starttime="20201225 14:00:27.545"></status>
+</test>
+<doc>Smoketest ozone cluster startup</doc>
+<status status="PASS" endtime="20201225 14:00:38.001" starttime="20201225 14:00:27.503"></status>
+</suite>
+<suite source="/opt/hadoop/smoketest/topology/readdata.robot" id="s1-s4" name="readdata-second-half">
+<test id="s1-s4-t1" name="Read data from previously created key">
+<kw name="Generate Random String" library="String">
+<doc>Generates a string with a desired ``length`` from the given ``chars``.</doc>
+<arguments>
+<arg>5</arg>
+<arg>[NUMBERS]</arg>
+</arguments>
+<assign>
+<var>${random}</var>
+</assign>
+<msg timestamp="20201225 14:01:21.059" level="INFO">${random} = 68767</msg>
+<status status="PASS" endtime="20201225 14:01:21.059" starttime="20201225 14:01:21.058"></status>
+</kw>
+<kw name="Execute" library="os">
+<arguments>
+<arg>ozone sh key get /topvol1/bucket1/key1 /tmp/key1-${random}</arg>
+</arguments>
+<assign>
+<var>${output}</var>
+</assign>
+<kw name="Run Keyword And Return" library="BuiltIn">
+<doc>Runs the specified keyword and returns from the enclosing user keyword.</doc>
+<arguments>
+<arg>Execute and checkrc</arg>
+<arg>${command}</arg>
+<arg>0</arg>
+</arguments>
+<kw name="Execute and checkrc" library="os">
+<arguments>
+<arg>${command}</arg>
+<arg>0</arg>
+</arguments>
+<kw name="Run And Return Rc And Output" library="OperatingSystem">
+<doc>Runs the given command in the system and returns the RC and output.</doc>
+<arguments>
+<arg>${command}</arg>
+</arguments>
+<assign>
+<var>${rc}</var>
+<var>${output}</var>
+</assign>
+<msg timestamp="20201225 14:01:21.064" level="INFO">Running command 'ozone sh key get /topvol1/bucket1/key1 /tmp/key1-68767 2&gt;&amp;1'.</msg>
+<msg timestamp="20201225 14:02:14.188" level="INFO">${rc} = 0</msg>
+<msg timestamp="20201225 14:02:14.188" level="INFO">${output} = </msg>
+<status status="PASS" endtime="20201225 14:02:14.188" starttime="20201225 14:01:21.060"></status>
+</kw>
+<kw name="Log" library="BuiltIn">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>${output}</arg>
+</arguments>
+<msg timestamp="20201225 14:02:14.189" level="INFO"></msg>
+<status status="PASS" endtime="20201225 14:02:14.189" starttime="20201225 14:02:14.188"></status>
+</kw>
+<kw name="Should Be Equal As Integers" library="BuiltIn">
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<arguments>
+<arg>${rc}</arg>
+<arg>${expected_error_code}</arg>
+</arguments>
+<msg timestamp="20201225 14:02:14.190" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;type 'unicode'&gt;</msg>
+<status status="PASS" endtime="20201225 14:02:14.190" starttime="20201225 14:02:14.189"></status>
+</kw>
+<status status="PASS" endtime="20201225 14:02:14.190" starttime="20201225 14:01:21.060"></status>
+</kw>
+<msg timestamp="20201225 14:02:14.190" level="INFO">Returning from the enclosing user keyword.</msg>
+<status status="PASS" endtime="20201225 14:02:14.190" starttime="20201225 14:01:21.060"></status>
+</kw>
+<msg timestamp="20201225 14:02:14.190" level="INFO">${output} = </msg>
+<status status="PASS" endtime="20201225 14:02:14.190" starttime="20201225 14:01:21.059"></status>
+</kw>
+<kw name="Should Not Contain" library="BuiltIn">
+<doc>Fails if ``container`` contains ``item`` one or more times.</doc>
+<arguments>
+<arg>${output}</arg>
+<arg>Failed</arg>
+</arguments>
+<status status="PASS" endtime="20201225 14:02:14.191" starttime="20201225 14:02:14.191"></status>
+</kw>
+<timeout value="5 minutes"></timeout>
+<status status="PASS" endtime="20201225 14:02:14.191" critical="yes" starttime="20201225 14:01:21.058"></status>
+</test>
+<doc>Smoketest ozone cluster startup</doc>
+<status status="PASS" endtime="20201225 14:02:14.192" starttime="20201225 14:01:21.015"></status>
+</suite>
+<suite source="/opt/hadoop/smoketest/topology/readdata.robot" id="s1-s5" name="readdata-first-half">
+<test id="s1-s5-t1" name="Read data from previously created key">
+<kw name="Generate Random String" library="String">
+<doc>Generates a string with a desired ``length`` from the given ``chars``.</doc>
+<arguments>
+<arg>5</arg>
+<arg>[NUMBERS]</arg>
+</arguments>
+<assign>
+<var>${random}</var>
+</assign>
+<msg timestamp="20201225 14:00:44.191" level="INFO">${random} = 31356</msg>
+<status status="PASS" endtime="20201225 14:00:44.191" starttime="20201225 14:00:44.191"></status>
+</kw>
+<kw name="Execute" library="os">
+<arguments>
+<arg>ozone sh key get /topvol1/bucket1/key1 /tmp/key1-${random}</arg>
+</arguments>
+<assign>
+<var>${output}</var>
+</assign>
+<kw name="Run Keyword And Return" library="BuiltIn">
+<doc>Runs the specified keyword and returns from the enclosing user keyword.</doc>
+<arguments>
+<arg>Execute and checkrc</arg>
+<arg>${command}</arg>
+<arg>0</arg>
+</arguments>
+<kw name="Execute and checkrc" library="os">
+<arguments>
+<arg>${command}</arg>
+<arg>0</arg>
+</arguments>
+<kw name="Run And Return Rc And Output" library="OperatingSystem">
+<doc>Runs the given command in the system and returns the RC and output.</doc>
+<arguments>
+<arg>${command}</arg>
+</arguments>
+<assign>
+<var>${rc}</var>
+<var>${output}</var>
+</assign>
+<msg timestamp="20201225 14:00:44.197" level="INFO">Running command 'ozone sh key get /topvol1/bucket1/key1 /tmp/key1-31356 2&gt;&amp;1'.</msg>
+<msg timestamp="20201225 14:00:48.460" level="INFO">${rc} = 0</msg>
+<msg timestamp="20201225 14:00:48.460" level="INFO">${output} = </msg>
+<status status="PASS" endtime="20201225 14:00:48.460" starttime="20201225 14:00:44.193"></status>
+</kw>
+<kw name="Log" library="BuiltIn">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>${output}</arg>
+</arguments>
+<msg timestamp="20201225 14:00:48.461" level="INFO"></msg>
+<status status="PASS" endtime="20201225 14:00:48.461" starttime="20201225 14:00:48.460"></status>
+</kw>
+<kw name="Should Be Equal As Integers" library="BuiltIn">
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<arguments>
+<arg>${rc}</arg>
+<arg>${expected_error_code}</arg>
+</arguments>
+<msg timestamp="20201225 14:00:48.462" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;type 'unicode'&gt;</msg>
+<status status="PASS" endtime="20201225 14:00:48.462" starttime="20201225 14:00:48.461"></status>
+</kw>
+<status status="PASS" endtime="20201225 14:00:48.462" starttime="20201225 14:00:44.192"></status>
+</kw>
+<msg timestamp="20201225 14:00:48.462" level="INFO">Returning from the enclosing user keyword.</msg>
+<status status="PASS" endtime="20201225 14:00:48.462" starttime="20201225 14:00:44.192"></status>
+</kw>
+<msg timestamp="20201225 14:00:48.463" level="INFO">${output} = </msg>
+<status status="PASS" endtime="20201225 14:00:48.463" starttime="20201225 14:00:44.192"></status>
+</kw>
+<kw name="Should Not Contain" library="BuiltIn">
+<doc>Fails if ``container`` contains ``item`` one or more times.</doc>
+<arguments>
+<arg>${output}</arg>
+<arg>Failed</arg>
+</arguments>
+<status status="PASS" endtime="20201225 14:00:48.463" starttime="20201225 14:00:48.463"></status>
+</kw>
+<timeout value="5 minutes"></timeout>
+<status status="PASS" endtime="20201225 14:00:48.463" critical="yes" starttime="20201225 14:00:44.190"></status>
+</test>
+<doc>Smoketest ozone cluster startup</doc>
+<status status="PASS" endtime="20201225 14:00:48.465" starttime="20201225 14:00:44.146"></status>
+</suite>
+<status status="PASS" elapsedtime="161336" endtime="N/A" starttime="N/A"></status>
+</suite>
+<statistics>
+<total>
+<stat fail="0" pass="7">Critical Tests</stat>
+<stat fail="0" pass="7">All Tests</stat>
+</total>
+<tag>
+</tag>
+<suite>
+<stat fail="0" id="s1" name="ozone-topology" pass="7">ozone-topology</stat>
+<stat fail="0" id="s1-s1" name="Basic" pass="2">ozone-topology.Basic</stat>
+<stat fail="0" id="s1-s2" name="Cli" pass="2">ozone-topology.Cli</stat>
+<stat fail="0" id="s1-s3" name="Loaddata" pass="1">ozone-topology.Loaddata</stat>
+<stat fail="0" id="s1-s4" name="readdata-second-half" pass="1">ozone-topology.readdata-second-half</stat>
+<stat fail="0" id="s1-s5" name="readdata-first-half" pass="1">ozone-topology.readdata-first-half</stat>
+</suite>
+</statistics>
+<errors>
+</errors>
+</robot>
