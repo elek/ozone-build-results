@@ -1,0 +1,2355 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot generator="Rebot 4.1.2 (Python 3.6.9 on linux)" generated="20211019 09:43:47.585" rpa="false" schemaversion="2">
+<suite id="s1" name="ozone-om-prepare">
+<suite id="s1-s1" name="Om-Cancel-Prepare" source="/opt/hadoop/smoketest/omha/om-cancel-prepare.robot">
+<kw name="Generate volume and bucket names" type="SETUP">
+<kw name="Generate Random String" library="String">
+<var>${random}</var>
+<arg>5</arg>
+<arg>[NUMBERS]</arg>
+<doc>Generates a string with a desired ``length`` from the given ``chars``.</doc>
+<msg timestamp="20211019 09:38:51.516" level="INFO">${random} = 60564</msg>
+<status status="PASS" starttime="20211019 09:38:51.515" endtime="20211019 09:38:51.516"/>
+</kw>
+<kw name="Set Suite Variable" library="BuiltIn">
+<arg>${volume_name}</arg>
+<arg>${random}-volume-for-cancel</arg>
+<doc>Makes a variable available everywhere within the scope of the current suite.</doc>
+<msg timestamp="20211019 09:38:51.518" level="INFO">${volume_name} = 60564-volume-for-cancel</msg>
+<status status="PASS" starttime="20211019 09:38:51.516" endtime="20211019 09:38:51.518"/>
+</kw>
+<kw name="Set Suite Variable" library="BuiltIn">
+<arg>${bucket_name}</arg>
+<arg>${random}-bucket-for-cancel</arg>
+<doc>Makes a variable available everywhere within the scope of the current suite.</doc>
+<msg timestamp="20211019 09:38:51.520" level="INFO">${bucket_name} = 60564-bucket-for-cancel</msg>
+<status status="PASS" starttime="20211019 09:38:51.518" endtime="20211019 09:38:51.520"/>
+</kw>
+<status status="PASS" starttime="20211019 09:38:51.515" endtime="20211019 09:38:51.520"/>
+</kw>
+<test id="s1-s1-t1" name="Cancel Ozone Manager Prepare">
+<kw name="Run Keyword If" library="BuiltIn" type="SETUP">
+<arg>'${SECURITY_ENABLED}' == 'true'</arg>
+<arg>Kinit test user</arg>
+<arg>testuser</arg>
+<arg>testuser.keytab</arg>
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<status status="PASS" starttime="20211019 09:38:51.521" endtime="20211019 09:38:51.522"/>
+</kw>
+<kw name="Execute" library="os">
+<var>${result}</var>
+<arg>ozone admin om cancelprepare -id=omservice</arg>
+<kw name="Run Keyword And Return" library="BuiltIn">
+<arg>Execute and checkrc</arg>
+<arg>${command}</arg>
+<arg>0</arg>
+<doc>Runs the specified keyword and returns from the enclosing user keyword.</doc>
+<kw name="Execute and checkrc" library="os">
+<arg>${command}</arg>
+<arg>0</arg>
+<kw name="Run And Return Rc And Output" library="OperatingSystem">
+<var>${rc}</var>
+<var>${output}</var>
+<arg>${command}</arg>
+<doc>Runs the given command in the system and returns the RC and output.</doc>
+<msg timestamp="20211019 09:38:51.529" level="INFO">Running command 'ozone admin om cancelprepare -id=omservice 2&gt;&amp;1'.</msg>
+<msg timestamp="20211019 09:38:54.540" level="INFO">${rc} = 0</msg>
+<msg timestamp="20211019 09:38:54.540" level="INFO">${output} = WARNING: HADOOP_CONF_DIR has been deprecated by OZONE_CONF_DIR.
+WARNING: HADOOP_LOG_DIR has been deprecated by OZONE_LOG_DIR.
+com.google.protobuf.ServiceException: org.apache.hadoop.ipc.RemoteExceptio...</msg>
+<status status="PASS" starttime="20211019 09:38:51.523" endtime="20211019 09:38:54.540"/>
+</kw>
+<kw name="Log" library="BuiltIn">
+<arg>${output}</arg>
+<doc>Logs the given message with the given level.</doc>
+<msg timestamp="20211019 09:38:54.541" level="INFO">WARNING: HADOOP_CONF_DIR has been deprecated by OZONE_CONF_DIR.
+WARNING: HADOOP_LOG_DIR has been deprecated by OZONE_LOG_DIR.
+com.google.protobuf.ServiceException: org.apache.hadoop.ipc.RemoteException(org.apache.hadoop.ozone.om.exceptions.OMNotLeaderException): OM:om2 is not the leader. Could not determine the leader node.
+	at org.apache.hadoop.ozone.om.ratis.utils.OzoneManagerRatisUtils.createNotLeaderException(OzoneManagerRatisUtils.java:465)
+	at org.apache.hadoop.ozone.om.ratis.utils.OzoneManagerRatisUtils.checkLeaderStatus(OzoneManagerRatisUtils.java:451)
+	at org.apache.hadoop.ozone.protocolPB.OzoneManagerProtocolServerSideTranslatorPB.checkLeaderStatus(OzoneManagerProtocolServerSideTranslatorPB.java:243)
+	at org.apache.hadoop.ozone.protocolPB.OzoneManagerProtocolServerSideTranslatorPB.processRequest(OzoneManagerProtocolServerSideTranslatorPB.java:135)
+	at org.apache.hadoop.hdds.server.OzoneProtocolMessageDispatcher.processRequest(OzoneProtocolMessageDispatcher.java:87)
+	at org.apache.hadoop.ozone.protocolPB.OzoneManagerProtocolServerSideTranslatorPB.submitRequest(OzoneManagerProtocolServerSideTranslatorPB.java:123)
+	at org.apache.hadoop.ozone.protocol.proto.OzoneManagerProtocolProtos$OzoneManagerService$2.callBlockingMethod(OzoneManagerProtocolProtos.java)
+	at org.apache.hadoop.ipc.ProtobufRpcEngine$Server.processCall(ProtobufRpcEngine.java:466)
+	at org.apache.hadoop.ipc.ProtobufRpcEngine2$Server$ProtoBufRpcInvoker.call(ProtobufRpcEngine2.java:574)
+	at org.apache.hadoop.ipc.ProtobufRpcEngine2$Server$ProtoBufRpcInvoker.call(ProtobufRpcEngine2.java:552)
+	at org.apache.hadoop.ipc.RPC$Server.call(RPC.java:1093)
+	at org.apache.hadoop.ipc.Server$RpcCall.run(Server.java:1035)
+	at org.apache.hadoop.ipc.Server$RpcCall.run(Server.java:963)
+	at java.base/java.security.AccessController.doPrivileged(Native Method)
+	at java.base/javax.security.auth.Subject.doAs(Subject.java:423)
+	at org.apache.hadoop.security.UserGroupInformation.doAs(UserGroupInformation.java:1878)
+	at org.apache.hadoop.ipc.Server$Handler.run(Server.java:2966)
+, while invoking $Proxy20.submitRequest over nodeId=om2,nodeAddress=om2:9862 after 1 failover attempts. Trying to failover immediately.
+Cancel prepare succeeded, cluster can now accept write requests.</msg>
+<status status="PASS" starttime="20211019 09:38:54.540" endtime="20211019 09:38:54.541"/>
+</kw>
+<kw name="Should Be Equal As Integers" library="BuiltIn">
+<arg>${rc}</arg>
+<arg>${expected_error_code}</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<msg timestamp="20211019 09:38:54.542" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;type 'unicode'&gt;</msg>
+<status status="PASS" starttime="20211019 09:38:54.541" endtime="20211019 09:38:54.542"/>
+</kw>
+<status status="PASS" starttime="20211019 09:38:51.523" endtime="20211019 09:38:54.542"/>
+</kw>
+<msg timestamp="20211019 09:38:54.542" level="INFO">Returning from the enclosing user keyword.</msg>
+<status status="PASS" starttime="20211019 09:38:51.523" endtime="20211019 09:38:54.543"/>
+</kw>
+<msg timestamp="20211019 09:38:54.543" level="INFO">${result} = WARNING: HADOOP_CONF_DIR has been deprecated by OZONE_CONF_DIR.
+WARNING: HADOOP_LOG_DIR has been deprecated by OZONE_LOG_DIR.
+com.google.protobuf.ServiceException: org.apache.hadoop.ipc.RemoteExceptio...</msg>
+<status status="PASS" starttime="20211019 09:38:51.522" endtime="20211019 09:38:54.543"/>
+</kw>
+<kw name="Wait Until Keyword Succeeds" library="BuiltIn">
+<arg>3min</arg>
+<arg>5sec</arg>
+<arg>Should contain</arg>
+<arg>${result}</arg>
+<arg>Cancel prepare succeeded</arg>
+<doc>Runs the specified keyword and retries if it fails.</doc>
+<kw name="Should Contain" library="BuiltIn">
+<arg>${result}</arg>
+<arg>Cancel prepare succeeded</arg>
+<doc>Fails if ``container`` does not contain ``item`` one or more times.</doc>
+<status status="PASS" starttime="20211019 09:38:54.544" endtime="20211019 09:38:54.544"/>
+</kw>
+<status status="PASS" starttime="20211019 09:38:54.543" endtime="20211019 09:38:54.544"/>
+</kw>
+<timeout value="5 minutes"/>
+<status status="PASS" starttime="20211019 09:38:51.520" endtime="20211019 09:38:54.545"/>
+</test>
+<test id="s1-s1-t2" name="Test write operations">
+<kw name="Run Keyword If" library="BuiltIn" type="SETUP">
+<arg>'${SECURITY_ENABLED}' == 'true'</arg>
+<arg>Kinit test user</arg>
+<arg>testuser</arg>
+<arg>testuser.keytab</arg>
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<status status="PASS" starttime="20211019 09:38:54.547" endtime="20211019 09:38:54.547"/>
+</kw>
+<kw name="Execute" library="os">
+<arg>ozone sh volume create /${volume_name}</arg>
+<kw name="Run Keyword And Return" library="BuiltIn">
+<arg>Execute and checkrc</arg>
+<arg>${command}</arg>
+<arg>0</arg>
+<doc>Runs the specified keyword and returns from the enclosing user keyword.</doc>
+<kw name="Execute and checkrc" library="os">
+<arg>${command}</arg>
+<arg>0</arg>
+<kw name="Run And Return Rc And Output" library="OperatingSystem">
+<var>${rc}</var>
+<var>${output}</var>
+<arg>${command}</arg>
+<doc>Runs the given command in the system and returns the RC and output.</doc>
+<msg timestamp="20211019 09:38:54.554" level="INFO">Running command 'ozone sh volume create /60564-volume-for-cancel 2&gt;&amp;1'.</msg>
+<msg timestamp="20211019 09:38:57.037" level="INFO">${rc} = 0</msg>
+<msg timestamp="20211019 09:38:57.037" level="INFO">${output} = WARNING: HADOOP_CONF_DIR has been deprecated by OZONE_CONF_DIR.
+WARNING: HADOOP_LOG_DIR has been deprecated by OZONE_LOG_DIR.</msg>
+<status status="PASS" starttime="20211019 09:38:54.550" endtime="20211019 09:38:57.037"/>
+</kw>
+<kw name="Log" library="BuiltIn">
+<arg>${output}</arg>
+<doc>Logs the given message with the given level.</doc>
+<msg timestamp="20211019 09:38:57.038" level="INFO">WARNING: HADOOP_CONF_DIR has been deprecated by OZONE_CONF_DIR.
+WARNING: HADOOP_LOG_DIR has been deprecated by OZONE_LOG_DIR.</msg>
+<status status="PASS" starttime="20211019 09:38:57.037" endtime="20211019 09:38:57.038"/>
+</kw>
+<kw name="Should Be Equal As Integers" library="BuiltIn">
+<arg>${rc}</arg>
+<arg>${expected_error_code}</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<msg timestamp="20211019 09:38:57.039" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;type 'unicode'&gt;</msg>
+<status status="PASS" starttime="20211019 09:38:57.039" endtime="20211019 09:38:57.039"/>
+</kw>
+<status status="PASS" starttime="20211019 09:38:54.550" endtime="20211019 09:38:57.040"/>
+</kw>
+<msg timestamp="20211019 09:38:57.040" level="INFO">Returning from the enclosing user keyword.</msg>
+<status status="PASS" starttime="20211019 09:38:54.548" endtime="20211019 09:38:57.040"/>
+</kw>
+<status status="PASS" starttime="20211019 09:38:54.547" endtime="20211019 09:38:57.040"/>
+</kw>
+<kw name="Execute" library="os">
+<arg>ozone sh bucket create /${volume_name}/${bucket_name}</arg>
+<kw name="Run Keyword And Return" library="BuiltIn">
+<arg>Execute and checkrc</arg>
+<arg>${command}</arg>
+<arg>0</arg>
+<doc>Runs the specified keyword and returns from the enclosing user keyword.</doc>
+<kw name="Execute and checkrc" library="os">
+<arg>${command}</arg>
+<arg>0</arg>
+<kw name="Run And Return Rc And Output" library="OperatingSystem">
+<var>${rc}</var>
+<var>${output}</var>
+<arg>${command}</arg>
+<doc>Runs the given command in the system and returns the RC and output.</doc>
+<msg timestamp="20211019 09:38:57.044" level="INFO">Running command 'ozone sh bucket create /60564-volume-for-cancel/60564-bucket-for-cancel 2&gt;&amp;1'.</msg>
+<msg timestamp="20211019 09:38:59.733" level="INFO">${rc} = 0</msg>
+<msg timestamp="20211019 09:38:59.733" level="INFO">${output} = WARNING: HADOOP_CONF_DIR has been deprecated by OZONE_CONF_DIR.
+WARNING: HADOOP_LOG_DIR has been deprecated by OZONE_LOG_DIR.</msg>
+<status status="PASS" starttime="20211019 09:38:57.042" endtime="20211019 09:38:59.733"/>
+</kw>
+<kw name="Log" library="BuiltIn">
+<arg>${output}</arg>
+<doc>Logs the given message with the given level.</doc>
+<msg timestamp="20211019 09:38:59.735" level="INFO">WARNING: HADOOP_CONF_DIR has been deprecated by OZONE_CONF_DIR.
+WARNING: HADOOP_LOG_DIR has been deprecated by OZONE_LOG_DIR.</msg>
+<status status="PASS" starttime="20211019 09:38:59.734" endtime="20211019 09:38:59.735"/>
+</kw>
+<kw name="Should Be Equal As Integers" library="BuiltIn">
+<arg>${rc}</arg>
+<arg>${expected_error_code}</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<msg timestamp="20211019 09:38:59.735" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;type 'unicode'&gt;</msg>
+<status status="PASS" starttime="20211019 09:38:59.735" endtime="20211019 09:38:59.736"/>
+</kw>
+<status status="PASS" starttime="20211019 09:38:57.042" endtime="20211019 09:38:59.736"/>
+</kw>
+<msg timestamp="20211019 09:38:59.736" level="INFO">Returning from the enclosing user keyword.</msg>
+<status status="PASS" starttime="20211019 09:38:57.041" endtime="20211019 09:38:59.736"/>
+</kw>
+<status status="PASS" starttime="20211019 09:38:57.041" endtime="20211019 09:38:59.736"/>
+</kw>
+<kw name="Execute" library="os">
+<var>${result}</var>
+<arg>ozone sh key put /${volume_name}/${bucket_name}/cancel-key /opt/hadoop/NOTICE.txt</arg>
+<kw name="Run Keyword And Return" library="BuiltIn">
+<arg>Execute and checkrc</arg>
+<arg>${command}</arg>
+<arg>0</arg>
+<doc>Runs the specified keyword and returns from the enclosing user keyword.</doc>
+<kw name="Execute and checkrc" library="os">
+<arg>${command}</arg>
+<arg>0</arg>
+<kw name="Run And Return Rc And Output" library="OperatingSystem">
+<var>${rc}</var>
+<var>${output}</var>
+<arg>${command}</arg>
+<doc>Runs the given command in the system and returns the RC and output.</doc>
+<msg timestamp="20211019 09:38:59.741" level="INFO">Running command 'ozone sh key put /60564-volume-for-cancel/60564-bucket-for-cancel/cancel-key /opt/hadoop/NOTICE.txt 2&gt;&amp;1'.</msg>
+<msg timestamp="20211019 09:39:04.769" level="INFO">${rc} = 0</msg>
+<msg timestamp="20211019 09:39:04.769" level="INFO">${output} = WARNING: HADOOP_CONF_DIR has been deprecated by OZONE_CONF_DIR.
+WARNING: HADOOP_LOG_DIR has been deprecated by OZONE_LOG_DIR.</msg>
+<status status="PASS" starttime="20211019 09:38:59.739" endtime="20211019 09:39:04.769"/>
+</kw>
+<kw name="Log" library="BuiltIn">
+<arg>${output}</arg>
+<doc>Logs the given message with the given level.</doc>
+<msg timestamp="20211019 09:39:04.770" level="INFO">WARNING: HADOOP_CONF_DIR has been deprecated by OZONE_CONF_DIR.
+WARNING: HADOOP_LOG_DIR has been deprecated by OZONE_LOG_DIR.</msg>
+<status status="PASS" starttime="20211019 09:39:04.769" endtime="20211019 09:39:04.770"/>
+</kw>
+<kw name="Should Be Equal As Integers" library="BuiltIn">
+<arg>${rc}</arg>
+<arg>${expected_error_code}</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<msg timestamp="20211019 09:39:04.771" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;type 'unicode'&gt;</msg>
+<status status="PASS" starttime="20211019 09:39:04.770" endtime="20211019 09:39:04.771"/>
+</kw>
+<status status="PASS" starttime="20211019 09:38:59.738" endtime="20211019 09:39:04.771"/>
+</kw>
+<msg timestamp="20211019 09:39:04.772" level="INFO">Returning from the enclosing user keyword.</msg>
+<status status="PASS" starttime="20211019 09:38:59.737" endtime="20211019 09:39:04.772"/>
+</kw>
+<msg timestamp="20211019 09:39:04.772" level="INFO">${result} = WARNING: HADOOP_CONF_DIR has been deprecated by OZONE_CONF_DIR.
+WARNING: HADOOP_LOG_DIR has been deprecated by OZONE_LOG_DIR.</msg>
+<status status="PASS" starttime="20211019 09:38:59.737" endtime="20211019 09:39:04.772"/>
+</kw>
+<kw name="Execute" library="os">
+<var>${result}</var>
+<arg>ozone sh key info /${volume_name}/${bucket_name}/cancel-key</arg>
+<kw name="Run Keyword And Return" library="BuiltIn">
+<arg>Execute and checkrc</arg>
+<arg>${command}</arg>
+<arg>0</arg>
+<doc>Runs the specified keyword and returns from the enclosing user keyword.</doc>
+<kw name="Execute and checkrc" library="os">
+<arg>${command}</arg>
+<arg>0</arg>
+<kw name="Run And Return Rc And Output" library="OperatingSystem">
+<var>${rc}</var>
+<var>${output}</var>
+<arg>${command}</arg>
+<doc>Runs the given command in the system and returns the RC and output.</doc>
+<msg timestamp="20211019 09:39:04.776" level="INFO">Running command 'ozone sh key info /60564-volume-for-cancel/60564-bucket-for-cancel/cancel-key 2&gt;&amp;1'.</msg>
+<msg timestamp="20211019 09:39:08.376" level="INFO">${rc} = 0</msg>
+<msg timestamp="20211019 09:39:08.377" level="INFO">${output} = WARNING: HADOOP_CONF_DIR has been deprecated by OZONE_CONF_DIR.
+WARNING: HADOOP_LOG_DIR has been deprecated by OZONE_LOG_DIR.
+{
+  "volumeName" : "60564-volume-for-cancel",
+  "bucketName" : "60564-buck...</msg>
+<status status="PASS" starttime="20211019 09:39:04.774" endtime="20211019 09:39:08.377"/>
+</kw>
+<kw name="Log" library="BuiltIn">
+<arg>${output}</arg>
+<doc>Logs the given message with the given level.</doc>
+<msg timestamp="20211019 09:39:08.378" level="INFO">WARNING: HADOOP_CONF_DIR has been deprecated by OZONE_CONF_DIR.
+WARNING: HADOOP_LOG_DIR has been deprecated by OZONE_LOG_DIR.
+{
+  "volumeName" : "60564-volume-for-cancel",
+  "bucketName" : "60564-bucket-for-cancel",
+  "name" : "cancel-key",
+  "dataSize" : 17526,
+  "creationTime" : "2021-10-19T09:39:02.462Z",
+  "modificationTime" : "2021-10-19T09:39:04.369Z",
+  "replicationConfig" : {
+    "replicationFactor" : "ONE",
+    "requiredNodes" : 1,
+    "replicationType" : "RATIS"
+  },
+  "ozoneKeyLocations" : [ {
+    "containerID" : 3,
+    "localID" : 107544261427200103,
+    "length" : 17526,
+    "offset" : 0,
+    "keyOffset" : 0
+  } ],
+  "metadata" : { },
+  "replicationType" : "RATIS",
+  "replicationFactor" : 1
+}</msg>
+<status status="PASS" starttime="20211019 09:39:08.377" endtime="20211019 09:39:08.378"/>
+</kw>
+<kw name="Should Be Equal As Integers" library="BuiltIn">
+<arg>${rc}</arg>
+<arg>${expected_error_code}</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<msg timestamp="20211019 09:39:08.379" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;type 'unicode'&gt;</msg>
+<status status="PASS" starttime="20211019 09:39:08.378" endtime="20211019 09:39:08.379"/>
+</kw>
+<status status="PASS" starttime="20211019 09:39:04.773" endtime="20211019 09:39:08.379"/>
+</kw>
+<msg timestamp="20211019 09:39:08.379" level="INFO">Returning from the enclosing user keyword.</msg>
+<status status="PASS" starttime="20211019 09:39:04.773" endtime="20211019 09:39:08.380"/>
+</kw>
+<msg timestamp="20211019 09:39:08.380" level="INFO">${result} = WARNING: HADOOP_CONF_DIR has been deprecated by OZONE_CONF_DIR.
+WARNING: HADOOP_LOG_DIR has been deprecated by OZONE_LOG_DIR.
+{
+  "volumeName" : "60564-volume-for-cancel",
+  "bucketName" : "60564-buck...</msg>
+<status status="PASS" starttime="20211019 09:39:04.772" endtime="20211019 09:39:08.380"/>
+</kw>
+<kw name="Should Contain" library="BuiltIn">
+<arg>${result}</arg>
+<arg>\"name\" : \"cancel-key\"</arg>
+<doc>Fails if ``container`` does not contain ``item`` one or more times.</doc>
+<status status="PASS" starttime="20211019 09:39:08.380" endtime="20211019 09:39:08.381"/>
+</kw>
+<timeout value="5 minutes"/>
+<status status="PASS" starttime="20211019 09:38:54.546" endtime="20211019 09:39:08.381"/>
+</test>
+<doc>Smoke test for ozone manager cancel prepare</doc>
+<status status="PASS" starttime="20211019 09:38:51.451" endtime="20211019 09:39:08.383"/>
+</suite>
+<suite id="s1-s2" name="Om-Prepare" source="/opt/hadoop/smoketest/omha/om-prepare.robot">
+<kw name="Create Specific OM data for prepare" type="SETUP">
+<kw name="Execute" library="os">
+<arg>ozone freon rk --replication-type=RATIS --num-of-volumes 1 --num-of-buckets 1 --num-of-keys 100</arg>
+<kw name="Run Keyword And Return" library="BuiltIn">
+<arg>Execute and checkrc</arg>
+<arg>${command}</arg>
+<arg>0</arg>
+<doc>Runs the specified keyword and returns from the enclosing user keyword.</doc>
+<kw name="Execute and checkrc" library="os">
+<arg>${command}</arg>
+<arg>0</arg>
+<kw name="Run And Return Rc And Output" library="OperatingSystem">
+<var>${rc}</var>
+<var>${output}</var>
+<arg>${command}</arg>
+<doc>Runs the given command in the system and returns the RC and output.</doc>
+<msg timestamp="20211019 09:39:12.943" level="INFO">Running command 'ozone freon rk --replication-type=RATIS --num-of-volumes 1 --num-of-buckets 1 --num-of-keys 100 2&gt;&amp;1'.</msg>
+<msg timestamp="20211019 09:39:25.995" level="INFO">${rc} = 0</msg>
+<msg timestamp="20211019 09:39:25.995" level="INFO">${output} = WARNING: HADOOP_CONF_DIR has been deprecated by OZONE_CONF_DIR.
+WARNING: HADOOP_LOG_DIR has been deprecated by OZONE_LOG_DIR.
+2021-10-19 09:39:14,468 [main] INFO impl.MetricsConfig: Loaded properties ...</msg>
+<status status="PASS" starttime="20211019 09:39:12.939" endtime="20211019 09:39:25.995"/>
+</kw>
+<kw name="Log" library="BuiltIn">
+<arg>${output}</arg>
+<doc>Logs the given message with the given level.</doc>
+<msg timestamp="20211019 09:39:25.996" level="INFO">WARNING: HADOOP_CONF_DIR has been deprecated by OZONE_CONF_DIR.
+WARNING: HADOOP_LOG_DIR has been deprecated by OZONE_LOG_DIR.
+2021-10-19 09:39:14,468 [main] INFO impl.MetricsConfig: Loaded properties from hadoop-metrics2.properties
+2021-10-19 09:39:14,610 [main] INFO impl.MetricsSystemImpl: Scheduled Metric snapshot period at 10 second(s).
+2021-10-19 09:39:14,610 [main] INFO impl.MetricsSystemImpl: ozone-freon metrics system started
+2021-10-19 09:39:15,357 [main] INFO retry.RetryInvocationHandler: com.google.protobuf.ServiceException: org.apache.hadoop.ipc.RemoteException(org.apache.hadoop.ozone.om.exceptions.OMNotLeaderException): OM:om2 is not the leader. Could not determine the leader node.
+	at org.apache.hadoop.ozone.protocolPB.OzoneManagerProtocolServerSideTranslatorPB.createNotLeaderException(OzoneManagerProtocolServerSideTranslatorPB.java:187)
+	at org.apache.hadoop.ozone.protocolPB.OzoneManagerProtocolServerSideTranslatorPB.createLeaderErrorException(OzoneManagerProtocolServerSideTranslatorPB.java:174)
+	at org.apache.hadoop.ozone.protocolPB.OzoneManagerProtocolServerSideTranslatorPB.submitReadRequestToOM(OzoneManagerProtocolServerSideTranslatorPB.java:167)
+	at org.apache.hadoop.ozone.protocolPB.OzoneManagerProtocolServerSideTranslatorPB.processRequest(OzoneManagerProtocolServerSideTranslatorPB.java:133)
+	at org.apache.hadoop.hdds.server.OzoneProtocolMessageDispatcher.processRequest(OzoneProtocolMessageDispatcher.java:87)
+	at org.apache.hadoop.ozone.protocolPB.OzoneManagerProtocolServerSideTranslatorPB.submitRequest(OzoneManagerProtocolServerSideTranslatorPB.java:123)
+	at org.apache.hadoop.ozone.protocol.proto.OzoneManagerProtocolProtos$OzoneManagerService$2.callBlockingMethod(OzoneManagerProtocolProtos.java)
+	at org.apache.hadoop.ipc.ProtobufRpcEngine$Server.processCall(ProtobufRpcEngine.java:466)
+	at org.apache.hadoop.ipc.ProtobufRpcEngine2$Server$ProtoBufRpcInvoker.call(ProtobufRpcEngine2.java:574)
+	at org.apache.hadoop.ipc.ProtobufRpcEngine2$Server$ProtoBufRpcInvoker.call(ProtobufRpcEngine2.java:552)
+	at org.apache.hadoop.ipc.RPC$Server.call(RPC.java:1093)
+	at org.apache.hadoop.ipc.Server$RpcCall.run(Server.java:1035)
+	at org.apache.hadoop.ipc.Server$RpcCall.run(Server.java:963)
+	at java.base/java.security.AccessController.doPrivileged(Native Method)
+	at java.base/javax.security.auth.Subject.doAs(Subject.java:423)
+	at org.apache.hadoop.security.UserGroupInformation.doAs(UserGroupInformation.java:1878)
+	at org.apache.hadoop.ipc.Server$Handler.run(Server.java:2966)
+, while invoking $Proxy22.submitRequest over nodeId=om2,nodeAddress=om2:9862 after 1 failover attempts. Trying to failover immediately.
+2021-10-19 09:39:15,506 [main] INFO freon.RandomKeyGenerator: Number of Threads: 10
+2021-10-19 09:39:15,556 [main] INFO freon.RandomKeyGenerator: Number of Volumes: 1.
+2021-10-19 09:39:15,557 [main] INFO freon.RandomKeyGenerator: Number of Buckets per Volume: 1.
+2021-10-19 09:39:15,557 [main] INFO freon.RandomKeyGenerator: Number of Keys per Bucket: 100.
+2021-10-19 09:39:15,557 [main] INFO freon.RandomKeyGenerator: Key size: 10240 bytes
+2021-10-19 09:39:15,557 [main] INFO freon.RandomKeyGenerator: Buffer size: 4096 bytes
+2021-10-19 09:39:15,557 [main] INFO freon.RandomKeyGenerator: validateWrites : false
+2021-10-19 09:39:15,557 [main] INFO freon.RandomKeyGenerator: cleanObjects : false
+2021-10-19 09:39:15,575 [main] INFO freon.RandomKeyGenerator: Starting progress bar Thread.
+2021-10-19 09:39:15,580 [Thread-6] INFO freon.ProgressBar: Progress: 0.00 % (0 out of 100)
+2021-10-19 09:39:15,616 [pool-2-thread-1] INFO rpc.RpcClient: Creating Volume: vol-0-90517, with hadoop as owner and space quota set to -1 bytes, counts quota set to -1
+2021-10-19 09:39:15,664 [pool-2-thread-2] INFO rpc.RpcClient: Creating Bucket: vol-0-90517/bucket-0-59320, with Versioning false and Storage Type set to DISK and Encryption set to false 
+2021-10-19 09:39:16,541 [pool-2-thread-9] WARN impl.MetricsSystemImpl: ozone-freon metrics system already initialized!
+2021-10-19 09:39:16,589 [Thread-6] INFO freon.ProgressBar: Progress: 0.00 % (0 out of 100)
+2021-10-19 09:39:16,851 [pool-2-thread-10] INFO metrics.MetricRegistries: Loaded MetricRegistries class org.apache.ratis.metrics.impl.MetricRegistriesImpl
+2021-10-19 09:39:17,592 [Thread-6] INFO freon.ProgressBar: Progress: 10.00 % (10 out of 100)
+2021-10-19 09:39:18,620 [Thread-6] INFO freon.ProgressBar: Progress: 24.00 % (24 out of 100)
+2021-10-19 09:39:19,660 [Thread-6] INFO freon.ProgressBar: Progress: 40.00 % (40 out of 100)
+2021-10-19 09:39:20,665 [Thread-6] INFO freon.ProgressBar: Progress: 65.00 % (65 out of 100)
+2021-10-19 09:39:21,667 [Thread-6] INFO freon.ProgressBar: Progress: 79.00 % (79 out of 100)
+2021-10-19 09:39:22,669 [Thread-6] INFO freon.ProgressBar: Progress: 100.00 % (100 out of 100)
+
+***************************************************
+Status: Success
+Git Base Revision: a3b9c37a397ad4188041dd80621bdeefc46885f2
+Number of Volumes created: 1
+Number of Buckets created: 1
+Number of Keys added: 100
+Ratis replication factor: ONE
+Ratis replication type: RATIS
+Average Time spent in volume creation: 00:00:00,006
+Average Time spent in bucket creation: 00:00:00,002
+Average Time spent in key creation: 00:00:01,852
+Average Time spent in key write: 00:00:00,878
+Total bytes written: 1024000
+Total Execution time: 00:00:10,833
+***************************************************</msg>
+<status status="PASS" starttime="20211019 09:39:25.996" endtime="20211019 09:39:25.996"/>
+</kw>
+<kw name="Should Be Equal As Integers" library="BuiltIn">
+<arg>${rc}</arg>
+<arg>${expected_error_code}</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<msg timestamp="20211019 09:39:25.997" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;type 'unicode'&gt;</msg>
+<status status="PASS" starttime="20211019 09:39:25.996" endtime="20211019 09:39:25.997"/>
+</kw>
+<status status="PASS" starttime="20211019 09:39:12.939" endtime="20211019 09:39:25.998"/>
+</kw>
+<msg timestamp="20211019 09:39:25.998" level="INFO">Returning from the enclosing user keyword.</msg>
+<status status="PASS" starttime="20211019 09:39:12.938" endtime="20211019 09:39:25.998"/>
+</kw>
+<status status="PASS" starttime="20211019 09:39:12.938" endtime="20211019 09:39:25.998"/>
+</kw>
+<kw name="Generate Random String" library="String">
+<var>${random}</var>
+<arg>5</arg>
+<arg>[NUMBERS]</arg>
+<doc>Generates a string with a desired ``length`` from the given ``chars``.</doc>
+<msg timestamp="20211019 09:39:25.999" level="INFO">${random} = 99923</msg>
+<status status="PASS" starttime="20211019 09:39:25.999" endtime="20211019 09:39:25.999"/>
+</kw>
+<kw name="Set Suite Variable" library="BuiltIn">
+<arg>${volume_name}</arg>
+<arg>${random}-volume-for-prepare</arg>
+<doc>Makes a variable available everywhere within the scope of the current suite.</doc>
+<msg timestamp="20211019 09:39:26.000" level="INFO">${volume_name} = 99923-volume-for-prepare</msg>
+<status status="PASS" starttime="20211019 09:39:25.999" endtime="20211019 09:39:26.001"/>
+</kw>
+<kw name="Set Suite Variable" library="BuiltIn">
+<arg>${bucket_name}</arg>
+<arg>${random}-bucket-for-prepare</arg>
+<doc>Makes a variable available everywhere within the scope of the current suite.</doc>
+<msg timestamp="20211019 09:39:26.002" level="INFO">${bucket_name} = 99923-bucket-for-prepare</msg>
+<status status="PASS" starttime="20211019 09:39:26.001" endtime="20211019 09:39:26.002"/>
+</kw>
+<kw name="Execute" library="os">
+<arg>ozone sh volume create /${volume_name}</arg>
+<kw name="Run Keyword And Return" library="BuiltIn">
+<arg>Execute and checkrc</arg>
+<arg>${command}</arg>
+<arg>0</arg>
+<doc>Runs the specified keyword and returns from the enclosing user keyword.</doc>
+<kw name="Execute and checkrc" library="os">
+<arg>${command}</arg>
+<arg>0</arg>
+<kw name="Run And Return Rc And Output" library="OperatingSystem">
+<var>${rc}</var>
+<var>${output}</var>
+<arg>${command}</arg>
+<doc>Runs the given command in the system and returns the RC and output.</doc>
+<msg timestamp="20211019 09:39:26.005" level="INFO">Running command 'ozone sh volume create /99923-volume-for-prepare 2&gt;&amp;1'.</msg>
+<msg timestamp="20211019 09:39:28.769" level="INFO">${rc} = 0</msg>
+<msg timestamp="20211019 09:39:28.770" level="INFO">${output} = WARNING: HADOOP_CONF_DIR has been deprecated by OZONE_CONF_DIR.
+WARNING: HADOOP_LOG_DIR has been deprecated by OZONE_LOG_DIR.</msg>
+<status status="PASS" starttime="20211019 09:39:26.003" endtime="20211019 09:39:28.770"/>
+</kw>
+<kw name="Log" library="BuiltIn">
+<arg>${output}</arg>
+<doc>Logs the given message with the given level.</doc>
+<msg timestamp="20211019 09:39:28.771" level="INFO">WARNING: HADOOP_CONF_DIR has been deprecated by OZONE_CONF_DIR.
+WARNING: HADOOP_LOG_DIR has been deprecated by OZONE_LOG_DIR.</msg>
+<status status="PASS" starttime="20211019 09:39:28.770" endtime="20211019 09:39:28.771"/>
+</kw>
+<kw name="Should Be Equal As Integers" library="BuiltIn">
+<arg>${rc}</arg>
+<arg>${expected_error_code}</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<msg timestamp="20211019 09:39:28.773" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;type 'unicode'&gt;</msg>
+<status status="PASS" starttime="20211019 09:39:28.771" endtime="20211019 09:39:28.773"/>
+</kw>
+<status status="PASS" starttime="20211019 09:39:26.003" endtime="20211019 09:39:28.773"/>
+</kw>
+<msg timestamp="20211019 09:39:28.773" level="INFO">Returning from the enclosing user keyword.</msg>
+<status status="PASS" starttime="20211019 09:39:26.003" endtime="20211019 09:39:28.773"/>
+</kw>
+<status status="PASS" starttime="20211019 09:39:26.002" endtime="20211019 09:39:28.773"/>
+</kw>
+<kw name="Execute" library="os">
+<arg>ozone sh bucket create /${volume_name}/${bucket_name}</arg>
+<kw name="Run Keyword And Return" library="BuiltIn">
+<arg>Execute and checkrc</arg>
+<arg>${command}</arg>
+<arg>0</arg>
+<doc>Runs the specified keyword and returns from the enclosing user keyword.</doc>
+<kw name="Execute and checkrc" library="os">
+<arg>${command}</arg>
+<arg>0</arg>
+<kw name="Run And Return Rc And Output" library="OperatingSystem">
+<var>${rc}</var>
+<var>${output}</var>
+<arg>${command}</arg>
+<doc>Runs the given command in the system and returns the RC and output.</doc>
+<msg timestamp="20211019 09:39:28.778" level="INFO">Running command 'ozone sh bucket create /99923-volume-for-prepare/99923-bucket-for-prepare 2&gt;&amp;1'.</msg>
+<msg timestamp="20211019 09:39:31.554" level="INFO">${rc} = 0</msg>
+<msg timestamp="20211019 09:39:31.554" level="INFO">${output} = WARNING: HADOOP_CONF_DIR has been deprecated by OZONE_CONF_DIR.
+WARNING: HADOOP_LOG_DIR has been deprecated by OZONE_LOG_DIR.</msg>
+<status status="PASS" starttime="20211019 09:39:28.775" endtime="20211019 09:39:31.554"/>
+</kw>
+<kw name="Log" library="BuiltIn">
+<arg>${output}</arg>
+<doc>Logs the given message with the given level.</doc>
+<msg timestamp="20211019 09:39:31.555" level="INFO">WARNING: HADOOP_CONF_DIR has been deprecated by OZONE_CONF_DIR.
+WARNING: HADOOP_LOG_DIR has been deprecated by OZONE_LOG_DIR.</msg>
+<status status="PASS" starttime="20211019 09:39:31.554" endtime="20211019 09:39:31.555"/>
+</kw>
+<kw name="Should Be Equal As Integers" library="BuiltIn">
+<arg>${rc}</arg>
+<arg>${expected_error_code}</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<msg timestamp="20211019 09:39:31.555" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;type 'unicode'&gt;</msg>
+<status status="PASS" starttime="20211019 09:39:31.555" endtime="20211019 09:39:31.556"/>
+</kw>
+<status status="PASS" starttime="20211019 09:39:28.775" endtime="20211019 09:39:31.556"/>
+</kw>
+<msg timestamp="20211019 09:39:31.556" level="INFO">Returning from the enclosing user keyword.</msg>
+<status status="PASS" starttime="20211019 09:39:28.774" endtime="20211019 09:39:31.556"/>
+</kw>
+<status status="PASS" starttime="20211019 09:39:28.774" endtime="20211019 09:39:31.556"/>
+</kw>
+<kw name="Execute" library="os">
+<arg>ozone sh key put /${volume_name}/${bucket_name}/prepare-key /opt/hadoop/NOTICE.txt</arg>
+<kw name="Run Keyword And Return" library="BuiltIn">
+<arg>Execute and checkrc</arg>
+<arg>${command}</arg>
+<arg>0</arg>
+<doc>Runs the specified keyword and returns from the enclosing user keyword.</doc>
+<kw name="Execute and checkrc" library="os">
+<arg>${command}</arg>
+<arg>0</arg>
+<kw name="Run And Return Rc And Output" library="OperatingSystem">
+<var>${rc}</var>
+<var>${output}</var>
+<arg>${command}</arg>
+<doc>Runs the given command in the system and returns the RC and output.</doc>
+<msg timestamp="20211019 09:39:31.561" level="INFO">Running command 'ozone sh key put /99923-volume-for-prepare/99923-bucket-for-prepare/prepare-key /opt/hadoop/NOTICE.txt 2&gt;&amp;1'.</msg>
+<msg timestamp="20211019 09:39:36.540" level="INFO">${rc} = 0</msg>
+<msg timestamp="20211019 09:39:36.541" level="INFO">${output} = WARNING: HADOOP_CONF_DIR has been deprecated by OZONE_CONF_DIR.
+WARNING: HADOOP_LOG_DIR has been deprecated by OZONE_LOG_DIR.</msg>
+<status status="PASS" starttime="20211019 09:39:31.558" endtime="20211019 09:39:36.541"/>
+</kw>
+<kw name="Log" library="BuiltIn">
+<arg>${output}</arg>
+<doc>Logs the given message with the given level.</doc>
+<msg timestamp="20211019 09:39:36.542" level="INFO">WARNING: HADOOP_CONF_DIR has been deprecated by OZONE_CONF_DIR.
+WARNING: HADOOP_LOG_DIR has been deprecated by OZONE_LOG_DIR.</msg>
+<status status="PASS" starttime="20211019 09:39:36.541" endtime="20211019 09:39:36.542"/>
+</kw>
+<kw name="Should Be Equal As Integers" library="BuiltIn">
+<arg>${rc}</arg>
+<arg>${expected_error_code}</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<msg timestamp="20211019 09:39:36.543" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;type 'unicode'&gt;</msg>
+<status status="PASS" starttime="20211019 09:39:36.542" endtime="20211019 09:39:36.543"/>
+</kw>
+<status status="PASS" starttime="20211019 09:39:31.557" endtime="20211019 09:39:36.543"/>
+</kw>
+<msg timestamp="20211019 09:39:36.543" level="INFO">Returning from the enclosing user keyword.</msg>
+<status status="PASS" starttime="20211019 09:39:31.557" endtime="20211019 09:39:36.544"/>
+</kw>
+<status status="PASS" starttime="20211019 09:39:31.557" endtime="20211019 09:39:36.544"/>
+</kw>
+<status status="PASS" starttime="20211019 09:39:12.938" endtime="20211019 09:39:36.544"/>
+</kw>
+<test id="s1-s2-t1" name="Prepare Ozone Manager">
+<kw name="Run Keyword If" library="BuiltIn" type="SETUP">
+<arg>'${SECURITY_ENABLED}' == 'true'</arg>
+<arg>Kinit test user</arg>
+<arg>testuser</arg>
+<arg>testuser.keytab</arg>
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<status status="PASS" starttime="20211019 09:39:36.546" endtime="20211019 09:39:36.546"/>
+</kw>
+<kw name="Execute" library="os">
+<var>${result}</var>
+<arg>ozone admin om prepare -id=omservice</arg>
+<kw name="Run Keyword And Return" library="BuiltIn">
+<arg>Execute and checkrc</arg>
+<arg>${command}</arg>
+<arg>0</arg>
+<doc>Runs the specified keyword and returns from the enclosing user keyword.</doc>
+<kw name="Execute and checkrc" library="os">
+<arg>${command}</arg>
+<arg>0</arg>
+<kw name="Run And Return Rc And Output" library="OperatingSystem">
+<var>${rc}</var>
+<var>${output}</var>
+<arg>${command}</arg>
+<doc>Runs the given command in the system and returns the RC and output.</doc>
+<msg timestamp="20211019 09:39:36.550" level="INFO">Running command 'ozone admin om prepare -id=omservice 2&gt;&amp;1'.</msg>
+<msg timestamp="20211019 09:39:44.807" level="INFO">${rc} = 0</msg>
+<msg timestamp="20211019 09:39:44.807" level="INFO">${output} = WARNING: HADOOP_CONF_DIR has been deprecated by OZONE_CONF_DIR.
+WARNING: HADOOP_LOG_DIR has been deprecated by OZONE_LOG_DIR.
+com.google.protobuf.ServiceException: org.apache.hadoop.ipc.RemoteExceptio...</msg>
+<status status="PASS" starttime="20211019 09:39:36.548" endtime="20211019 09:39:44.807"/>
+</kw>
+<kw name="Log" library="BuiltIn">
+<arg>${output}</arg>
+<doc>Logs the given message with the given level.</doc>
+<msg timestamp="20211019 09:39:44.808" level="INFO">WARNING: HADOOP_CONF_DIR has been deprecated by OZONE_CONF_DIR.
+WARNING: HADOOP_LOG_DIR has been deprecated by OZONE_LOG_DIR.
+com.google.protobuf.ServiceException: org.apache.hadoop.ipc.RemoteException(org.apache.hadoop.ozone.om.exceptions.OMNotLeaderException): OM:om2 is not the leader. Could not determine the leader node.
+	at org.apache.hadoop.ozone.om.ratis.utils.OzoneManagerRatisUtils.createNotLeaderException(OzoneManagerRatisUtils.java:465)
+	at org.apache.hadoop.ozone.om.ratis.utils.OzoneManagerRatisUtils.checkLeaderStatus(OzoneManagerRatisUtils.java:451)
+	at org.apache.hadoop.ozone.protocolPB.OzoneManagerProtocolServerSideTranslatorPB.checkLeaderStatus(OzoneManagerProtocolServerSideTranslatorPB.java:243)
+	at org.apache.hadoop.ozone.protocolPB.OzoneManagerProtocolServerSideTranslatorPB.processRequest(OzoneManagerProtocolServerSideTranslatorPB.java:135)
+	at org.apache.hadoop.hdds.server.OzoneProtocolMessageDispatcher.processRequest(OzoneProtocolMessageDispatcher.java:87)
+	at org.apache.hadoop.ozone.protocolPB.OzoneManagerProtocolServerSideTranslatorPB.submitRequest(OzoneManagerProtocolServerSideTranslatorPB.java:123)
+	at org.apache.hadoop.ozone.protocol.proto.OzoneManagerProtocolProtos$OzoneManagerService$2.callBlockingMethod(OzoneManagerProtocolProtos.java)
+	at org.apache.hadoop.ipc.ProtobufRpcEngine$Server.processCall(ProtobufRpcEngine.java:466)
+	at org.apache.hadoop.ipc.ProtobufRpcEngine2$Server$ProtoBufRpcInvoker.call(ProtobufRpcEngine2.java:574)
+	at org.apache.hadoop.ipc.ProtobufRpcEngine2$Server$ProtoBufRpcInvoker.call(ProtobufRpcEngine2.java:552)
+	at org.apache.hadoop.ipc.RPC$Server.call(RPC.java:1093)
+	at org.apache.hadoop.ipc.Server$RpcCall.run(Server.java:1035)
+	at org.apache.hadoop.ipc.Server$RpcCall.run(Server.java:963)
+	at java.base/java.security.AccessController.doPrivileged(Native Method)
+	at java.base/javax.security.auth.Subject.doAs(Subject.java:423)
+	at org.apache.hadoop.security.UserGroupInformation.doAs(UserGroupInformation.java:1878)
+	at org.apache.hadoop.ipc.Server$Handler.run(Server.java:2966)
+, while invoking $Proxy20.submitRequest over nodeId=om2,nodeAddress=om2:9862 after 1 failover attempts. Trying to failover immediately.
+Ozone Manager Prepare Request successfully returned with Transaction Id : [702].
+
+Checking individual OM instances for prepare request completion...
+OM : [om1], Prepare Status : [PREPARE_COMPLETED], Current Transaction Id : [702]
+OM : [om3], Prepare Status : [PREPARE_COMPLETED], Current Transaction Id : [702]
+OM : [om2], Prepare Status : [PREPARE_COMPLETED], Current Transaction Id : [702]
+
+OM Preparation successful! 
+All OMs are prepared
+No new write requests will be allowed until preparation is cancelled or upgrade/downgrade is done.</msg>
+<status status="PASS" starttime="20211019 09:39:44.807" endtime="20211019 09:39:44.808"/>
+</kw>
+<kw name="Should Be Equal As Integers" library="BuiltIn">
+<arg>${rc}</arg>
+<arg>${expected_error_code}</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<msg timestamp="20211019 09:39:44.809" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;type 'unicode'&gt;</msg>
+<status status="PASS" starttime="20211019 09:39:44.808" endtime="20211019 09:39:44.809"/>
+</kw>
+<status status="PASS" starttime="20211019 09:39:36.547" endtime="20211019 09:39:44.810"/>
+</kw>
+<msg timestamp="20211019 09:39:44.810" level="INFO">Returning from the enclosing user keyword.</msg>
+<status status="PASS" starttime="20211019 09:39:36.547" endtime="20211019 09:39:44.810"/>
+</kw>
+<msg timestamp="20211019 09:39:44.810" level="INFO">${result} = WARNING: HADOOP_CONF_DIR has been deprecated by OZONE_CONF_DIR.
+WARNING: HADOOP_LOG_DIR has been deprecated by OZONE_LOG_DIR.
+com.google.protobuf.ServiceException: org.apache.hadoop.ipc.RemoteExceptio...</msg>
+<status status="PASS" starttime="20211019 09:39:36.546" endtime="20211019 09:39:44.810"/>
+</kw>
+<kw name="Wait Until Keyword Succeeds" library="BuiltIn">
+<arg>3min</arg>
+<arg>10sec</arg>
+<arg>Should contain</arg>
+<arg>${result}</arg>
+<arg>OM Preparation successful!</arg>
+<doc>Runs the specified keyword and retries if it fails.</doc>
+<kw name="Should Contain" library="BuiltIn">
+<arg>${result}</arg>
+<arg>OM Preparation successful!</arg>
+<doc>Fails if ``container`` does not contain ``item`` one or more times.</doc>
+<status status="PASS" starttime="20211019 09:39:44.811" endtime="20211019 09:39:44.811"/>
+</kw>
+<status status="PASS" starttime="20211019 09:39:44.810" endtime="20211019 09:39:44.811"/>
+</kw>
+<timeout value="5 minutes"/>
+<status status="PASS" starttime="20211019 09:39:36.544" endtime="20211019 09:39:44.812"/>
+</test>
+<test id="s1-s2-t2" name="Checks if the expected data is present in OM">
+<kw name="Run Keyword If" library="BuiltIn" type="SETUP">
+<arg>'${SECURITY_ENABLED}' == 'true'</arg>
+<arg>Kinit test user</arg>
+<arg>testuser</arg>
+<arg>testuser.keytab</arg>
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<status status="PASS" starttime="20211019 09:39:44.815" endtime="20211019 09:39:44.815"/>
+</kw>
+<kw name="Execute" library="os">
+<var>${result}</var>
+<arg>ozone sh key info /${volume_name}/${bucket_name}/prepare-key</arg>
+<kw name="Run Keyword And Return" library="BuiltIn">
+<arg>Execute and checkrc</arg>
+<arg>${command}</arg>
+<arg>0</arg>
+<doc>Runs the specified keyword and returns from the enclosing user keyword.</doc>
+<kw name="Execute and checkrc" library="os">
+<arg>${command}</arg>
+<arg>0</arg>
+<kw name="Run And Return Rc And Output" library="OperatingSystem">
+<var>${rc}</var>
+<var>${output}</var>
+<arg>${command}</arg>
+<doc>Runs the given command in the system and returns the RC and output.</doc>
+<msg timestamp="20211019 09:39:44.819" level="INFO">Running command 'ozone sh key info /99923-volume-for-prepare/99923-bucket-for-prepare/prepare-key 2&gt;&amp;1'.</msg>
+<msg timestamp="20211019 09:39:47.860" level="INFO">${rc} = 0</msg>
+<msg timestamp="20211019 09:39:47.860" level="INFO">${output} = WARNING: HADOOP_CONF_DIR has been deprecated by OZONE_CONF_DIR.
+WARNING: HADOOP_LOG_DIR has been deprecated by OZONE_LOG_DIR.
+{
+  "volumeName" : "99923-volume-for-prepare",
+  "bucketName" : "99923-buc...</msg>
+<status status="PASS" starttime="20211019 09:39:44.818" endtime="20211019 09:39:47.860"/>
+</kw>
+<kw name="Log" library="BuiltIn">
+<arg>${output}</arg>
+<doc>Logs the given message with the given level.</doc>
+<msg timestamp="20211019 09:39:47.861" level="INFO">WARNING: HADOOP_CONF_DIR has been deprecated by OZONE_CONF_DIR.
+WARNING: HADOOP_LOG_DIR has been deprecated by OZONE_LOG_DIR.
+{
+  "volumeName" : "99923-volume-for-prepare",
+  "bucketName" : "99923-bucket-for-prepare",
+  "name" : "prepare-key",
+  "dataSize" : 17526,
+  "creationTime" : "2021-10-19T09:39:34.217Z",
+  "modificationTime" : "2021-10-19T09:39:36.168Z",
+  "replicationConfig" : {
+    "replicationFactor" : "ONE",
+    "requiredNodes" : 1,
+    "replicationType" : "RATIS"
+  },
+  "ozoneKeyLocations" : [ {
+    "containerID" : 3,
+    "localID" : 107544261427200204,
+    "length" : 17526,
+    "offset" : 0,
+    "keyOffset" : 0
+  } ],
+  "metadata" : { },
+  "replicationFactor" : 1,
+  "replicationType" : "RATIS"
+}</msg>
+<status status="PASS" starttime="20211019 09:39:47.861" endtime="20211019 09:39:47.861"/>
+</kw>
+<kw name="Should Be Equal As Integers" library="BuiltIn">
+<arg>${rc}</arg>
+<arg>${expected_error_code}</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<msg timestamp="20211019 09:39:47.862" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;type 'unicode'&gt;</msg>
+<status status="PASS" starttime="20211019 09:39:47.862" endtime="20211019 09:39:47.862"/>
+</kw>
+<status status="PASS" starttime="20211019 09:39:44.817" endtime="20211019 09:39:47.863"/>
+</kw>
+<msg timestamp="20211019 09:39:47.863" level="INFO">Returning from the enclosing user keyword.</msg>
+<status status="PASS" starttime="20211019 09:39:44.816" endtime="20211019 09:39:47.863"/>
+</kw>
+<msg timestamp="20211019 09:39:47.863" level="INFO">${result} = WARNING: HADOOP_CONF_DIR has been deprecated by OZONE_CONF_DIR.
+WARNING: HADOOP_LOG_DIR has been deprecated by OZONE_LOG_DIR.
+{
+  "volumeName" : "99923-volume-for-prepare",
+  "bucketName" : "99923-buc...</msg>
+<status status="PASS" starttime="20211019 09:39:44.816" endtime="20211019 09:39:47.863"/>
+</kw>
+<kw name="Should Contain" library="BuiltIn">
+<arg>${result}</arg>
+<arg>\"name\" : \"prepare-key\"</arg>
+<doc>Fails if ``container`` does not contain ``item`` one or more times.</doc>
+<status status="PASS" starttime="20211019 09:39:47.864" endtime="20211019 09:39:47.864"/>
+</kw>
+<timeout value="5 minutes"/>
+<status status="PASS" starttime="20211019 09:39:44.814" endtime="20211019 09:39:47.864"/>
+</test>
+<test id="s1-s2-t3" name="Test write operation fails">
+<kw name="Run Keyword If" library="BuiltIn" type="SETUP">
+<arg>'${SECURITY_ENABLED}' == 'true'</arg>
+<arg>Kinit test user</arg>
+<arg>testuser</arg>
+<arg>testuser.keytab</arg>
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<status status="PASS" starttime="20211019 09:39:47.867" endtime="20211019 09:39:47.867"/>
+</kw>
+<kw name="Execute and checkrc" library="os">
+<var>${result}</var>
+<arg>ozone sh key put /${volume_name}/${bucket_name}/prepare-key2 /opt/hadoop/NOTICE.txt</arg>
+<arg>255</arg>
+<kw name="Run And Return Rc And Output" library="OperatingSystem">
+<var>${rc}</var>
+<var>${output}</var>
+<arg>${command}</arg>
+<doc>Runs the given command in the system and returns the RC and output.</doc>
+<msg timestamp="20211019 09:39:47.876" level="INFO">Running command 'ozone sh key put /99923-volume-for-prepare/99923-bucket-for-prepare/prepare-key2 /opt/hadoop/NOTICE.txt 2&gt;&amp;1'.</msg>
+<msg timestamp="20211019 09:39:50.681" level="INFO">${rc} = 255</msg>
+<msg timestamp="20211019 09:39:50.682" level="INFO">${output} = WARNING: HADOOP_CONF_DIR has been deprecated by OZONE_CONF_DIR.
+WARNING: HADOOP_LOG_DIR has been deprecated by OZONE_LOG_DIR.
+NOT_SUPPORTED_OPERATION_WHEN_PREPARED Cannot apply write request CreateKey...</msg>
+<status status="PASS" starttime="20211019 09:39:47.868" endtime="20211019 09:39:50.682"/>
+</kw>
+<kw name="Log" library="BuiltIn">
+<arg>${output}</arg>
+<doc>Logs the given message with the given level.</doc>
+<msg timestamp="20211019 09:39:50.683" level="INFO">WARNING: HADOOP_CONF_DIR has been deprecated by OZONE_CONF_DIR.
+WARNING: HADOOP_LOG_DIR has been deprecated by OZONE_LOG_DIR.
+NOT_SUPPORTED_OPERATION_WHEN_PREPARED Cannot apply write request CreateKey when OM is in prepare mode.</msg>
+<status status="PASS" starttime="20211019 09:39:50.682" endtime="20211019 09:39:50.683"/>
+</kw>
+<kw name="Should Be Equal As Integers" library="BuiltIn">
+<arg>${rc}</arg>
+<arg>${expected_error_code}</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<msg timestamp="20211019 09:39:50.684" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;type 'unicode'&gt;</msg>
+<status status="PASS" starttime="20211019 09:39:50.683" endtime="20211019 09:39:50.684"/>
+</kw>
+<msg timestamp="20211019 09:39:50.684" level="INFO">${result} = WARNING: HADOOP_CONF_DIR has been deprecated by OZONE_CONF_DIR.
+WARNING: HADOOP_LOG_DIR has been deprecated by OZONE_LOG_DIR.
+NOT_SUPPORTED_OPERATION_WHEN_PREPARED Cannot apply write request CreateKey...</msg>
+<status status="PASS" starttime="20211019 09:39:47.867" endtime="20211019 09:39:50.684"/>
+</kw>
+<kw name="Should Contain" library="BuiltIn">
+<arg>${result}</arg>
+<arg>OM is in prepare mode</arg>
+<doc>Fails if ``container`` does not contain ``item`` one or more times.</doc>
+<status status="PASS" starttime="20211019 09:39:50.684" endtime="20211019 09:39:50.685"/>
+</kw>
+<kw name="Execute and checkrc" library="os">
+<arg>ozone sh key info /${volume_name}/${bucket_name}/prepare-key2</arg>
+<arg>255</arg>
+<kw name="Run And Return Rc And Output" library="OperatingSystem">
+<var>${rc}</var>
+<var>${output}</var>
+<arg>${command}</arg>
+<doc>Runs the given command in the system and returns the RC and output.</doc>
+<msg timestamp="20211019 09:39:50.688" level="INFO">Running command 'ozone sh key info /99923-volume-for-prepare/99923-bucket-for-prepare/prepare-key2 2&gt;&amp;1'.</msg>
+<msg timestamp="20211019 09:39:53.213" level="INFO">${rc} = 255</msg>
+<msg timestamp="20211019 09:39:53.213" level="INFO">${output} = WARNING: HADOOP_CONF_DIR has been deprecated by OZONE_CONF_DIR.
+WARNING: HADOOP_LOG_DIR has been deprecated by OZONE_LOG_DIR.
+KEY_NOT_FOUND Key:prepare-key2 not found</msg>
+<status status="PASS" starttime="20211019 09:39:50.686" endtime="20211019 09:39:53.213"/>
+</kw>
+<kw name="Log" library="BuiltIn">
+<arg>${output}</arg>
+<doc>Logs the given message with the given level.</doc>
+<msg timestamp="20211019 09:39:53.214" level="INFO">WARNING: HADOOP_CONF_DIR has been deprecated by OZONE_CONF_DIR.
+WARNING: HADOOP_LOG_DIR has been deprecated by OZONE_LOG_DIR.
+KEY_NOT_FOUND Key:prepare-key2 not found</msg>
+<status status="PASS" starttime="20211019 09:39:53.213" endtime="20211019 09:39:53.215"/>
+</kw>
+<kw name="Should Be Equal As Integers" library="BuiltIn">
+<arg>${rc}</arg>
+<arg>${expected_error_code}</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<msg timestamp="20211019 09:39:53.216" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;type 'unicode'&gt;</msg>
+<status status="PASS" starttime="20211019 09:39:53.215" endtime="20211019 09:39:53.216"/>
+</kw>
+<status status="PASS" starttime="20211019 09:39:50.685" endtime="20211019 09:39:53.216"/>
+</kw>
+<timeout value="5 minutes"/>
+<status status="PASS" starttime="20211019 09:39:47.865" endtime="20211019 09:39:53.216"/>
+</test>
+<doc>Smoke test to test preparing OMs in an OM HA cluster.</doc>
+<status status="PASS" starttime="20211019 09:39:12.877" endtime="20211019 09:39:53.218"/>
+</suite>
+<suite id="s1-s3" name="Om-Prepared" source="/opt/hadoop/smoketest/omha/om-prepared.robot">
+<test id="s1-s3-t1" name="Test create volume fails">
+<kw name="Run Keyword If" library="BuiltIn" type="SETUP">
+<arg>'${SECURITY_ENABLED}' == 'true'</arg>
+<arg>Kinit test user</arg>
+<arg>testuser</arg>
+<arg>testuser.keytab</arg>
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<status status="PASS" starttime="20211019 09:39:57.738" endtime="20211019 09:39:57.739"/>
+</kw>
+<kw name="Generate Random String" library="String">
+<var>${random}</var>
+<arg>5</arg>
+<arg>[NUMBERS]</arg>
+<doc>Generates a string with a desired ``length`` from the given ``chars``.</doc>
+<msg timestamp="20211019 09:39:57.740" level="INFO">${random} = 72394</msg>
+<status status="PASS" starttime="20211019 09:39:57.739" endtime="20211019 09:39:57.740"/>
+</kw>
+<kw name="Set Suite Variable" library="BuiltIn">
+<arg>${volume_name}</arg>
+<arg>${random}-volume-for-prepare</arg>
+<doc>Makes a variable available everywhere within the scope of the current suite.</doc>
+<msg timestamp="20211019 09:39:57.741" level="INFO">${volume_name} = 72394-volume-for-prepare</msg>
+<status status="PASS" starttime="20211019 09:39:57.740" endtime="20211019 09:39:57.741"/>
+</kw>
+<kw name="Execute and checkrc" library="os">
+<var>${result}</var>
+<arg>ozone sh volume create /${volume_name}</arg>
+<arg>255</arg>
+<kw name="Run And Return Rc And Output" library="OperatingSystem">
+<var>${rc}</var>
+<var>${output}</var>
+<arg>${command}</arg>
+<doc>Runs the given command in the system and returns the RC and output.</doc>
+<msg timestamp="20211019 09:39:57.745" level="INFO">Running command 'ozone sh volume create /72394-volume-for-prepare 2&gt;&amp;1'.</msg>
+<msg timestamp="20211019 09:40:00.400" level="INFO">${rc} = 255</msg>
+<msg timestamp="20211019 09:40:00.400" level="INFO">${output} = WARNING: HADOOP_CONF_DIR has been deprecated by OZONE_CONF_DIR.
+WARNING: HADOOP_LOG_DIR has been deprecated by OZONE_LOG_DIR.
+NOT_SUPPORTED_OPERATION_WHEN_PREPARED Cannot apply write request CreateVol...</msg>
+<status status="PASS" starttime="20211019 09:39:57.742" endtime="20211019 09:40:00.400"/>
+</kw>
+<kw name="Log" library="BuiltIn">
+<arg>${output}</arg>
+<doc>Logs the given message with the given level.</doc>
+<msg timestamp="20211019 09:40:00.402" level="INFO">WARNING: HADOOP_CONF_DIR has been deprecated by OZONE_CONF_DIR.
+WARNING: HADOOP_LOG_DIR has been deprecated by OZONE_LOG_DIR.
+NOT_SUPPORTED_OPERATION_WHEN_PREPARED Cannot apply write request CreateVolume when OM is in prepare mode.</msg>
+<status status="PASS" starttime="20211019 09:40:00.401" endtime="20211019 09:40:00.402"/>
+</kw>
+<kw name="Should Be Equal As Integers" library="BuiltIn">
+<arg>${rc}</arg>
+<arg>${expected_error_code}</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<msg timestamp="20211019 09:40:00.402" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;type 'unicode'&gt;</msg>
+<status status="PASS" starttime="20211019 09:40:00.402" endtime="20211019 09:40:00.403"/>
+</kw>
+<msg timestamp="20211019 09:40:00.403" level="INFO">${result} = WARNING: HADOOP_CONF_DIR has been deprecated by OZONE_CONF_DIR.
+WARNING: HADOOP_LOG_DIR has been deprecated by OZONE_LOG_DIR.
+NOT_SUPPORTED_OPERATION_WHEN_PREPARED Cannot apply write request CreateVol...</msg>
+<status status="PASS" starttime="20211019 09:39:57.741" endtime="20211019 09:40:00.403"/>
+</kw>
+<kw name="Should Contain" library="BuiltIn">
+<arg>${result}</arg>
+<arg>OM is in prepare mode</arg>
+<doc>Fails if ``container`` does not contain ``item`` one or more times.</doc>
+<status status="PASS" starttime="20211019 09:40:00.403" endtime="20211019 09:40:00.404"/>
+</kw>
+<kw name="Execute and checkrc" library="os">
+<var>${result}</var>
+<arg>ozone sh volume info /${volume_name}</arg>
+<arg>255</arg>
+<kw name="Run And Return Rc And Output" library="OperatingSystem">
+<var>${rc}</var>
+<var>${output}</var>
+<arg>${command}</arg>
+<doc>Runs the given command in the system and returns the RC and output.</doc>
+<msg timestamp="20211019 09:40:00.407" level="INFO">Running command 'ozone sh volume info /72394-volume-for-prepare 2&gt;&amp;1'.</msg>
+<msg timestamp="20211019 09:40:02.862" level="INFO">${rc} = 255</msg>
+<msg timestamp="20211019 09:40:02.862" level="INFO">${output} = WARNING: HADOOP_CONF_DIR has been deprecated by OZONE_CONF_DIR.
+WARNING: HADOOP_LOG_DIR has been deprecated by OZONE_LOG_DIR.
+VOLUME_NOT_FOUND Volume 72394-volume-for-prepare is not found</msg>
+<status status="PASS" starttime="20211019 09:40:00.405" endtime="20211019 09:40:02.862"/>
+</kw>
+<kw name="Log" library="BuiltIn">
+<arg>${output}</arg>
+<doc>Logs the given message with the given level.</doc>
+<msg timestamp="20211019 09:40:02.863" level="INFO">WARNING: HADOOP_CONF_DIR has been deprecated by OZONE_CONF_DIR.
+WARNING: HADOOP_LOG_DIR has been deprecated by OZONE_LOG_DIR.
+VOLUME_NOT_FOUND Volume 72394-volume-for-prepare is not found</msg>
+<status status="PASS" starttime="20211019 09:40:02.863" endtime="20211019 09:40:02.864"/>
+</kw>
+<kw name="Should Be Equal As Integers" library="BuiltIn">
+<arg>${rc}</arg>
+<arg>${expected_error_code}</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<msg timestamp="20211019 09:40:02.865" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;type 'unicode'&gt;</msg>
+<status status="PASS" starttime="20211019 09:40:02.864" endtime="20211019 09:40:02.865"/>
+</kw>
+<msg timestamp="20211019 09:40:02.866" level="INFO">${result} = WARNING: HADOOP_CONF_DIR has been deprecated by OZONE_CONF_DIR.
+WARNING: HADOOP_LOG_DIR has been deprecated by OZONE_LOG_DIR.
+VOLUME_NOT_FOUND Volume 72394-volume-for-prepare is not found</msg>
+<status status="PASS" starttime="20211019 09:40:00.404" endtime="20211019 09:40:02.866"/>
+</kw>
+<kw name="Should Contain" library="BuiltIn">
+<arg>${result}</arg>
+<arg>VOLUME_NOT_FOUND</arg>
+<doc>Fails if ``container`` does not contain ``item`` one or more times.</doc>
+<status status="PASS" starttime="20211019 09:40:02.866" endtime="20211019 09:40:02.866"/>
+</kw>
+<timeout value="5 minutes"/>
+<status status="PASS" starttime="20211019 09:39:57.737" endtime="20211019 09:40:02.866"/>
+</test>
+<test id="s1-s3-t2" name="Test list volumes succeeds">
+<kw name="Run Keyword If" library="BuiltIn" type="SETUP">
+<arg>'${SECURITY_ENABLED}' == 'true'</arg>
+<arg>Kinit test user</arg>
+<arg>testuser</arg>
+<arg>testuser.keytab</arg>
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<status status="PASS" starttime="20211019 09:40:02.868" endtime="20211019 09:40:02.868"/>
+</kw>
+<kw name="Execute" library="os">
+<var>${result}</var>
+<arg>ozone sh volume list</arg>
+<kw name="Run Keyword And Return" library="BuiltIn">
+<arg>Execute and checkrc</arg>
+<arg>${command}</arg>
+<arg>0</arg>
+<doc>Runs the specified keyword and returns from the enclosing user keyword.</doc>
+<kw name="Execute and checkrc" library="os">
+<arg>${command}</arg>
+<arg>0</arg>
+<kw name="Run And Return Rc And Output" library="OperatingSystem">
+<var>${rc}</var>
+<var>${output}</var>
+<arg>${command}</arg>
+<doc>Runs the given command in the system and returns the RC and output.</doc>
+<msg timestamp="20211019 09:40:02.873" level="INFO">Running command 'ozone sh volume list 2&gt;&amp;1'.</msg>
+<msg timestamp="20211019 09:40:05.932" level="INFO">${rc} = 0</msg>
+<msg timestamp="20211019 09:40:05.933" level="INFO">${output} = WARNING: HADOOP_CONF_DIR has been deprecated by OZONE_CONF_DIR.
+WARNING: HADOOP_LOG_DIR has been deprecated by OZONE_LOG_DIR.
+[ {
+  "metadata" : { },
+  "name" : "60564-volume-for-cancel",
+  "admin" : ...</msg>
+<status status="PASS" starttime="20211019 09:40:02.870" endtime="20211019 09:40:05.933"/>
+</kw>
+<kw name="Log" library="BuiltIn">
+<arg>${output}</arg>
+<doc>Logs the given message with the given level.</doc>
+<msg timestamp="20211019 09:40:05.934" level="INFO">WARNING: HADOOP_CONF_DIR has been deprecated by OZONE_CONF_DIR.
+WARNING: HADOOP_LOG_DIR has been deprecated by OZONE_LOG_DIR.
+[ {
+  "metadata" : { },
+  "name" : "60564-volume-for-cancel",
+  "admin" : "hadoop",
+  "owner" : "hadoop",
+  "quotaInBytes" : -1,
+  "quotaInNamespace" : -1,
+  "usedNamespace" : 1,
+  "creationTime" : "2021-10-19T09:38:56.979Z",
+  "modificationTime" : "2021-10-19T09:38:56.979Z",
+  "acls" : [ {
+    "type" : "USER",
+    "name" : "hadoop",
+    "aclScope" : "ACCESS",
+    "aclList" : [ "ALL" ]
+  }, {
+    "type" : "GROUP",
+    "name" : "users",
+    "aclScope" : "ACCESS",
+    "aclList" : [ "ALL" ]
+  } ]
+}, {
+  "metadata" : { },
+  "name" : "s3v",
+  "admin" : "hadoop",
+  "owner" : "hadoop",
+  "quotaInBytes" : -1,
+  "quotaInNamespace" : -1,
+  "usedNamespace" : 0,
+  "creationTime" : "2021-10-19T09:37:31.727Z",
+  "modificationTime" : "2021-10-19T09:37:31.727Z",
+  "acls" : [ {
+    "type" : "USER",
+    "name" : "hadoop",
+    "aclScope" : "ACCESS",
+    "aclList" : [ "ALL" ]
+  }, {
+    "type" : "GROUP",
+    "name" : "users",
+    "aclScope" : "ACCESS",
+    "aclList" : [ "ALL" ]
+  } ]
+}, {
+  "metadata" : { },
+  "name" : "vol-0-38426",
+  "admin" : "hadoop",
+  "owner" : "hadoop",
+  "quotaInBytes" : -1,
+  "quotaInNamespace" : -1,
+  "usedNamespace" : 1,
+  "creationTime" : "2021-10-19T09:37:59.028Z",
+  "modificationTime" : "2021-10-19T09:37:59.028Z",
+  "acls" : [ {
+    "type" : "USER",
+    "name" : "hadoop",
+    "aclScope" : "ACCESS",
+    "aclList" : [ "ALL" ]
+  }, {
+    "type" : "GROUP",
+    "name" : "users",
+    "aclScope" : "ACCESS",
+    "aclList" : [ "ALL" ]
+  } ]
+}, {
+  "metadata" : { },
+  "name" : "vol-0-90517",
+  "admin" : "hadoop",
+  "owner" : "hadoop",
+  "quotaInBytes" : -1,
+  "quotaInNamespace" : -1,
+  "usedNamespace" : 1,
+  "creationTime" : "2021-10-19T09:39:15.624Z",
+  "modificationTime" : "2021-10-19T09:39:15.624Z",
+  "acls" : [ {
+    "type" : "USER",
+    "name" : "hadoop",
+    "aclScope" : "ACCESS",
+    "aclList" : [ "ALL" ]
+  }, {
+    "type" : "GROUP",
+    "name" : "users",
+    "aclScope" : "ACCESS",
+    "aclList" : [ "ALL" ]
+  } ]
+}, {
+  "metadata" : { },
+  "name" : "73774-volume-for-prepare",
+  "admin" : "hadoop",
+  "owner" : "hadoop",
+  "quotaInBytes" : -1,
+  "quotaInNamespace" : -1,
+  "usedNamespace" : 1,
+  "creationTime" : "2021-10-19T09:38:17.223Z",
+  "modificationTime" : "2021-10-19T09:38:17.223Z",
+  "acls" : [ {
+    "type" : "USER",
+    "name" : "hadoop",
+    "aclScope" : "ACCESS",
+    "aclList" : [ "ALL" ]
+  }, {
+    "type" : "GROUP",
+    "name" : "users",
+    "aclScope" : "ACCESS",
+    "aclList" : [ "ALL" ]
+  } ]
+}, {
+  "metadata" : { },
+  "name" : "99923-volume-for-prepare",
+  "admin" : "hadoop",
+  "owner" : "hadoop",
+  "quotaInBytes" : -1,
+  "quotaInNamespace" : -1,
+  "usedNamespace" : 1,
+  "creationTime" : "2021-10-19T09:39:28.722Z",
+  "modificationTime" : "2021-10-19T09:39:28.722Z",
+  "acls" : [ {
+    "type" : "USER",
+    "name" : "hadoop",
+    "aclScope" : "ACCESS",
+    "aclList" : [ "ALL" ]
+  }, {
+    "type" : "GROUP",
+    "name" : "users",
+    "aclScope" : "ACCESS",
+    "aclList" : [ "ALL" ]
+  } ]
+} ]</msg>
+<status status="PASS" starttime="20211019 09:40:05.933" endtime="20211019 09:40:05.934"/>
+</kw>
+<kw name="Should Be Equal As Integers" library="BuiltIn">
+<arg>${rc}</arg>
+<arg>${expected_error_code}</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<msg timestamp="20211019 09:40:05.935" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;type 'unicode'&gt;</msg>
+<status status="PASS" starttime="20211019 09:40:05.934" endtime="20211019 09:40:05.935"/>
+</kw>
+<status status="PASS" starttime="20211019 09:40:02.869" endtime="20211019 09:40:05.935"/>
+</kw>
+<msg timestamp="20211019 09:40:05.935" level="INFO">Returning from the enclosing user keyword.</msg>
+<status status="PASS" starttime="20211019 09:40:02.869" endtime="20211019 09:40:05.935"/>
+</kw>
+<msg timestamp="20211019 09:40:05.936" level="INFO">${result} = WARNING: HADOOP_CONF_DIR has been deprecated by OZONE_CONF_DIR.
+WARNING: HADOOP_LOG_DIR has been deprecated by OZONE_LOG_DIR.
+[ {
+  "metadata" : { },
+  "name" : "60564-volume-for-cancel",
+  "admin" : ...</msg>
+<status status="PASS" starttime="20211019 09:40:02.868" endtime="20211019 09:40:05.936"/>
+</kw>
+<timeout value="5 minutes"/>
+<status status="PASS" starttime="20211019 09:40:02.867" endtime="20211019 09:40:05.936"/>
+</test>
+<doc>Smoke test to test that OMs are prepared in an OM HA cluster.</doc>
+<status status="PASS" starttime="20211019 09:39:57.675" endtime="20211019 09:40:05.938"/>
+</suite>
+<suite id="s1-s4" name="Om-Prepared" source="/opt/hadoop/smoketest/omha/om-prepared.robot">
+<test id="s1-s4-t1" name="Test create volume fails">
+<kw name="Run Keyword If" library="BuiltIn" type="SETUP">
+<arg>'${SECURITY_ENABLED}' == 'true'</arg>
+<arg>Kinit test user</arg>
+<arg>testuser</arg>
+<arg>testuser.keytab</arg>
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<status status="PASS" starttime="20211019 09:41:34.107" endtime="20211019 09:41:34.108"/>
+</kw>
+<kw name="Generate Random String" library="String">
+<var>${random}</var>
+<arg>5</arg>
+<arg>[NUMBERS]</arg>
+<doc>Generates a string with a desired ``length`` from the given ``chars``.</doc>
+<msg timestamp="20211019 09:41:34.108" level="INFO">${random} = 56780</msg>
+<status status="PASS" starttime="20211019 09:41:34.108" endtime="20211019 09:41:34.108"/>
+</kw>
+<kw name="Set Suite Variable" library="BuiltIn">
+<arg>${volume_name}</arg>
+<arg>${random}-volume-for-prepare</arg>
+<doc>Makes a variable available everywhere within the scope of the current suite.</doc>
+<msg timestamp="20211019 09:41:34.110" level="INFO">${volume_name} = 56780-volume-for-prepare</msg>
+<status status="PASS" starttime="20211019 09:41:34.109" endtime="20211019 09:41:34.110"/>
+</kw>
+<kw name="Execute and checkrc" library="os">
+<var>${result}</var>
+<arg>ozone sh volume create /${volume_name}</arg>
+<arg>255</arg>
+<kw name="Run And Return Rc And Output" library="OperatingSystem">
+<var>${rc}</var>
+<var>${output}</var>
+<arg>${command}</arg>
+<doc>Runs the given command in the system and returns the RC and output.</doc>
+<msg timestamp="20211019 09:41:34.116" level="INFO">Running command 'ozone sh volume create /56780-volume-for-prepare 2&gt;&amp;1'.</msg>
+<msg timestamp="20211019 09:41:37.020" level="INFO">${rc} = 255</msg>
+<msg timestamp="20211019 09:41:37.020" level="INFO">${output} = WARNING: HADOOP_CONF_DIR has been deprecated by OZONE_CONF_DIR.
+WARNING: HADOOP_LOG_DIR has been deprecated by OZONE_LOG_DIR.
+NOT_SUPPORTED_OPERATION_WHEN_PREPARED Cannot apply write request CreateVol...</msg>
+<status status="PASS" starttime="20211019 09:41:34.111" endtime="20211019 09:41:37.020"/>
+</kw>
+<kw name="Log" library="BuiltIn">
+<arg>${output}</arg>
+<doc>Logs the given message with the given level.</doc>
+<msg timestamp="20211019 09:41:37.022" level="INFO">WARNING: HADOOP_CONF_DIR has been deprecated by OZONE_CONF_DIR.
+WARNING: HADOOP_LOG_DIR has been deprecated by OZONE_LOG_DIR.
+NOT_SUPPORTED_OPERATION_WHEN_PREPARED Cannot apply write request CreateVolume when OM is in prepare mode.</msg>
+<status status="PASS" starttime="20211019 09:41:37.021" endtime="20211019 09:41:37.022"/>
+</kw>
+<kw name="Should Be Equal As Integers" library="BuiltIn">
+<arg>${rc}</arg>
+<arg>${expected_error_code}</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<msg timestamp="20211019 09:41:37.023" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;type 'unicode'&gt;</msg>
+<status status="PASS" starttime="20211019 09:41:37.022" endtime="20211019 09:41:37.023"/>
+</kw>
+<msg timestamp="20211019 09:41:37.023" level="INFO">${result} = WARNING: HADOOP_CONF_DIR has been deprecated by OZONE_CONF_DIR.
+WARNING: HADOOP_LOG_DIR has been deprecated by OZONE_LOG_DIR.
+NOT_SUPPORTED_OPERATION_WHEN_PREPARED Cannot apply write request CreateVol...</msg>
+<status status="PASS" starttime="20211019 09:41:34.110" endtime="20211019 09:41:37.023"/>
+</kw>
+<kw name="Should Contain" library="BuiltIn">
+<arg>${result}</arg>
+<arg>OM is in prepare mode</arg>
+<doc>Fails if ``container`` does not contain ``item`` one or more times.</doc>
+<status status="PASS" starttime="20211019 09:41:37.023" endtime="20211019 09:41:37.024"/>
+</kw>
+<kw name="Execute and checkrc" library="os">
+<var>${result}</var>
+<arg>ozone sh volume info /${volume_name}</arg>
+<arg>255</arg>
+<kw name="Run And Return Rc And Output" library="OperatingSystem">
+<var>${rc}</var>
+<var>${output}</var>
+<arg>${command}</arg>
+<doc>Runs the given command in the system and returns the RC and output.</doc>
+<msg timestamp="20211019 09:41:37.027" level="INFO">Running command 'ozone sh volume info /56780-volume-for-prepare 2&gt;&amp;1'.</msg>
+<msg timestamp="20211019 09:41:39.922" level="INFO">${rc} = 255</msg>
+<msg timestamp="20211019 09:41:39.922" level="INFO">${output} = WARNING: HADOOP_CONF_DIR has been deprecated by OZONE_CONF_DIR.
+WARNING: HADOOP_LOG_DIR has been deprecated by OZONE_LOG_DIR.
+VOLUME_NOT_FOUND Volume 56780-volume-for-prepare is not found</msg>
+<status status="PASS" starttime="20211019 09:41:37.025" endtime="20211019 09:41:39.922"/>
+</kw>
+<kw name="Log" library="BuiltIn">
+<arg>${output}</arg>
+<doc>Logs the given message with the given level.</doc>
+<msg timestamp="20211019 09:41:39.924" level="INFO">WARNING: HADOOP_CONF_DIR has been deprecated by OZONE_CONF_DIR.
+WARNING: HADOOP_LOG_DIR has been deprecated by OZONE_LOG_DIR.
+VOLUME_NOT_FOUND Volume 56780-volume-for-prepare is not found</msg>
+<status status="PASS" starttime="20211019 09:41:39.923" endtime="20211019 09:41:39.924"/>
+</kw>
+<kw name="Should Be Equal As Integers" library="BuiltIn">
+<arg>${rc}</arg>
+<arg>${expected_error_code}</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<msg timestamp="20211019 09:41:39.925" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;type 'unicode'&gt;</msg>
+<status status="PASS" starttime="20211019 09:41:39.924" endtime="20211019 09:41:39.925"/>
+</kw>
+<msg timestamp="20211019 09:41:39.925" level="INFO">${result} = WARNING: HADOOP_CONF_DIR has been deprecated by OZONE_CONF_DIR.
+WARNING: HADOOP_LOG_DIR has been deprecated by OZONE_LOG_DIR.
+VOLUME_NOT_FOUND Volume 56780-volume-for-prepare is not found</msg>
+<status status="PASS" starttime="20211019 09:41:37.024" endtime="20211019 09:41:39.925"/>
+</kw>
+<kw name="Should Contain" library="BuiltIn">
+<arg>${result}</arg>
+<arg>VOLUME_NOT_FOUND</arg>
+<doc>Fails if ``container`` does not contain ``item`` one or more times.</doc>
+<status status="PASS" starttime="20211019 09:41:39.926" endtime="20211019 09:41:39.926"/>
+</kw>
+<timeout value="5 minutes"/>
+<status status="PASS" starttime="20211019 09:41:34.105" endtime="20211019 09:41:39.926"/>
+</test>
+<test id="s1-s4-t2" name="Test list volumes succeeds">
+<kw name="Run Keyword If" library="BuiltIn" type="SETUP">
+<arg>'${SECURITY_ENABLED}' == 'true'</arg>
+<arg>Kinit test user</arg>
+<arg>testuser</arg>
+<arg>testuser.keytab</arg>
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<status status="PASS" starttime="20211019 09:41:39.929" endtime="20211019 09:41:39.929"/>
+</kw>
+<kw name="Execute" library="os">
+<var>${result}</var>
+<arg>ozone sh volume list</arg>
+<kw name="Run Keyword And Return" library="BuiltIn">
+<arg>Execute and checkrc</arg>
+<arg>${command}</arg>
+<arg>0</arg>
+<doc>Runs the specified keyword and returns from the enclosing user keyword.</doc>
+<kw name="Execute and checkrc" library="os">
+<arg>${command}</arg>
+<arg>0</arg>
+<kw name="Run And Return Rc And Output" library="OperatingSystem">
+<var>${rc}</var>
+<var>${output}</var>
+<arg>${command}</arg>
+<doc>Runs the given command in the system and returns the RC and output.</doc>
+<msg timestamp="20211019 09:41:39.934" level="INFO">Running command 'ozone sh volume list 2&gt;&amp;1'.</msg>
+<msg timestamp="20211019 09:41:42.889" level="INFO">${rc} = 0</msg>
+<msg timestamp="20211019 09:41:42.889" level="INFO">${output} = WARNING: HADOOP_CONF_DIR has been deprecated by OZONE_CONF_DIR.
+WARNING: HADOOP_LOG_DIR has been deprecated by OZONE_LOG_DIR.
+[ {
+  "metadata" : { },
+  "name" : "60564-volume-for-cancel",
+  "admin" : ...</msg>
+<status status="PASS" starttime="20211019 09:41:39.931" endtime="20211019 09:41:42.889"/>
+</kw>
+<kw name="Log" library="BuiltIn">
+<arg>${output}</arg>
+<doc>Logs the given message with the given level.</doc>
+<msg timestamp="20211019 09:41:42.891" level="INFO">WARNING: HADOOP_CONF_DIR has been deprecated by OZONE_CONF_DIR.
+WARNING: HADOOP_LOG_DIR has been deprecated by OZONE_LOG_DIR.
+[ {
+  "metadata" : { },
+  "name" : "60564-volume-for-cancel",
+  "admin" : "hadoop",
+  "owner" : "hadoop",
+  "quotaInBytes" : -1,
+  "quotaInNamespace" : -1,
+  "usedNamespace" : 1,
+  "creationTime" : "2021-10-19T09:38:56.979Z",
+  "modificationTime" : "2021-10-19T09:38:56.979Z",
+  "acls" : [ {
+    "type" : "USER",
+    "name" : "hadoop",
+    "aclScope" : "ACCESS",
+    "aclList" : [ "ALL" ]
+  }, {
+    "type" : "GROUP",
+    "name" : "users",
+    "aclScope" : "ACCESS",
+    "aclList" : [ "ALL" ]
+  } ]
+}, {
+  "metadata" : { },
+  "name" : "s3v",
+  "admin" : "hadoop",
+  "owner" : "hadoop",
+  "quotaInBytes" : -1,
+  "quotaInNamespace" : -1,
+  "usedNamespace" : 0,
+  "creationTime" : "2021-10-19T09:37:32.579Z",
+  "modificationTime" : "2021-10-19T09:37:32.579Z",
+  "acls" : [ {
+    "type" : "USER",
+    "name" : "hadoop",
+    "aclScope" : "ACCESS",
+    "aclList" : [ "ALL" ]
+  }, {
+    "type" : "GROUP",
+    "name" : "users",
+    "aclScope" : "ACCESS",
+    "aclList" : [ "ALL" ]
+  } ]
+}, {
+  "metadata" : { },
+  "name" : "vol-0-38426",
+  "admin" : "hadoop",
+  "owner" : "hadoop",
+  "quotaInBytes" : -1,
+  "quotaInNamespace" : -1,
+  "usedNamespace" : 1,
+  "creationTime" : "2021-10-19T09:37:59.028Z",
+  "modificationTime" : "2021-10-19T09:37:59.028Z",
+  "acls" : [ {
+    "type" : "USER",
+    "name" : "hadoop",
+    "aclScope" : "ACCESS",
+    "aclList" : [ "ALL" ]
+  }, {
+    "type" : "GROUP",
+    "name" : "users",
+    "aclScope" : "ACCESS",
+    "aclList" : [ "ALL" ]
+  } ]
+}, {
+  "metadata" : { },
+  "name" : "vol-0-90517",
+  "admin" : "hadoop",
+  "owner" : "hadoop",
+  "quotaInBytes" : -1,
+  "quotaInNamespace" : -1,
+  "usedNamespace" : 1,
+  "creationTime" : "2021-10-19T09:39:15.624Z",
+  "modificationTime" : "2021-10-19T09:39:15.624Z",
+  "acls" : [ {
+    "type" : "USER",
+    "name" : "hadoop",
+    "aclScope" : "ACCESS",
+    "aclList" : [ "ALL" ]
+  }, {
+    "type" : "GROUP",
+    "name" : "users",
+    "aclScope" : "ACCESS",
+    "aclList" : [ "ALL" ]
+  } ]
+}, {
+  "metadata" : { },
+  "name" : "73774-volume-for-prepare",
+  "admin" : "hadoop",
+  "owner" : "hadoop",
+  "quotaInBytes" : -1,
+  "quotaInNamespace" : -1,
+  "usedNamespace" : 1,
+  "creationTime" : "2021-10-19T09:38:17.223Z",
+  "modificationTime" : "2021-10-19T09:38:17.223Z",
+  "acls" : [ {
+    "type" : "USER",
+    "name" : "hadoop",
+    "aclScope" : "ACCESS",
+    "aclList" : [ "ALL" ]
+  }, {
+    "type" : "GROUP",
+    "name" : "users",
+    "aclScope" : "ACCESS",
+    "aclList" : [ "ALL" ]
+  } ]
+}, {
+  "metadata" : { },
+  "name" : "99923-volume-for-prepare",
+  "admin" : "hadoop",
+  "owner" : "hadoop",
+  "quotaInBytes" : -1,
+  "quotaInNamespace" : -1,
+  "usedNamespace" : 1,
+  "creationTime" : "2021-10-19T09:39:28.722Z",
+  "modificationTime" : "2021-10-19T09:39:28.722Z",
+  "acls" : [ {
+    "type" : "USER",
+    "name" : "hadoop",
+    "aclScope" : "ACCESS",
+    "aclList" : [ "ALL" ]
+  }, {
+    "type" : "GROUP",
+    "name" : "users",
+    "aclScope" : "ACCESS",
+    "aclList" : [ "ALL" ]
+  } ]
+} ]</msg>
+<status status="PASS" starttime="20211019 09:41:42.890" endtime="20211019 09:41:42.891"/>
+</kw>
+<kw name="Should Be Equal As Integers" library="BuiltIn">
+<arg>${rc}</arg>
+<arg>${expected_error_code}</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<msg timestamp="20211019 09:41:42.891" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;type 'unicode'&gt;</msg>
+<status status="PASS" starttime="20211019 09:41:42.891" endtime="20211019 09:41:42.892"/>
+</kw>
+<status status="PASS" starttime="20211019 09:41:39.930" endtime="20211019 09:41:42.892"/>
+</kw>
+<msg timestamp="20211019 09:41:42.892" level="INFO">Returning from the enclosing user keyword.</msg>
+<status status="PASS" starttime="20211019 09:41:39.930" endtime="20211019 09:41:42.892"/>
+</kw>
+<msg timestamp="20211019 09:41:42.892" level="INFO">${result} = WARNING: HADOOP_CONF_DIR has been deprecated by OZONE_CONF_DIR.
+WARNING: HADOOP_LOG_DIR has been deprecated by OZONE_LOG_DIR.
+[ {
+  "metadata" : { },
+  "name" : "60564-volume-for-cancel",
+  "admin" : ...</msg>
+<status status="PASS" starttime="20211019 09:41:39.929" endtime="20211019 09:41:42.892"/>
+</kw>
+<timeout value="5 minutes"/>
+<status status="PASS" starttime="20211019 09:41:39.928" endtime="20211019 09:41:42.893"/>
+</test>
+<doc>Smoke test to test that OMs are prepared in an OM HA cluster.</doc>
+<status status="PASS" starttime="20211019 09:41:34.037" endtime="20211019 09:41:42.894"/>
+</suite>
+<suite id="s1-s5" name="Loaddata" source="/opt/hadoop/smoketest/topology/loaddata.robot">
+<test id="s1-s5-t1" name="Create a volume, bucket and key">
+<kw name="Execute" library="os">
+<var>${output}</var>
+<arg>ozone sh volume create topvol1</arg>
+<kw name="Run Keyword And Return" library="BuiltIn">
+<arg>Execute and checkrc</arg>
+<arg>${command}</arg>
+<arg>0</arg>
+<doc>Runs the specified keyword and returns from the enclosing user keyword.</doc>
+<kw name="Execute and checkrc" library="os">
+<arg>${command}</arg>
+<arg>0</arg>
+<kw name="Run And Return Rc And Output" library="OperatingSystem">
+<var>${rc}</var>
+<var>${output}</var>
+<arg>${command}</arg>
+<doc>Runs the given command in the system and returns the RC and output.</doc>
+<msg timestamp="20211019 09:43:11.054" level="INFO">Running command 'ozone sh volume create topvol1 2&gt;&amp;1'.</msg>
+<msg timestamp="20211019 09:43:14.185" level="INFO">${rc} = 0</msg>
+<msg timestamp="20211019 09:43:14.185" level="INFO">${output} = WARNING: HADOOP_CONF_DIR has been deprecated by OZONE_CONF_DIR.
+WARNING: HADOOP_LOG_DIR has been deprecated by OZONE_LOG_DIR.</msg>
+<status status="PASS" starttime="20211019 09:43:11.050" endtime="20211019 09:43:14.185"/>
+</kw>
+<kw name="Log" library="BuiltIn">
+<arg>${output}</arg>
+<doc>Logs the given message with the given level.</doc>
+<msg timestamp="20211019 09:43:14.186" level="INFO">WARNING: HADOOP_CONF_DIR has been deprecated by OZONE_CONF_DIR.
+WARNING: HADOOP_LOG_DIR has been deprecated by OZONE_LOG_DIR.</msg>
+<status status="PASS" starttime="20211019 09:43:14.185" endtime="20211019 09:43:14.187"/>
+</kw>
+<kw name="Should Be Equal As Integers" library="BuiltIn">
+<arg>${rc}</arg>
+<arg>${expected_error_code}</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<msg timestamp="20211019 09:43:14.187" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;type 'unicode'&gt;</msg>
+<status status="PASS" starttime="20211019 09:43:14.187" endtime="20211019 09:43:14.187"/>
+</kw>
+<status status="PASS" starttime="20211019 09:43:11.049" endtime="20211019 09:43:14.188"/>
+</kw>
+<msg timestamp="20211019 09:43:14.188" level="INFO">Returning from the enclosing user keyword.</msg>
+<status status="PASS" starttime="20211019 09:43:11.049" endtime="20211019 09:43:14.188"/>
+</kw>
+<msg timestamp="20211019 09:43:14.188" level="INFO">${output} = WARNING: HADOOP_CONF_DIR has been deprecated by OZONE_CONF_DIR.
+WARNING: HADOOP_LOG_DIR has been deprecated by OZONE_LOG_DIR.</msg>
+<status status="PASS" starttime="20211019 09:43:11.048" endtime="20211019 09:43:14.188"/>
+</kw>
+<kw name="Should Not Contain" library="BuiltIn">
+<arg>${output}</arg>
+<arg>Failed</arg>
+<doc>Fails if ``container`` contains ``item`` one or more times.</doc>
+<status status="PASS" starttime="20211019 09:43:14.189" endtime="20211019 09:43:14.189"/>
+</kw>
+<kw name="Execute" library="os">
+<var>${output}</var>
+<arg>ozone sh bucket create /topvol1/bucket1</arg>
+<kw name="Run Keyword And Return" library="BuiltIn">
+<arg>Execute and checkrc</arg>
+<arg>${command}</arg>
+<arg>0</arg>
+<doc>Runs the specified keyword and returns from the enclosing user keyword.</doc>
+<kw name="Execute and checkrc" library="os">
+<arg>${command}</arg>
+<arg>0</arg>
+<kw name="Run And Return Rc And Output" library="OperatingSystem">
+<var>${rc}</var>
+<var>${output}</var>
+<arg>${command}</arg>
+<doc>Runs the given command in the system and returns the RC and output.</doc>
+<msg timestamp="20211019 09:43:14.217" level="INFO">Running command 'ozone sh bucket create /topvol1/bucket1 2&gt;&amp;1'.</msg>
+<msg timestamp="20211019 09:43:17.541" level="INFO">${rc} = 0</msg>
+<msg timestamp="20211019 09:43:17.541" level="INFO">${output} = WARNING: HADOOP_CONF_DIR has been deprecated by OZONE_CONF_DIR.
+WARNING: HADOOP_LOG_DIR has been deprecated by OZONE_LOG_DIR.</msg>
+<status status="PASS" starttime="20211019 09:43:14.201" endtime="20211019 09:43:17.541"/>
+</kw>
+<kw name="Log" library="BuiltIn">
+<arg>${output}</arg>
+<doc>Logs the given message with the given level.</doc>
+<msg timestamp="20211019 09:43:17.543" level="INFO">WARNING: HADOOP_CONF_DIR has been deprecated by OZONE_CONF_DIR.
+WARNING: HADOOP_LOG_DIR has been deprecated by OZONE_LOG_DIR.</msg>
+<status status="PASS" starttime="20211019 09:43:17.542" endtime="20211019 09:43:17.543"/>
+</kw>
+<kw name="Should Be Equal As Integers" library="BuiltIn">
+<arg>${rc}</arg>
+<arg>${expected_error_code}</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<msg timestamp="20211019 09:43:17.544" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;type 'unicode'&gt;</msg>
+<status status="PASS" starttime="20211019 09:43:17.543" endtime="20211019 09:43:17.544"/>
+</kw>
+<status status="PASS" starttime="20211019 09:43:14.201" endtime="20211019 09:43:17.544"/>
+</kw>
+<msg timestamp="20211019 09:43:17.544" level="INFO">Returning from the enclosing user keyword.</msg>
+<status status="PASS" starttime="20211019 09:43:14.200" endtime="20211019 09:43:17.544"/>
+</kw>
+<msg timestamp="20211019 09:43:17.545" level="INFO">${output} = WARNING: HADOOP_CONF_DIR has been deprecated by OZONE_CONF_DIR.
+WARNING: HADOOP_LOG_DIR has been deprecated by OZONE_LOG_DIR.</msg>
+<status status="PASS" starttime="20211019 09:43:14.189" endtime="20211019 09:43:17.545"/>
+</kw>
+<kw name="Should Not Contain" library="BuiltIn">
+<arg>${output}</arg>
+<arg>Failed</arg>
+<doc>Fails if ``container`` contains ``item`` one or more times.</doc>
+<status status="PASS" starttime="20211019 09:43:17.545" endtime="20211019 09:43:17.545"/>
+</kw>
+<kw name="Execute" library="os">
+<var>${output}</var>
+<arg>ozone sh key put /topvol1/bucket1/key1 /opt/hadoop/NOTICE.txt</arg>
+<kw name="Run Keyword And Return" library="BuiltIn">
+<arg>Execute and checkrc</arg>
+<arg>${command}</arg>
+<arg>0</arg>
+<doc>Runs the specified keyword and returns from the enclosing user keyword.</doc>
+<kw name="Execute and checkrc" library="os">
+<arg>${command}</arg>
+<arg>0</arg>
+<kw name="Run And Return Rc And Output" library="OperatingSystem">
+<var>${rc}</var>
+<var>${output}</var>
+<arg>${command}</arg>
+<doc>Runs the given command in the system and returns the RC and output.</doc>
+<msg timestamp="20211019 09:43:17.550" level="INFO">Running command 'ozone sh key put /topvol1/bucket1/key1 /opt/hadoop/NOTICE.txt 2&gt;&amp;1'.</msg>
+<msg timestamp="20211019 09:43:23.936" level="INFO">${rc} = 0</msg>
+<msg timestamp="20211019 09:43:23.937" level="INFO">${output} = WARNING: HADOOP_CONF_DIR has been deprecated by OZONE_CONF_DIR.
+WARNING: HADOOP_LOG_DIR has been deprecated by OZONE_LOG_DIR.</msg>
+<status status="PASS" starttime="20211019 09:43:17.548" endtime="20211019 09:43:23.937"/>
+</kw>
+<kw name="Log" library="BuiltIn">
+<arg>${output}</arg>
+<doc>Logs the given message with the given level.</doc>
+<msg timestamp="20211019 09:43:23.938" level="INFO">WARNING: HADOOP_CONF_DIR has been deprecated by OZONE_CONF_DIR.
+WARNING: HADOOP_LOG_DIR has been deprecated by OZONE_LOG_DIR.</msg>
+<status status="PASS" starttime="20211019 09:43:23.937" endtime="20211019 09:43:23.938"/>
+</kw>
+<kw name="Should Be Equal As Integers" library="BuiltIn">
+<arg>${rc}</arg>
+<arg>${expected_error_code}</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<msg timestamp="20211019 09:43:23.939" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;type 'unicode'&gt;</msg>
+<status status="PASS" starttime="20211019 09:43:23.938" endtime="20211019 09:43:23.939"/>
+</kw>
+<status status="PASS" starttime="20211019 09:43:17.546" endtime="20211019 09:43:23.939"/>
+</kw>
+<msg timestamp="20211019 09:43:23.939" level="INFO">Returning from the enclosing user keyword.</msg>
+<status status="PASS" starttime="20211019 09:43:17.546" endtime="20211019 09:43:23.939"/>
+</kw>
+<msg timestamp="20211019 09:43:23.940" level="INFO">${output} = WARNING: HADOOP_CONF_DIR has been deprecated by OZONE_CONF_DIR.
+WARNING: HADOOP_LOG_DIR has been deprecated by OZONE_LOG_DIR.</msg>
+<status status="PASS" starttime="20211019 09:43:17.545" endtime="20211019 09:43:23.940"/>
+</kw>
+<kw name="Should Not Contain" library="BuiltIn">
+<arg>${output}</arg>
+<arg>Failed</arg>
+<doc>Fails if ``container`` contains ``item`` one or more times.</doc>
+<status status="PASS" starttime="20211019 09:43:23.940" endtime="20211019 09:43:23.940"/>
+</kw>
+<timeout value="5 minutes"/>
+<status status="PASS" starttime="20211019 09:43:11.047" endtime="20211019 09:43:23.941"/>
+</test>
+<doc>Smoketest ozone cluster startup</doc>
+<status status="PASS" starttime="20211019 09:43:10.985" endtime="20211019 09:43:23.942"/>
+</suite>
+<suite id="s1-s6" name="Readdata" source="/opt/hadoop/smoketest/topology/readdata.robot">
+<test id="s1-s6-t1" name="Read data from previously created key">
+<kw name="Generate Random String" library="String">
+<var>${random}</var>
+<arg>5</arg>
+<arg>[NUMBERS]</arg>
+<doc>Generates a string with a desired ``length`` from the given ``chars``.</doc>
+<msg timestamp="20211019 09:43:28.483" level="INFO">${random} = 91781</msg>
+<status status="PASS" starttime="20211019 09:43:28.483" endtime="20211019 09:43:28.483"/>
+</kw>
+<kw name="Execute" library="os">
+<var>${output}</var>
+<arg>ozone sh key get /topvol1/bucket1/key1 /tmp/key1-${random}</arg>
+<kw name="Run Keyword And Return" library="BuiltIn">
+<arg>Execute and checkrc</arg>
+<arg>${command}</arg>
+<arg>0</arg>
+<doc>Runs the specified keyword and returns from the enclosing user keyword.</doc>
+<kw name="Execute and checkrc" library="os">
+<arg>${command}</arg>
+<arg>0</arg>
+<kw name="Run And Return Rc And Output" library="OperatingSystem">
+<var>${rc}</var>
+<var>${output}</var>
+<arg>${command}</arg>
+<doc>Runs the given command in the system and returns the RC and output.</doc>
+<msg timestamp="20211019 09:43:28.490" level="INFO">Running command 'ozone sh key get /topvol1/bucket1/key1 /tmp/key1-91781 2&gt;&amp;1'.</msg>
+<msg timestamp="20211019 09:43:33.287" level="INFO">${rc} = 0</msg>
+<msg timestamp="20211019 09:43:33.287" level="INFO">${output} = WARNING: HADOOP_CONF_DIR has been deprecated by OZONE_CONF_DIR.
+WARNING: HADOOP_LOG_DIR has been deprecated by OZONE_LOG_DIR.</msg>
+<status status="PASS" starttime="20211019 09:43:28.485" endtime="20211019 09:43:33.288"/>
+</kw>
+<kw name="Log" library="BuiltIn">
+<arg>${output}</arg>
+<doc>Logs the given message with the given level.</doc>
+<msg timestamp="20211019 09:43:33.289" level="INFO">WARNING: HADOOP_CONF_DIR has been deprecated by OZONE_CONF_DIR.
+WARNING: HADOOP_LOG_DIR has been deprecated by OZONE_LOG_DIR.</msg>
+<status status="PASS" starttime="20211019 09:43:33.288" endtime="20211019 09:43:33.289"/>
+</kw>
+<kw name="Should Be Equal As Integers" library="BuiltIn">
+<arg>${rc}</arg>
+<arg>${expected_error_code}</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<msg timestamp="20211019 09:43:33.289" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;type 'unicode'&gt;</msg>
+<status status="PASS" starttime="20211019 09:43:33.289" endtime="20211019 09:43:33.290"/>
+</kw>
+<status status="PASS" starttime="20211019 09:43:28.485" endtime="20211019 09:43:33.290"/>
+</kw>
+<msg timestamp="20211019 09:43:33.290" level="INFO">Returning from the enclosing user keyword.</msg>
+<status status="PASS" starttime="20211019 09:43:28.484" endtime="20211019 09:43:33.290"/>
+</kw>
+<msg timestamp="20211019 09:43:33.290" level="INFO">${output} = WARNING: HADOOP_CONF_DIR has been deprecated by OZONE_CONF_DIR.
+WARNING: HADOOP_LOG_DIR has been deprecated by OZONE_LOG_DIR.</msg>
+<status status="PASS" starttime="20211019 09:43:28.484" endtime="20211019 09:43:33.290"/>
+</kw>
+<kw name="Should Not Contain" library="BuiltIn">
+<arg>${output}</arg>
+<arg>Failed</arg>
+<doc>Fails if ``container`` contains ``item`` one or more times.</doc>
+<status status="PASS" starttime="20211019 09:43:33.290" endtime="20211019 09:43:33.291"/>
+</kw>
+<timeout value="5 minutes"/>
+<status status="PASS" starttime="20211019 09:43:28.482" endtime="20211019 09:43:33.291"/>
+</test>
+<doc>Smoketest ozone cluster startup</doc>
+<status status="PASS" starttime="20211019 09:43:28.417" endtime="20211019 09:43:33.292"/>
+</suite>
+<suite id="s1-s7" name="Om-Prepare" source="/opt/hadoop/smoketest/omha/om-prepare.robot">
+<kw name="Create Specific OM data for prepare" type="SETUP">
+<kw name="Execute" library="os">
+<arg>ozone freon rk --replication-type=RATIS --num-of-volumes 1 --num-of-buckets 1 --num-of-keys 100</arg>
+<kw name="Run Keyword And Return" library="BuiltIn">
+<arg>Execute and checkrc</arg>
+<arg>${command}</arg>
+<arg>0</arg>
+<doc>Runs the specified keyword and returns from the enclosing user keyword.</doc>
+<kw name="Execute and checkrc" library="os">
+<arg>${command}</arg>
+<arg>0</arg>
+<kw name="Run And Return Rc And Output" library="OperatingSystem">
+<var>${rc}</var>
+<var>${output}</var>
+<arg>${command}</arg>
+<doc>Runs the given command in the system and returns the RC and output.</doc>
+<msg timestamp="20211019 09:37:56.010" level="INFO">Running command 'ozone freon rk --replication-type=RATIS --num-of-volumes 1 --num-of-buckets 1 --num-of-keys 100 2&gt;&amp;1'.</msg>
+<msg timestamp="20211019 09:38:14.395" level="INFO">${rc} = 0</msg>
+<msg timestamp="20211019 09:38:14.395" level="INFO">${output} = WARNING: HADOOP_CONF_DIR has been deprecated by OZONE_CONF_DIR.
+WARNING: HADOOP_LOG_DIR has been deprecated by OZONE_LOG_DIR.
+2021-10-19 09:37:57,676 [main] INFO impl.MetricsConfig: Loaded properties ...</msg>
+<status status="PASS" starttime="20211019 09:37:55.997" endtime="20211019 09:38:14.395"/>
+</kw>
+<kw name="Log" library="BuiltIn">
+<arg>${output}</arg>
+<doc>Logs the given message with the given level.</doc>
+<msg timestamp="20211019 09:38:14.396" level="INFO">WARNING: HADOOP_CONF_DIR has been deprecated by OZONE_CONF_DIR.
+WARNING: HADOOP_LOG_DIR has been deprecated by OZONE_LOG_DIR.
+2021-10-19 09:37:57,676 [main] INFO impl.MetricsConfig: Loaded properties from hadoop-metrics2.properties
+2021-10-19 09:37:57,785 [main] INFO impl.MetricsSystemImpl: Scheduled Metric snapshot period at 10 second(s).
+2021-10-19 09:37:57,785 [main] INFO impl.MetricsSystemImpl: ozone-freon metrics system started
+2021-10-19 09:37:58,731 [main] INFO retry.RetryInvocationHandler: com.google.protobuf.ServiceException: org.apache.hadoop.ipc.RemoteException(org.apache.hadoop.ozone.om.exceptions.OMNotLeaderException): OM:om2 is not the leader. Could not determine the leader node.
+	at org.apache.hadoop.ozone.protocolPB.OzoneManagerProtocolServerSideTranslatorPB.createNotLeaderException(OzoneManagerProtocolServerSideTranslatorPB.java:187)
+	at org.apache.hadoop.ozone.protocolPB.OzoneManagerProtocolServerSideTranslatorPB.createLeaderErrorException(OzoneManagerProtocolServerSideTranslatorPB.java:174)
+	at org.apache.hadoop.ozone.protocolPB.OzoneManagerProtocolServerSideTranslatorPB.submitReadRequestToOM(OzoneManagerProtocolServerSideTranslatorPB.java:167)
+	at org.apache.hadoop.ozone.protocolPB.OzoneManagerProtocolServerSideTranslatorPB.processRequest(OzoneManagerProtocolServerSideTranslatorPB.java:133)
+	at org.apache.hadoop.hdds.server.OzoneProtocolMessageDispatcher.processRequest(OzoneProtocolMessageDispatcher.java:87)
+	at org.apache.hadoop.ozone.protocolPB.OzoneManagerProtocolServerSideTranslatorPB.submitRequest(OzoneManagerProtocolServerSideTranslatorPB.java:123)
+	at org.apache.hadoop.ozone.protocol.proto.OzoneManagerProtocolProtos$OzoneManagerService$2.callBlockingMethod(OzoneManagerProtocolProtos.java)
+	at org.apache.hadoop.ipc.ProtobufRpcEngine$Server.processCall(ProtobufRpcEngine.java:466)
+	at org.apache.hadoop.ipc.ProtobufRpcEngine2$Server$ProtoBufRpcInvoker.call(ProtobufRpcEngine2.java:574)
+	at org.apache.hadoop.ipc.ProtobufRpcEngine2$Server$ProtoBufRpcInvoker.call(ProtobufRpcEngine2.java:552)
+	at org.apache.hadoop.ipc.RPC$Server.call(RPC.java:1093)
+	at org.apache.hadoop.ipc.Server$RpcCall.run(Server.java:1035)
+	at org.apache.hadoop.ipc.Server$RpcCall.run(Server.java:963)
+	at java.base/java.security.AccessController.doPrivileged(Native Method)
+	at java.base/javax.security.auth.Subject.doAs(Subject.java:423)
+	at org.apache.hadoop.security.UserGroupInformation.doAs(UserGroupInformation.java:1878)
+	at org.apache.hadoop.ipc.Server$Handler.run(Server.java:2966)
+, while invoking $Proxy22.submitRequest over nodeId=om2,nodeAddress=om2:9862 after 1 failover attempts. Trying to failover immediately.
+2021-10-19 09:37:58,907 [main] INFO freon.RandomKeyGenerator: Number of Threads: 10
+2021-10-19 09:37:58,952 [main] INFO freon.RandomKeyGenerator: Number of Volumes: 1.
+2021-10-19 09:37:58,952 [main] INFO freon.RandomKeyGenerator: Number of Buckets per Volume: 1.
+2021-10-19 09:37:58,953 [main] INFO freon.RandomKeyGenerator: Number of Keys per Bucket: 100.
+2021-10-19 09:37:58,953 [main] INFO freon.RandomKeyGenerator: Key size: 10240 bytes
+2021-10-19 09:37:58,953 [main] INFO freon.RandomKeyGenerator: Buffer size: 4096 bytes
+2021-10-19 09:37:58,953 [main] INFO freon.RandomKeyGenerator: validateWrites : false
+2021-10-19 09:37:58,953 [main] INFO freon.RandomKeyGenerator: cleanObjects : false
+2021-10-19 09:37:58,961 [main] INFO freon.RandomKeyGenerator: Starting progress bar Thread.
+2021-10-19 09:37:58,979 [Thread-6] INFO freon.ProgressBar: Progress: 0.00 % (0 out of 100)
+2021-10-19 09:37:59,010 [pool-2-thread-1] INFO rpc.RpcClient: Creating Volume: vol-0-38426, with hadoop as owner and space quota set to -1 bytes, counts quota set to -1
+2021-10-19 09:37:59,333 [pool-2-thread-2] INFO rpc.RpcClient: Creating Bucket: vol-0-38426/bucket-0-29137, with Versioning false and Storage Type set to DISK and Encryption set to false 
+2021-10-19 09:37:59,987 [Thread-6] INFO freon.ProgressBar: Progress: 0.00 % (0 out of 100)
+2021-10-19 09:38:00,981 [pool-2-thread-2] WARN impl.MetricsSystemImpl: ozone-freon metrics system already initialized!
+2021-10-19 09:38:00,987 [Thread-6] INFO freon.ProgressBar: Progress: 0.00 % (0 out of 100)
+2021-10-19 09:38:01,290 [pool-2-thread-8] INFO metrics.MetricRegistries: Loaded MetricRegistries class org.apache.ratis.metrics.impl.MetricRegistriesImpl
+2021-10-19 09:38:01,991 [Thread-6] INFO freon.ProgressBar: Progress: 10.00 % (10 out of 100)
+2021-10-19 09:38:02,997 [Thread-6] INFO freon.ProgressBar: Progress: 10.00 % (10 out of 100)
+2021-10-19 09:38:03,999 [Thread-6] INFO freon.ProgressBar: Progress: 12.00 % (12 out of 100)
+2021-10-19 09:38:05,115 [Thread-6] INFO freon.ProgressBar: Progress: 25.00 % (25 out of 100)
+2021-10-19 09:38:06,116 [Thread-6] INFO freon.ProgressBar: Progress: 44.00 % (44 out of 100)
+2021-10-19 09:38:07,119 [Thread-6] INFO freon.ProgressBar: Progress: 60.00 % (60 out of 100)
+2021-10-19 09:38:08,128 [Thread-6] INFO freon.ProgressBar: Progress: 77.00 % (77 out of 100)
+2021-10-19 09:38:09,129 [Thread-6] INFO freon.ProgressBar: Progress: 93.00 % (93 out of 100)
+2021-10-19 09:38:10,130 [Thread-6] INFO freon.ProgressBar: Progress: 100.00 % (100 out of 100)
+
+***************************************************
+Status: Success
+Git Base Revision: a3b9c37a397ad4188041dd80621bdeefc46885f2
+Number of Volumes created: 1
+Number of Buckets created: 1
+Number of Keys added: 100
+Ratis replication factor: ONE
+Ratis replication type: RATIS
+Average Time spent in volume creation: 00:00:00,031
+Average Time spent in bucket creation: 00:00:00,014
+Average Time spent in key creation: 00:00:03,347
+Average Time spent in key write: 00:00:00,978
+Total bytes written: 1024000
+Total Execution time: 00:00:16,005
+***************************************************</msg>
+<status status="PASS" starttime="20211019 09:38:14.395" endtime="20211019 09:38:14.396"/>
+</kw>
+<kw name="Should Be Equal As Integers" library="BuiltIn">
+<arg>${rc}</arg>
+<arg>${expected_error_code}</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<msg timestamp="20211019 09:38:14.397" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;type 'unicode'&gt;</msg>
+<status status="PASS" starttime="20211019 09:38:14.396" endtime="20211019 09:38:14.397"/>
+</kw>
+<status status="PASS" starttime="20211019 09:37:55.996" endtime="20211019 09:38:14.397"/>
+</kw>
+<msg timestamp="20211019 09:38:14.398" level="INFO">Returning from the enclosing user keyword.</msg>
+<status status="PASS" starttime="20211019 09:37:55.996" endtime="20211019 09:38:14.398"/>
+</kw>
+<status status="PASS" starttime="20211019 09:37:55.995" endtime="20211019 09:38:14.398"/>
+</kw>
+<kw name="Generate Random String" library="String">
+<var>${random}</var>
+<arg>5</arg>
+<arg>[NUMBERS]</arg>
+<doc>Generates a string with a desired ``length`` from the given ``chars``.</doc>
+<msg timestamp="20211019 09:38:14.399" level="INFO">${random} = 73774</msg>
+<status status="PASS" starttime="20211019 09:38:14.399" endtime="20211019 09:38:14.399"/>
+</kw>
+<kw name="Set Suite Variable" library="BuiltIn">
+<arg>${volume_name}</arg>
+<arg>${random}-volume-for-prepare</arg>
+<doc>Makes a variable available everywhere within the scope of the current suite.</doc>
+<msg timestamp="20211019 09:38:14.401" level="INFO">${volume_name} = 73774-volume-for-prepare</msg>
+<status status="PASS" starttime="20211019 09:38:14.399" endtime="20211019 09:38:14.401"/>
+</kw>
+<kw name="Set Suite Variable" library="BuiltIn">
+<arg>${bucket_name}</arg>
+<arg>${random}-bucket-for-prepare</arg>
+<doc>Makes a variable available everywhere within the scope of the current suite.</doc>
+<msg timestamp="20211019 09:38:14.402" level="INFO">${bucket_name} = 73774-bucket-for-prepare</msg>
+<status status="PASS" starttime="20211019 09:38:14.401" endtime="20211019 09:38:14.402"/>
+</kw>
+<kw name="Execute" library="os">
+<arg>ozone sh volume create /${volume_name}</arg>
+<kw name="Run Keyword And Return" library="BuiltIn">
+<arg>Execute and checkrc</arg>
+<arg>${command}</arg>
+<arg>0</arg>
+<doc>Runs the specified keyword and returns from the enclosing user keyword.</doc>
+<kw name="Execute and checkrc" library="os">
+<arg>${command}</arg>
+<arg>0</arg>
+<kw name="Run And Return Rc And Output" library="OperatingSystem">
+<var>${rc}</var>
+<var>${output}</var>
+<arg>${command}</arg>
+<doc>Runs the given command in the system and returns the RC and output.</doc>
+<msg timestamp="20211019 09:38:14.406" level="INFO">Running command 'ozone sh volume create /73774-volume-for-prepare 2&gt;&amp;1'.</msg>
+<msg timestamp="20211019 09:38:17.304" level="INFO">${rc} = 0</msg>
+<msg timestamp="20211019 09:38:17.304" level="INFO">${output} = WARNING: HADOOP_CONF_DIR has been deprecated by OZONE_CONF_DIR.
+WARNING: HADOOP_LOG_DIR has been deprecated by OZONE_LOG_DIR.</msg>
+<status status="PASS" starttime="20211019 09:38:14.403" endtime="20211019 09:38:17.304"/>
+</kw>
+<kw name="Log" library="BuiltIn">
+<arg>${output}</arg>
+<doc>Logs the given message with the given level.</doc>
+<msg timestamp="20211019 09:38:17.306" level="INFO">WARNING: HADOOP_CONF_DIR has been deprecated by OZONE_CONF_DIR.
+WARNING: HADOOP_LOG_DIR has been deprecated by OZONE_LOG_DIR.</msg>
+<status status="PASS" starttime="20211019 09:38:17.305" endtime="20211019 09:38:17.306"/>
+</kw>
+<kw name="Should Be Equal As Integers" library="BuiltIn">
+<arg>${rc}</arg>
+<arg>${expected_error_code}</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<msg timestamp="20211019 09:38:17.308" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;type 'unicode'&gt;</msg>
+<status status="PASS" starttime="20211019 09:38:17.306" endtime="20211019 09:38:17.308"/>
+</kw>
+<status status="PASS" starttime="20211019 09:38:14.403" endtime="20211019 09:38:17.308"/>
+</kw>
+<msg timestamp="20211019 09:38:17.308" level="INFO">Returning from the enclosing user keyword.</msg>
+<status status="PASS" starttime="20211019 09:38:14.403" endtime="20211019 09:38:17.308"/>
+</kw>
+<status status="PASS" starttime="20211019 09:38:14.402" endtime="20211019 09:38:17.309"/>
+</kw>
+<kw name="Execute" library="os">
+<arg>ozone sh bucket create /${volume_name}/${bucket_name}</arg>
+<kw name="Run Keyword And Return" library="BuiltIn">
+<arg>Execute and checkrc</arg>
+<arg>${command}</arg>
+<arg>0</arg>
+<doc>Runs the specified keyword and returns from the enclosing user keyword.</doc>
+<kw name="Execute and checkrc" library="os">
+<arg>${command}</arg>
+<arg>0</arg>
+<kw name="Run And Return Rc And Output" library="OperatingSystem">
+<var>${rc}</var>
+<var>${output}</var>
+<arg>${command}</arg>
+<doc>Runs the given command in the system and returns the RC and output.</doc>
+<msg timestamp="20211019 09:38:17.312" level="INFO">Running command 'ozone sh bucket create /73774-volume-for-prepare/73774-bucket-for-prepare 2&gt;&amp;1'.</msg>
+<msg timestamp="20211019 09:38:20.103" level="INFO">${rc} = 0</msg>
+<msg timestamp="20211019 09:38:20.103" level="INFO">${output} = WARNING: HADOOP_CONF_DIR has been deprecated by OZONE_CONF_DIR.
+WARNING: HADOOP_LOG_DIR has been deprecated by OZONE_LOG_DIR.</msg>
+<status status="PASS" starttime="20211019 09:38:17.310" endtime="20211019 09:38:20.103"/>
+</kw>
+<kw name="Log" library="BuiltIn">
+<arg>${output}</arg>
+<doc>Logs the given message with the given level.</doc>
+<msg timestamp="20211019 09:38:20.104" level="INFO">WARNING: HADOOP_CONF_DIR has been deprecated by OZONE_CONF_DIR.
+WARNING: HADOOP_LOG_DIR has been deprecated by OZONE_LOG_DIR.</msg>
+<status status="PASS" starttime="20211019 09:38:20.104" endtime="20211019 09:38:20.104"/>
+</kw>
+<kw name="Should Be Equal As Integers" library="BuiltIn">
+<arg>${rc}</arg>
+<arg>${expected_error_code}</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<msg timestamp="20211019 09:38:20.105" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;type 'unicode'&gt;</msg>
+<status status="PASS" starttime="20211019 09:38:20.105" endtime="20211019 09:38:20.105"/>
+</kw>
+<status status="PASS" starttime="20211019 09:38:17.310" endtime="20211019 09:38:20.106"/>
+</kw>
+<msg timestamp="20211019 09:38:20.106" level="INFO">Returning from the enclosing user keyword.</msg>
+<status status="PASS" starttime="20211019 09:38:17.309" endtime="20211019 09:38:20.106"/>
+</kw>
+<status status="PASS" starttime="20211019 09:38:17.309" endtime="20211019 09:38:20.106"/>
+</kw>
+<kw name="Execute" library="os">
+<arg>ozone sh key put /${volume_name}/${bucket_name}/prepare-key /opt/hadoop/NOTICE.txt</arg>
+<kw name="Run Keyword And Return" library="BuiltIn">
+<arg>Execute and checkrc</arg>
+<arg>${command}</arg>
+<arg>0</arg>
+<doc>Runs the specified keyword and returns from the enclosing user keyword.</doc>
+<kw name="Execute and checkrc" library="os">
+<arg>${command}</arg>
+<arg>0</arg>
+<kw name="Run And Return Rc And Output" library="OperatingSystem">
+<var>${rc}</var>
+<var>${output}</var>
+<arg>${command}</arg>
+<doc>Runs the given command in the system and returns the RC and output.</doc>
+<msg timestamp="20211019 09:38:20.110" level="INFO">Running command 'ozone sh key put /73774-volume-for-prepare/73774-bucket-for-prepare/prepare-key /opt/hadoop/NOTICE.txt 2&gt;&amp;1'.</msg>
+<msg timestamp="20211019 09:38:25.096" level="INFO">${rc} = 0</msg>
+<msg timestamp="20211019 09:38:25.096" level="INFO">${output} = WARNING: HADOOP_CONF_DIR has been deprecated by OZONE_CONF_DIR.
+WARNING: HADOOP_LOG_DIR has been deprecated by OZONE_LOG_DIR.</msg>
+<status status="PASS" starttime="20211019 09:38:20.108" endtime="20211019 09:38:25.096"/>
+</kw>
+<kw name="Log" library="BuiltIn">
+<arg>${output}</arg>
+<doc>Logs the given message with the given level.</doc>
+<msg timestamp="20211019 09:38:25.097" level="INFO">WARNING: HADOOP_CONF_DIR has been deprecated by OZONE_CONF_DIR.
+WARNING: HADOOP_LOG_DIR has been deprecated by OZONE_LOG_DIR.</msg>
+<status status="PASS" starttime="20211019 09:38:25.097" endtime="20211019 09:38:25.098"/>
+</kw>
+<kw name="Should Be Equal As Integers" library="BuiltIn">
+<arg>${rc}</arg>
+<arg>${expected_error_code}</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<msg timestamp="20211019 09:38:25.098" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;type 'unicode'&gt;</msg>
+<status status="PASS" starttime="20211019 09:38:25.098" endtime="20211019 09:38:25.098"/>
+</kw>
+<status status="PASS" starttime="20211019 09:38:20.107" endtime="20211019 09:38:25.099"/>
+</kw>
+<msg timestamp="20211019 09:38:25.099" level="INFO">Returning from the enclosing user keyword.</msg>
+<status status="PASS" starttime="20211019 09:38:20.107" endtime="20211019 09:38:25.099"/>
+</kw>
+<status status="PASS" starttime="20211019 09:38:20.106" endtime="20211019 09:38:25.099"/>
+</kw>
+<status status="PASS" starttime="20211019 09:37:55.995" endtime="20211019 09:38:25.100"/>
+</kw>
+<test id="s1-s7-t1" name="Prepare Ozone Manager">
+<kw name="Run Keyword If" library="BuiltIn" type="SETUP">
+<arg>'${SECURITY_ENABLED}' == 'true'</arg>
+<arg>Kinit test user</arg>
+<arg>testuser</arg>
+<arg>testuser.keytab</arg>
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<status status="PASS" starttime="20211019 09:38:25.101" endtime="20211019 09:38:25.101"/>
+</kw>
+<kw name="Execute" library="os">
+<var>${result}</var>
+<arg>ozone admin om prepare -id=omservice</arg>
+<kw name="Run Keyword And Return" library="BuiltIn">
+<arg>Execute and checkrc</arg>
+<arg>${command}</arg>
+<arg>0</arg>
+<doc>Runs the specified keyword and returns from the enclosing user keyword.</doc>
+<kw name="Execute and checkrc" library="os">
+<arg>${command}</arg>
+<arg>0</arg>
+<kw name="Run And Return Rc And Output" library="OperatingSystem">
+<var>${rc}</var>
+<var>${output}</var>
+<arg>${command}</arg>
+<doc>Runs the given command in the system and returns the RC and output.</doc>
+<msg timestamp="20211019 09:38:25.106" level="INFO">Running command 'ozone admin om prepare -id=omservice 2&gt;&amp;1'.</msg>
+<msg timestamp="20211019 09:38:38.274" level="INFO">${rc} = 0</msg>
+<msg timestamp="20211019 09:38:38.274" level="INFO">${output} = WARNING: HADOOP_CONF_DIR has been deprecated by OZONE_CONF_DIR.
+WARNING: HADOOP_LOG_DIR has been deprecated by OZONE_LOG_DIR.
+com.google.protobuf.ServiceException: org.apache.hadoop.ipc.RemoteExceptio...</msg>
+<status status="PASS" starttime="20211019 09:38:25.103" endtime="20211019 09:38:38.274"/>
+</kw>
+<kw name="Log" library="BuiltIn">
+<arg>${output}</arg>
+<doc>Logs the given message with the given level.</doc>
+<msg timestamp="20211019 09:38:38.275" level="INFO">WARNING: HADOOP_CONF_DIR has been deprecated by OZONE_CONF_DIR.
+WARNING: HADOOP_LOG_DIR has been deprecated by OZONE_LOG_DIR.
+com.google.protobuf.ServiceException: org.apache.hadoop.ipc.RemoteException(org.apache.hadoop.ozone.om.exceptions.OMNotLeaderException): OM:om2 is not the leader. Could not determine the leader node.
+	at org.apache.hadoop.ozone.om.ratis.utils.OzoneManagerRatisUtils.createNotLeaderException(OzoneManagerRatisUtils.java:465)
+	at org.apache.hadoop.ozone.om.ratis.utils.OzoneManagerRatisUtils.checkLeaderStatus(OzoneManagerRatisUtils.java:451)
+	at org.apache.hadoop.ozone.protocolPB.OzoneManagerProtocolServerSideTranslatorPB.checkLeaderStatus(OzoneManagerProtocolServerSideTranslatorPB.java:243)
+	at org.apache.hadoop.ozone.protocolPB.OzoneManagerProtocolServerSideTranslatorPB.processRequest(OzoneManagerProtocolServerSideTranslatorPB.java:135)
+	at org.apache.hadoop.hdds.server.OzoneProtocolMessageDispatcher.processRequest(OzoneProtocolMessageDispatcher.java:87)
+	at org.apache.hadoop.ozone.protocolPB.OzoneManagerProtocolServerSideTranslatorPB.submitRequest(OzoneManagerProtocolServerSideTranslatorPB.java:123)
+	at org.apache.hadoop.ozone.protocol.proto.OzoneManagerProtocolProtos$OzoneManagerService$2.callBlockingMethod(OzoneManagerProtocolProtos.java)
+	at org.apache.hadoop.ipc.ProtobufRpcEngine$Server.processCall(ProtobufRpcEngine.java:466)
+	at org.apache.hadoop.ipc.ProtobufRpcEngine2$Server$ProtoBufRpcInvoker.call(ProtobufRpcEngine2.java:574)
+	at org.apache.hadoop.ipc.ProtobufRpcEngine2$Server$ProtoBufRpcInvoker.call(ProtobufRpcEngine2.java:552)
+	at org.apache.hadoop.ipc.RPC$Server.call(RPC.java:1093)
+	at org.apache.hadoop.ipc.Server$RpcCall.run(Server.java:1035)
+	at org.apache.hadoop.ipc.Server$RpcCall.run(Server.java:963)
+	at java.base/java.security.AccessController.doPrivileged(Native Method)
+	at java.base/javax.security.auth.Subject.doAs(Subject.java:423)
+	at org.apache.hadoop.security.UserGroupInformation.doAs(UserGroupInformation.java:1878)
+	at org.apache.hadoop.ipc.Server$Handler.run(Server.java:2966)
+, while invoking $Proxy20.submitRequest over nodeId=om2,nodeAddress=om2:9862 after 1 failover attempts. Trying to failover immediately.
+Ozone Manager Prepare Request successfully returned with Transaction Id : [341].
+
+Checking individual OM instances for prepare request completion...
+OM : [om1], Prepare Status : [NOT_PREPARED], Current Transaction Id : [-1]
+OM : [om3], Prepare Status : [PREPARE_COMPLETED], Current Transaction Id : [341]
+OM : [om2], Prepare Status : [PREPARE_COMPLETED], Current Transaction Id : [341]
+Waiting for 10 seconds before retrying...
+OM : [om1], Prepare Status : [PREPARE_COMPLETED], Current Transaction Id : [341]
+
+OM Preparation successful! 
+All OMs are prepared
+No new write requests will be allowed until preparation is cancelled or upgrade/downgrade is done.</msg>
+<status status="PASS" starttime="20211019 09:38:38.275" endtime="20211019 09:38:38.276"/>
+</kw>
+<kw name="Should Be Equal As Integers" library="BuiltIn">
+<arg>${rc}</arg>
+<arg>${expected_error_code}</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<msg timestamp="20211019 09:38:38.276" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;type 'unicode'&gt;</msg>
+<status status="PASS" starttime="20211019 09:38:38.276" endtime="20211019 09:38:38.276"/>
+</kw>
+<status status="PASS" starttime="20211019 09:38:25.103" endtime="20211019 09:38:38.277"/>
+</kw>
+<msg timestamp="20211019 09:38:38.277" level="INFO">Returning from the enclosing user keyword.</msg>
+<status status="PASS" starttime="20211019 09:38:25.102" endtime="20211019 09:38:38.277"/>
+</kw>
+<msg timestamp="20211019 09:38:38.277" level="INFO">${result} = WARNING: HADOOP_CONF_DIR has been deprecated by OZONE_CONF_DIR.
+WARNING: HADOOP_LOG_DIR has been deprecated by OZONE_LOG_DIR.
+com.google.protobuf.ServiceException: org.apache.hadoop.ipc.RemoteExceptio...</msg>
+<status status="PASS" starttime="20211019 09:38:25.102" endtime="20211019 09:38:38.277"/>
+</kw>
+<kw name="Wait Until Keyword Succeeds" library="BuiltIn">
+<arg>3min</arg>
+<arg>10sec</arg>
+<arg>Should contain</arg>
+<arg>${result}</arg>
+<arg>OM Preparation successful!</arg>
+<doc>Runs the specified keyword and retries if it fails.</doc>
+<kw name="Should Contain" library="BuiltIn">
+<arg>${result}</arg>
+<arg>OM Preparation successful!</arg>
+<doc>Fails if ``container`` does not contain ``item`` one or more times.</doc>
+<status status="PASS" starttime="20211019 09:38:38.278" endtime="20211019 09:38:38.279"/>
+</kw>
+<status status="PASS" starttime="20211019 09:38:38.278" endtime="20211019 09:38:38.279"/>
+</kw>
+<timeout value="5 minutes"/>
+<status status="PASS" starttime="20211019 09:38:25.100" endtime="20211019 09:38:38.279"/>
+</test>
+<test id="s1-s7-t2" name="Checks if the expected data is present in OM">
+<kw name="Run Keyword If" library="BuiltIn" type="SETUP">
+<arg>'${SECURITY_ENABLED}' == 'true'</arg>
+<arg>Kinit test user</arg>
+<arg>testuser</arg>
+<arg>testuser.keytab</arg>
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<status status="PASS" starttime="20211019 09:38:38.281" endtime="20211019 09:38:38.281"/>
+</kw>
+<kw name="Execute" library="os">
+<var>${result}</var>
+<arg>ozone sh key info /${volume_name}/${bucket_name}/prepare-key</arg>
+<kw name="Run Keyword And Return" library="BuiltIn">
+<arg>Execute and checkrc</arg>
+<arg>${command}</arg>
+<arg>0</arg>
+<doc>Runs the specified keyword and returns from the enclosing user keyword.</doc>
+<kw name="Execute and checkrc" library="os">
+<arg>${command}</arg>
+<arg>0</arg>
+<kw name="Run And Return Rc And Output" library="OperatingSystem">
+<var>${rc}</var>
+<var>${output}</var>
+<arg>${command}</arg>
+<doc>Runs the given command in the system and returns the RC and output.</doc>
+<msg timestamp="20211019 09:38:38.285" level="INFO">Running command 'ozone sh key info /73774-volume-for-prepare/73774-bucket-for-prepare/prepare-key 2&gt;&amp;1'.</msg>
+<msg timestamp="20211019 09:38:41.513" level="INFO">${rc} = 0</msg>
+<msg timestamp="20211019 09:38:41.513" level="INFO">${output} = WARNING: HADOOP_CONF_DIR has been deprecated by OZONE_CONF_DIR.
+WARNING: HADOOP_LOG_DIR has been deprecated by OZONE_LOG_DIR.
+{
+  "volumeName" : "73774-volume-for-prepare",
+  "bucketName" : "73774-buc...</msg>
+<status status="PASS" starttime="20211019 09:38:38.283" endtime="20211019 09:38:41.513"/>
+</kw>
+<kw name="Log" library="BuiltIn">
+<arg>${output}</arg>
+<doc>Logs the given message with the given level.</doc>
+<msg timestamp="20211019 09:38:41.514" level="INFO">WARNING: HADOOP_CONF_DIR has been deprecated by OZONE_CONF_DIR.
+WARNING: HADOOP_LOG_DIR has been deprecated by OZONE_LOG_DIR.
+{
+  "volumeName" : "73774-volume-for-prepare",
+  "bucketName" : "73774-bucket-for-prepare",
+  "name" : "prepare-key",
+  "dataSize" : 17526,
+  "creationTime" : "2021-10-19T09:38:22.997Z",
+  "modificationTime" : "2021-10-19T09:38:24.704Z",
+  "replicationConfig" : {
+    "replicationFactor" : "ONE",
+    "requiredNodes" : 1,
+    "replicationType" : "RATIS"
+  },
+  "ozoneKeyLocations" : [ {
+    "containerID" : 4,
+    "localID" : 107544261427200101,
+    "length" : 17526,
+    "offset" : 0,
+    "keyOffset" : 0
+  } ],
+  "metadata" : { },
+  "replicationType" : "RATIS",
+  "replicationFactor" : 1
+}</msg>
+<status status="PASS" starttime="20211019 09:38:41.514" endtime="20211019 09:38:41.514"/>
+</kw>
+<kw name="Should Be Equal As Integers" library="BuiltIn">
+<arg>${rc}</arg>
+<arg>${expected_error_code}</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<msg timestamp="20211019 09:38:41.515" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;type 'unicode'&gt;</msg>
+<status status="PASS" starttime="20211019 09:38:41.514" endtime="20211019 09:38:41.515"/>
+</kw>
+<status status="PASS" starttime="20211019 09:38:38.282" endtime="20211019 09:38:41.515"/>
+</kw>
+<msg timestamp="20211019 09:38:41.515" level="INFO">Returning from the enclosing user keyword.</msg>
+<status status="PASS" starttime="20211019 09:38:38.282" endtime="20211019 09:38:41.516"/>
+</kw>
+<msg timestamp="20211019 09:38:41.516" level="INFO">${result} = WARNING: HADOOP_CONF_DIR has been deprecated by OZONE_CONF_DIR.
+WARNING: HADOOP_LOG_DIR has been deprecated by OZONE_LOG_DIR.
+{
+  "volumeName" : "73774-volume-for-prepare",
+  "bucketName" : "73774-buc...</msg>
+<status status="PASS" starttime="20211019 09:38:38.281" endtime="20211019 09:38:41.516"/>
+</kw>
+<kw name="Should Contain" library="BuiltIn">
+<arg>${result}</arg>
+<arg>\"name\" : \"prepare-key\"</arg>
+<doc>Fails if ``container`` does not contain ``item`` one or more times.</doc>
+<status status="PASS" starttime="20211019 09:38:41.516" endtime="20211019 09:38:41.517"/>
+</kw>
+<timeout value="5 minutes"/>
+<status status="PASS" starttime="20211019 09:38:38.280" endtime="20211019 09:38:41.517"/>
+</test>
+<test id="s1-s7-t3" name="Test write operation fails">
+<kw name="Run Keyword If" library="BuiltIn" type="SETUP">
+<arg>'${SECURITY_ENABLED}' == 'true'</arg>
+<arg>Kinit test user</arg>
+<arg>testuser</arg>
+<arg>testuser.keytab</arg>
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<status status="PASS" starttime="20211019 09:38:41.520" endtime="20211019 09:38:41.520"/>
+</kw>
+<kw name="Execute and checkrc" library="os">
+<var>${result}</var>
+<arg>ozone sh key put /${volume_name}/${bucket_name}/prepare-key2 /opt/hadoop/NOTICE.txt</arg>
+<arg>255</arg>
+<kw name="Run And Return Rc And Output" library="OperatingSystem">
+<var>${rc}</var>
+<var>${output}</var>
+<arg>${command}</arg>
+<doc>Runs the given command in the system and returns the RC and output.</doc>
+<msg timestamp="20211019 09:38:41.523" level="INFO">Running command 'ozone sh key put /73774-volume-for-prepare/73774-bucket-for-prepare/prepare-key2 /opt/hadoop/NOTICE.txt 2&gt;&amp;1'.</msg>
+<msg timestamp="20211019 09:38:44.230" level="INFO">${rc} = 255</msg>
+<msg timestamp="20211019 09:38:44.230" level="INFO">${output} = WARNING: HADOOP_CONF_DIR has been deprecated by OZONE_CONF_DIR.
+WARNING: HADOOP_LOG_DIR has been deprecated by OZONE_LOG_DIR.
+NOT_SUPPORTED_OPERATION_WHEN_PREPARED Cannot apply write request CreateKey...</msg>
+<status status="PASS" starttime="20211019 09:38:41.521" endtime="20211019 09:38:44.230"/>
+</kw>
+<kw name="Log" library="BuiltIn">
+<arg>${output}</arg>
+<doc>Logs the given message with the given level.</doc>
+<msg timestamp="20211019 09:38:44.232" level="INFO">WARNING: HADOOP_CONF_DIR has been deprecated by OZONE_CONF_DIR.
+WARNING: HADOOP_LOG_DIR has been deprecated by OZONE_LOG_DIR.
+NOT_SUPPORTED_OPERATION_WHEN_PREPARED Cannot apply write request CreateKey when OM is in prepare mode.</msg>
+<status status="PASS" starttime="20211019 09:38:44.231" endtime="20211019 09:38:44.232"/>
+</kw>
+<kw name="Should Be Equal As Integers" library="BuiltIn">
+<arg>${rc}</arg>
+<arg>${expected_error_code}</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<msg timestamp="20211019 09:38:44.232" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;type 'unicode'&gt;</msg>
+<status status="PASS" starttime="20211019 09:38:44.232" endtime="20211019 09:38:44.233"/>
+</kw>
+<msg timestamp="20211019 09:38:44.233" level="INFO">${result} = WARNING: HADOOP_CONF_DIR has been deprecated by OZONE_CONF_DIR.
+WARNING: HADOOP_LOG_DIR has been deprecated by OZONE_LOG_DIR.
+NOT_SUPPORTED_OPERATION_WHEN_PREPARED Cannot apply write request CreateKey...</msg>
+<status status="PASS" starttime="20211019 09:38:41.520" endtime="20211019 09:38:44.233"/>
+</kw>
+<kw name="Should Contain" library="BuiltIn">
+<arg>${result}</arg>
+<arg>OM is in prepare mode</arg>
+<doc>Fails if ``container`` does not contain ``item`` one or more times.</doc>
+<status status="PASS" starttime="20211019 09:38:44.233" endtime="20211019 09:38:44.234"/>
+</kw>
+<kw name="Execute and checkrc" library="os">
+<arg>ozone sh key info /${volume_name}/${bucket_name}/prepare-key2</arg>
+<arg>255</arg>
+<kw name="Run And Return Rc And Output" library="OperatingSystem">
+<var>${rc}</var>
+<var>${output}</var>
+<arg>${command}</arg>
+<doc>Runs the given command in the system and returns the RC and output.</doc>
+<msg timestamp="20211019 09:38:44.237" level="INFO">Running command 'ozone sh key info /73774-volume-for-prepare/73774-bucket-for-prepare/prepare-key2 2&gt;&amp;1'.</msg>
+<msg timestamp="20211019 09:38:46.867" level="INFO">${rc} = 255</msg>
+<msg timestamp="20211019 09:38:46.867" level="INFO">${output} = WARNING: HADOOP_CONF_DIR has been deprecated by OZONE_CONF_DIR.
+WARNING: HADOOP_LOG_DIR has been deprecated by OZONE_LOG_DIR.
+KEY_NOT_FOUND Key:prepare-key2 not found</msg>
+<status status="PASS" starttime="20211019 09:38:44.235" endtime="20211019 09:38:46.867"/>
+</kw>
+<kw name="Log" library="BuiltIn">
+<arg>${output}</arg>
+<doc>Logs the given message with the given level.</doc>
+<msg timestamp="20211019 09:38:46.869" level="INFO">WARNING: HADOOP_CONF_DIR has been deprecated by OZONE_CONF_DIR.
+WARNING: HADOOP_LOG_DIR has been deprecated by OZONE_LOG_DIR.
+KEY_NOT_FOUND Key:prepare-key2 not found</msg>
+<status status="PASS" starttime="20211019 09:38:46.868" endtime="20211019 09:38:46.869"/>
+</kw>
+<kw name="Should Be Equal As Integers" library="BuiltIn">
+<arg>${rc}</arg>
+<arg>${expected_error_code}</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<msg timestamp="20211019 09:38:46.869" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;type 'unicode'&gt;</msg>
+<status status="PASS" starttime="20211019 09:38:46.869" endtime="20211019 09:38:46.870"/>
+</kw>
+<status status="PASS" starttime="20211019 09:38:44.234" endtime="20211019 09:38:46.870"/>
+</kw>
+<timeout value="5 minutes"/>
+<status status="PASS" starttime="20211019 09:38:41.519" endtime="20211019 09:38:46.870"/>
+</test>
+<doc>Smoke test to test preparing OMs in an OM HA cluster.</doc>
+<status status="PASS" starttime="20211019 09:37:55.925" endtime="20211019 09:38:46.872"/>
+</suite>
+<status status="PASS" starttime="N/A" endtime="N/A" elapsedtime="143172"/>
+</suite>
+<statistics>
+<total>
+<stat pass="14" fail="0" skip="0">All Tests</stat>
+</total>
+<tag>
+</tag>
+<suite>
+<stat pass="14" fail="0" skip="0" id="s1" name="ozone-om-prepare">ozone-om-prepare</stat>
+<stat pass="2" fail="0" skip="0" id="s1-s1" name="Om-Cancel-Prepare">ozone-om-prepare.Om-Cancel-Prepare</stat>
+<stat pass="3" fail="0" skip="0" id="s1-s2" name="Om-Prepare">ozone-om-prepare.Om-Prepare</stat>
+<stat pass="2" fail="0" skip="0" id="s1-s3" name="Om-Prepared">ozone-om-prepare.Om-Prepared</stat>
+<stat pass="2" fail="0" skip="0" id="s1-s4" name="Om-Prepared">ozone-om-prepare.Om-Prepared</stat>
+<stat pass="1" fail="0" skip="0" id="s1-s5" name="Loaddata">ozone-om-prepare.Loaddata</stat>
+<stat pass="1" fail="0" skip="0" id="s1-s6" name="Readdata">ozone-om-prepare.Readdata</stat>
+<stat pass="3" fail="0" skip="0" id="s1-s7" name="Om-Prepare">ozone-om-prepare.Om-Prepare</stat>
+</suite>
+</statistics>
+<errors>
+</errors>
+</robot>
